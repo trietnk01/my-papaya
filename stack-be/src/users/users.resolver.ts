@@ -1,5 +1,5 @@
 import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Response } from "express";
+import { Response, Request } from "express";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { UsersService } from "./users.service";
@@ -16,6 +16,16 @@ export class UsersResolver {
     @Context("res") res: Response
   ) {
     return this.usersService.login(username, password, res);
+  }
+
+  @Query(() => UserType)
+  checkValidToken(@Args("token", { type: () => String }) token: string) {
+    return this.usersService.checkValidToken(token);
+  }
+
+  @Query(() => UserType)
+  account(@Context("req") req: Request) {
+    return this.usersService.getAccount(req);
   }
 
   @Mutation(() => UserType)

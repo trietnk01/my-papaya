@@ -30,11 +30,7 @@ export class UsersService {
     item._id = uuid();
     item.password = hashPassword;
     data = await item.save();
-    return {
-      status,
-      message,
-      data
-    };
+    return data;
   };
   login = async (username: string, password: string, res: Response) => {
     try {
@@ -75,6 +71,32 @@ export class UsersService {
       }
     } catch (err) {
       throw new BadRequestException(err.message);
+    }
+  };
+  checkValidToken = async (token: string) => {
+    const item = await this.usersModel.findOne({ token });
+    return item;
+  };
+  checkAuthorized = async (req: Request) => {
+    let token: string = "";
+    const bearerHeader = req.headers["authorization"];
+    if (bearerHeader) {
+      const bearerData = bearerHeader.split(" ");
+      const bearerTxt = bearerData[0];
+      token = bearerData[1];
+      if (bearerTxt === "Bearer") {
+        const item = await this.usersModel.findOne({ token });
+        if (item) {
+          token = item.token;
+        }
+      }
+    }
+    return token;
+  };
+  getAccount = async (req: Request) => {
+    const isValid: boolean = await this.checkAuthorized(req);
+    if (isValid) {
+      const item = await this.usersModel.findOne({ token });
     }
   };
   findOneByUsername = async (username: string) => {
