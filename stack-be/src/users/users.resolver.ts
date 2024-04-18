@@ -24,8 +24,8 @@ export class UsersResolver {
   }
 
   @Query(() => UserType)
-  account(@Context("req") req: Request) {
-    return this.usersService.getAccount(req);
+  account(@Args("id", { type: () => String }) id: string, @Context("req") req: Request) {
+    return this.usersService.getAccount(id, req);
   }
 
   @Mutation(() => UserType)
