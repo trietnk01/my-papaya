@@ -33,29 +33,32 @@ export class NewsResolver {
 
   @Query(() => [NewsType])
   findNewsAll(
+    @Args("keyword", { type: () => String }) keyword: string,
+    @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
     @Args("page", { type: () => Number }) page: number,
     @Context("req") req: Request
   ) {
-    return this.newsService.findAll(page, req);
-  }
-
-  @Query(() => NewsType, { name: "news" })
-  findOne(@Args("id", { type: () => Int }) id: number) {
-    return this.newsService.findOne(id);
+    return this.newsService.findAll(keyword, categoryNewsId, page, req);
   }
 
   @ResolveField()
-  categoryNewsItem(@Parent() news: News, @Context("req") req: Request) {
+  categoryNews(@Parent() news: News, @Context("req") req: Request) {
     return this.categoryNewsService.findById(news.categoryNewsId, req);
   }
 
   @Mutation(() => NewsType)
-  updateNews(@Args("updateNewsInput") updateNewsInput: UpdateNewsInput) {
-    return this.newsService.update(updateNewsInput.id, updateNewsInput);
+  updateNews(
+    @Args("updateNewsInput") updateNewsInput: UpdateNewsInput,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.update(updateNewsInput, req);
   }
 
   @Mutation(() => NewsType)
-  removeNews(@Args("id", { type: () => Int }) id: number) {
-    return this.newsService.remove(id);
+  removeNews(
+    @Args("id", { type: () => String }) id: string,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.remove(id, req);
   }
 }

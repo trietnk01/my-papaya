@@ -28,30 +28,56 @@ export class NewsService {
     return data;
   };
 
-  findAll = async (page: number, req: Request) => {
+  findAll = async (
+    keyword: string,
+    categoryNewsId: string,
+    page: number,
+    req: Request
+  ): Promise<News[]> => {
     let data = null;
     const isValid: boolean = await this.usersService.checkAuthorized(req);
     if (isValid) {
-      let currentPage: number = 1;
       let totalItemPerpage: number = 5;
-      if (page) {
-        currentPage = page;
+      let position: number = (page - 1) * totalItemPerpage;
+      let where = {};
+      if (keyword) {
+        where["newsTitle"] = new RegExp(keyword, "i");
       }
-      let position: number = (currentPage - 1) * totalItemPerpage;
-      data = this.newsRepository.find({ skip: position, take: totalItemPerpage });
+      if (categoryNewsId) {
+        where["categoryNewsId"] = categoryNewsId;
+      }
+      data = await this.newsRepository.find({
+        where,
+        skip: position,
+        take: totalItemPerpage
+      });
     }
     return data;
   };
 
-  findOne(id: number) {
-    return `This action returns a #${id} news`;
-  }
+  update = async (updateNewsInput: UpdateNewsInput, req: Request) => {
+    let data = null;
+    const isValid: boolean = await this.usersService.checkAuthorized(req);
+    if (isValid) {
+      await this.newsRepository.update(
+        { _id: updateNewsInput._id },
+        {
+          newsTitle: updateNewsInput.newsTitle,
+          categoryNewsId: updateNewsInput.categoryNewsId
+        }
+      );
+      data = this.newsRepository.findOneBy({ _id: updateNewsInput._id });
+    }
+    return data;
+  };
 
-  update(id: number, updateNewsInput: UpdateNewsInput) {
-    return `This action updates a #${id} news`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} news`;
-  }
+  remove = async (id: string, req: Request) => {
+    let data = null;
+    const isValid: boolean = await this.usersService.checkAuthorized(req);
+    if (isValid) {
+      data = await this.newsRepository.findOneBy({ _id: id });
+      await this.newsRepository.delete({ _id: id });
+    }
+    return data;
+  };
 }

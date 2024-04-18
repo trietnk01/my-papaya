@@ -10,5 +10,5 @@ export class NewsType {
   newsTitle: string;
 
   @Field((type) => CategoryNewsType, { nullable: true })
-  categoryNewsItem: CategoryNewsType;
+  categoryNews: CategoryNewsType;
 }
