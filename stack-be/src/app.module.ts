@@ -5,12 +5,12 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AppService } from "app.service";
 import { UsersModule } from "./users/users.module";
-import { CategoyNewsModule } from "./categoy-news/categoy-news.module";
+import { CategoryNewsModule } from "./categoy-news/category-news.module";
 import { NewsModule } from "./news/news.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { News } from "news/entities/news.entity";
 import { Users } from "users/entities/users.entity";
-import { CategoryNews } from "categoy-news/entities/categoy-new.entity";
+import { CategoryNews } from "categoy-news/entities/category-new.entity";
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { CategoryNews } from "categoy-news/entities/categoy-new.entity";
       context: ({ req, res }) => ({ req, res })
     }),
     UsersModule,
-    CategoyNewsModule,
+    CategoryNewsModule,
     NewsModule
   ],
   providers: [AppService]

@@ -1,15 +1,13 @@
-import { Request } from "express";
 import { Injectable } from "@nestjs/common";
-import { v4 as uuid } from "uuid";
-import { Model } from "mongoose";
-import { InjectModel } from "@nestjs/mongoose";
-import { CategoryNews } from "./entities/categoy-new.entity";
-import { UsersService } from "users/users.service";
-import { CreateCategoryNewsInput } from "./dto/create-categoy-new.input";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Request } from "express";
 import { Repository } from "typeorm";
+import { UsersService } from "users/users.service";
+import { v4 as uuid } from "uuid";
+import { CreateCategoryNewsInput } from "./dto/create-category-new.input";
+import { CategoryNews } from "./entities/category-new.entity";
 @Injectable()
-export class CategoyNewsService {
+export class CategoryNewsService {
   constructor(
     @InjectRepository(CategoryNews)
     private categoryNewsRepository: Repository<CategoryNews>,
@@ -32,6 +30,14 @@ export class CategoyNewsService {
     let data = null;
     if (isValid) {
       data = await this.categoryNewsRepository.find();
+    }
+    return data;
+  };
+  findById = async (id: string, req: Request) => {
+    const isValid: boolean = await this.usersService.checkAuthorized(req);
+    let data = null;
+    if (isValid) {
+      data = await this.categoryNewsRepository.findOneBy({ _id: id });
     }
     return data;
   };
