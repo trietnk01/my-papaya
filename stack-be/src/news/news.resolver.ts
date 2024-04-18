@@ -1,26 +1,27 @@
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  Int,
   Context,
+  Mutation,
+  Parent,
+  Query,
   ResolveField,
-  Parent
+  Resolver
 } from "@nestjs/graphql";
-import { NewsService } from "./news.service";
+import { CategoryNewsService } from "categoy-news/category-news.service";
 import { Request } from "express";
-import { NewsType } from "./news.type";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { News } from "./entities/news.entity";
-import { CategoryNewsService } from "categoy-news/category-news.service";
+import { NewsService } from "./news.service";
+import { NewsType } from "./news.type";
+import { UsersService } from "users/users.service";
 
 @Resolver(() => NewsType)
 export class NewsResolver {
   constructor(
     private readonly newsService: NewsService,
-    private readonly categoryNewsService: CategoryNewsService
+    private readonly categoryNewsService: CategoryNewsService,
+    private readonly usersService: UsersService
   ) {}
 
   @Mutation(() => NewsType)
@@ -46,6 +47,11 @@ export class NewsResolver {
     return this.categoryNewsService.findById(news.categoryNewsId, req);
   }
 
+  @ResolveField()
+  publisher(@Parent() news: News, @Context("req") req: Request) {
+    return this.usersService.getAccount(news.publisherId, req);
+  }
+
   @Mutation(() => NewsType)
   updateNews(
     @Args("updateNewsInput") updateNewsInput: UpdateNewsInput,
@@ -60,5 +66,13 @@ export class NewsResolver {
     @Context("req") req: Request
   ) {
     return this.newsService.remove(id, req);
+  }
+
+  @Query(() => NewsType)
+  findNewsDetail(
+    @Args("id", { type: () => String }) id: string,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.findDetail(id, req);
   }
 }

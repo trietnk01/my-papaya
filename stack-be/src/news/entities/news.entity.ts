@@ -10,4 +10,7 @@ export class News {
 
   @Column()
   categoryNewsId: string;
+
+  @Column()
+  publisherId: string;
 }

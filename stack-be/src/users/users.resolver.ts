@@ -3,13 +3,13 @@ import { Response, Request } from "express";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { UsersService } from "./users.service";
-import { UserType } from "./users.type";
+import { UsersType } from "./users.type";
 
-@Resolver(() => UserType)
+@Resolver(() => UsersType)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => UserType)
+  @Mutation(() => UsersType)
   login(
     @Args("username", { type: () => String }) username: string,
     @Args("password", { type: () => String }) password: string,
@@ -18,37 +18,37 @@ export class UsersResolver {
     return this.usersService.login(username, password, res);
   }
 
-  @Query(() => UserType)
+  @Query(() => UsersType)
   checkValidToken(@Args("token", { type: () => String }) token: string) {
     return this.usersService.checkValidToken(token);
   }
 
-  @Query(() => UserType)
+  @Query(() => UsersType)
   account(@Args("id", { type: () => String }) id: string, @Context("req") req: Request) {
     return this.usersService.getAccount(id, req);
   }
 
-  @Mutation(() => UserType)
+  @Mutation(() => UsersType)
   createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
     return this.usersService.create(createUserInput);
   }
 
-  @Query(() => [UserType], { name: "users" })
+  @Query(() => [UsersType], { name: "users" })
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Query(() => UserType, { name: "user" })
+  @Query(() => UsersType, { name: "user" })
   findOne(@Args("id", { type: () => Int }) id: number) {
     return this.usersService.findOne(id);
   }
 
-  @Mutation(() => UserType)
+  @Mutation(() => UsersType)
   updateUser(@Args("updateUserInput") updateUserInput: UpdateUserInput) {
     return this.usersService.update(updateUserInput.id, updateUserInput);
   }
 
-  @Mutation(() => UserType)
+  @Mutation(() => UsersType)
   removeUser(@Args("id", { type: () => Int }) id: number) {
     return this.usersService.remove(id);
   }

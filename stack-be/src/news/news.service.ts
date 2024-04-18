@@ -80,4 +80,12 @@ export class NewsService {
     }
     return data;
   };
+  findDetail = async (id: string, req: Request): Promise<News> => {
+    let item = null;
+    const isValid: boolean = await this.usersService.checkAuthorized(req);
+    if (isValid) {
+      item = await this.newsRepository.findOneBy({ _id: id });
+    }
+    return item;
+  };
 }
