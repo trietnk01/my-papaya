@@ -2,15 +2,14 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
-import { MongooseModule } from "@nestjs/mongoose";
-import { AppService } from "app.service";
-import { UsersModule } from "./users/users.module";
-import { CategoryNewsModule } from "./categoy-news/category-news.module";
-import { NewsModule } from "./news/news.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AppService } from "app.service";
+import { CategoryNews } from "categoy-news/entities/category-new.entity";
 import { News } from "news/entities/news.entity";
 import { Users } from "users/entities/users.entity";
-import { CategoryNews } from "categoy-news/entities/category-new.entity";
+import { CategoryNewsModule } from "./categoy-news/category-news.module";
+import { NewsModule } from "./news/news.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [

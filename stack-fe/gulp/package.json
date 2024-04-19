@@ -1,0 +1,38 @@
+{
+  "name": "@minhtuanchannhan/frontend",
+  "version": "1.0.0",
+  "description": "Frontend boilerplate.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tuan Le Minh <minhtuanchannhan@gmail.com>",
+  "homepage": "https://minhtuanchannhan.com",
+  "copyright": "Copyright 2018 Tuan Le Minh",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.1.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sass-glob": "^1.0.8",
+    "gulp-scss-lint": "^0.6.0",
+    "gulp-sourcemaps": "^2.6.3",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^5.0.0",
+    "jshint": "^2.9.5",
+    "motion-ui": "^1.2.3"
+  },
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "critical": "^1.1.0",
+    "gulp-pug": "^3.3.0",
+    "gulp-v4": "^4.0.0-alpha.5",
+    "gulp-watch": "^5.0.0"
+  }
+}

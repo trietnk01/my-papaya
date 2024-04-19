@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-tutorial-graphql-v1",
+  "name": "stack-be-papaya",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -46,9 +46,7 @@
     "ts-morph": "^21.0.1",
     "typeorm": "^0.3.20",
     "uuid": "^9.0.1",
-    "cookie-parser": "^1.4.6",
-    "@nestjs/mongoose": "^10.0.2",
-    "mongoose": "^8.1.1"
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
