@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
-class ICategoryNews {
+export class ICategoryNews {
   @Field((type) => String, { nullable: true })
   _id: string;
 

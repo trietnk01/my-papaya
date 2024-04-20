@@ -1,20 +1,11 @@
-import {
-  Args,
-  Context,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver
-} from "@nestjs/graphql";
+import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CategoryNewsService } from "categoy-news/category-news.service";
 import { Request } from "express";
+import { UsersService } from "users/users.service";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
-import { News } from "./entities/news.entity";
 import { NewsService } from "./news.service";
 import { NewsType } from "./news.type";
-import { UsersService } from "users/users.service";
 
 @Resolver(() => NewsType)
 export class NewsResolver {
@@ -40,16 +31,6 @@ export class NewsResolver {
     @Context("req") req: Request
   ) {
     return this.newsService.findAll(keyword, categoryNewsId, page, req);
-  }
-
-  @ResolveField()
-  categoryNews(@Parent() news: News, @Context("req") req: Request) {
-    return this.categoryNewsService.findById(news.categoryNewsId, req);
-  }
-
-  @ResolveField()
-  publisher(@Parent() news: News, @Context("req") req: Request) {
-    return this.usersService.getAccount(news.publisherId, req);
   }
 
   @Mutation(() => NewsType)

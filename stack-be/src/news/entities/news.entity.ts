@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { CategoryNews } from "categoy-news/entities/category-new.entity";
+import { Column, Entity, ManyToOne, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "news" })
 export class News {
@@ -13,4 +14,7 @@ export class News {
 
   @Column()
   publisherId: string;
+
+  @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
+  categoryNews: CategoryNews;
 }

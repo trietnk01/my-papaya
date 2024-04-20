@@ -33,16 +33,13 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
         isValid = false;
       } else {
         const res: any = await checkValidTokenUser({ variables: { token: accessToken } });
-        if (!res) {
-          isValid = false;
-        } else {
-          const { checkValidToken } = res.data;
-          if (!checkValidToken) {
+        if (res && res.data && res.data.checkValidToken) {
+          const { status, item } = res.data.checkValidToken;
+          if (!status) {
             isValid = false;
           } else {
-            const { _id, email, username, displayName, token } = checkValidToken;
-            const user: IUser = { _id, username, email, displayName };
-            auth_service.setAccessToken(token);
+            const user: IUser = item;
+            auth_service.setAccessToken(accessToken);
             dispatch(loginAction(user));
           }
         }
@@ -62,14 +59,12 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
         password
       }
     });
-    if (!res) {
-      isValid = false;
-    } else {
-      const { login } = res.data;
-      if (!login) {
+    if (res && res.data && res.data.login) {
+      const { status, item } = res.data.login;
+      if (!status) {
         isValid = false;
       } else {
-        const { _id, email, displayName, token } = login;
+        const { _id, email, displayName, token } = item;
         const user: IUser = { _id, username, email, displayName };
         auth_service.setAccessToken(token);
         dispatch(loginAction(user));
@@ -87,8 +82,11 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
       }
     });
     if (res && res.data && res.data.logout) {
-      auth_service.clearAccessToken();
-      dispatch(logoutAction());
+      const { status } = res.data.logout;
+      if (status) {
+        auth_service.clearAccessToken();
+        dispatch(logoutAction());
+      }
     }
   };
   return (

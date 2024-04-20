@@ -146,7 +146,10 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHORIZATION";
       } else {
-        item = await this.newsRepository.findOneBy({ _id: id });
+        item = await this.newsRepository.findOne({
+          relations: { categoryNews: true },
+          where: { _id: id }
+        });
       }
     } catch (err) {
       status = false;
