@@ -19,7 +19,7 @@ export class UsersResolver {
     return this.usersService.login(username, password, res);
   }
 
-  @Query(() => UsersType)
+  @Mutation(() => UsersType)
   checkValidToken(@Args("token", { type: () => String }) token: string) {
     return this.usersService.checkValidToken(token);
   }

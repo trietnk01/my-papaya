@@ -15,7 +15,7 @@ const loginMutation = gql`
   }
 `;
 const logoutMutation = gql`
-  mutation Logout($id: String) {
+  mutation Logout($id: String!) {
     logout(id: $id) {
       status
       message
@@ -23,7 +23,7 @@ const logoutMutation = gql`
   }
 `;
 const checkValidTokenMutation = gql`
-  mutation CheckValidToken($token: String) {
+  mutation CheckValidToken($token: String!) {
     checkValidToken(token: $token) {
       status
       message

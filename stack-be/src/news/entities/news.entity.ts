@@ -1,5 +1,5 @@
 import { CategoryNews } from "categoy-news/entities/category-new.entity";
-import { Column, Entity, ManyToOne, ObjectIdColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "news" })
 export class News {
@@ -16,5 +16,6 @@ export class News {
   publisherId: string;
 
   @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
+  @JoinColumn({ referencedColumnName: "_id", foreignKeyConstraintName: "categoryNewsId" })
   categoryNews: CategoryNews;
 }

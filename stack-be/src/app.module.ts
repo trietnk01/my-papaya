@@ -10,7 +10,6 @@ import { Users } from "users/entities/users.entity";
 import { CategoryNewsModule } from "./categoy-news/category-news.module";
 import { NewsModule } from "./news/news.module";
 import { UsersModule } from "./users/users.module";
-
 @Module({
   imports: [
     ConfigModule.forRoot({

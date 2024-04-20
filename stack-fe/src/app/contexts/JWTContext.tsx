@@ -4,7 +4,7 @@ import {
   loginMutation,
   checkValidTokenMutation,
   logoutMutation
-} from "app/graphql-client/mutations";
+} from "app/graphql-client/gql-user";
 import { dispatch, useSelector } from "app/store";
 import auth_service from "app/utils/authService";
 import React from "react";
