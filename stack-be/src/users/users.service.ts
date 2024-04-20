@@ -100,6 +100,10 @@ export class UsersService {
     let item = null;
     try {
       item = await this.usersRepository.findOneBy({ token });
+      if (!item) {
+        status = false;
+        message = "INVALID_TOKEN";
+      }
     } catch (err) {
       status = false;
       message = err.message;

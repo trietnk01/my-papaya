@@ -3,6 +3,14 @@ networks:
   papaya-net:
     driver: bridge
 services:
+  backend:
+    container_name: backend_papaya
+    build:
+      context: ./stack-be
+    ports:
+      - 7001:8000
+    networks:
+      - papaya-net
   mongo:
     container_name: mongo_papaya
     image: mongo:6.0
