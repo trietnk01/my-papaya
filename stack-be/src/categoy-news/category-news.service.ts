@@ -14,31 +14,73 @@ export class CategoryNewsService {
     private usersService: UsersService
   ) {}
   create = async (createCategoyNewInput: CreateCategoryNewsInput, req: Request) => {
-    const isValid: boolean = await this.usersService.checkAuthorized(req);
-    let data = null;
-    if (isValid) {
-      const item = this.categoryNewsRepository.create({
-        _id: uuid(),
-        categoryName: createCategoyNewInput.categoryName
-      });
-      data = await this.categoryNewsRepository.save(item);
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHORIZATION";
+      } else {
+        const categoryNewsItem = this.categoryNewsRepository.create({
+          _id: uuid(),
+          categoryName: createCategoyNewInput.categoryName
+        });
+        item = await this.categoryNewsRepository.save(categoryNewsItem);
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
     }
-    return data;
+    return {
+      status,
+      message,
+      item
+    };
   };
   findAll = async (req: Request) => {
-    const isValid: boolean = await this.usersService.checkAuthorized(req);
-    let data = null;
-    if (isValid) {
-      data = await this.categoryNewsRepository.find();
+    let status: boolean = true;
+    let message: string = "";
+    let list = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHORIZATION";
+      } else {
+        list = await this.categoryNewsRepository.find();
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
     }
-    return data;
+    return {
+      status,
+      message,
+      list
+    };
   };
   findById = async (id: string, req: Request) => {
-    const isValid: boolean = await this.usersService.checkAuthorized(req);
-    let data = null;
-    if (isValid) {
-      data = await this.categoryNewsRepository.findOneBy({ _id: id });
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHORIZATION";
+      } else {
+        item = await this.categoryNewsRepository.findOneBy({ _id: id });
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
     }
-    return data;
+    return {
+      status,
+      message,
+      item
+    };
   };
 }

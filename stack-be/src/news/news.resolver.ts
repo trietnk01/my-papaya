@@ -32,7 +32,7 @@ export class NewsResolver {
     return this.newsService.create(createNewsInput, req);
   }
 
-  @Query(() => [NewsType])
+  @Query(() => NewsType)
   findNewsAll(
     @Args("keyword", { type: () => String }) keyword: string,
     @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,

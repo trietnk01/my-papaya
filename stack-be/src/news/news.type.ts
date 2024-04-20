@@ -1,9 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { CategoryNewsType } from "categoy-news/category-news.type";
 import { UsersType } from "users/users.type";
-
 @ObjectType()
-export class NewsType {
+class INews {
   @Field((type) => String, { nullable: true })
   _id: string;
 
@@ -15,4 +14,18 @@ export class NewsType {
 
   @Field((type) => UsersType, { nullable: true })
   publisher: UsersType;
+}
+@ObjectType()
+export class NewsType {
+  @Field((type) => Boolean)
+  status: boolean;
+
+  @Field((type) => String)
+  message: string;
+
+  @Field((type) => [INews], { nullable: true })
+  list: [INews];
+
+  @Field((type) => INews, { nullable: true })
+  item: INews;
 }

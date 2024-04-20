@@ -19,26 +19,45 @@ export class UsersService {
     private confService: ConfigService
   ) {}
   create = async (userCreateInput: CreateUserInput) => {
-    let data = null;
-    const salt = genSaltSync(10);
-    const hashPassword = hashSync(userCreateInput.password, salt);
-    const item = this.usersRepository.create({
-      _id: uuid(),
-      username: userCreateInput.username,
-      password: hashPassword,
-      email: userCreateInput.email,
-      displayName: userCreateInput.displayName
-    });
-    data = await this.usersRepository.save(item);
-
-    return data;
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const salt = genSaltSync(10);
+      const hashPassword = hashSync(userCreateInput.password, salt);
+      const userItem = this.usersRepository.create({
+        _id: uuid(),
+        username: userCreateInput.username,
+        password: hashPassword,
+        email: userCreateInput.email,
+        displayName: userCreateInput.displayName
+      });
+      item = await this.usersRepository.save(userItem);
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
   };
   login = async (username: string, password: string, res: Response) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
     try {
       let userItem = await this.usersRepository.findOneBy({ username });
-      if (userItem) {
+      if (!userItem) {
+        status = false;
+        message = "NO_USER_FOUNDED";
+      } else {
         const checkIsvalidPassword = compareSync(password, userItem.password);
-        if (checkIsvalidPassword) {
+        if (!checkIsvalidPassword) {
+          status = false;
+          message = "INVALID_PASSWORD";
+        } else {
           const payload = {
             sub: "token login",
             iss: "from server",
@@ -56,27 +75,40 @@ export class UsersService {
             httpOnly: false,
             maxAge: ms(this.confService.get<string>("JWT_ACCESS_EXPIRE").toString())
           });
-          let item = {
+          item = {
             _id: userItem._id,
             username: userItem.username,
             email: userItem.email,
             displayName: userItem.displayName,
             token
           };
-          return item;
-        } else {
-          throw new BadRequestException("invalid_password");
         }
-      } else {
-        throw new BadRequestException("no_data_returned");
       }
     } catch (err) {
-      throw new BadRequestException(err.message);
+      status = false;
+      message = err.message;
     }
+    return {
+      status,
+      message,
+      item
+    };
   };
   checkValidToken = async (token: string) => {
-    const item = await this.usersRepository.findOneBy({ token });
-    return item;
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      item = await this.usersRepository.findOneBy({ token });
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
   };
   checkAuthorized = async (req: Request) => {
     let isValid: boolean = true;
@@ -99,37 +131,32 @@ export class UsersService {
     return isValid;
   };
   getAccount = async (id: string, req: Request) => {
+    let status: boolean = true;
+    let message: string = "";
     let item = null;
-    const isValid: boolean = await this.checkAuthorized(req);
-    if (isValid) {
-      item = await this.usersRepository.findOneBy({ _id: id });
+    try {
+      const isValid: boolean = await this.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHORIZATION";
+      } else {
+        item = await this.usersRepository.findOneBy({ _id: id });
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
     }
-    return item;
+    return {
+      status,
+      message,
+      item
+    };
   };
   findOneByUsername = async (username: string) => {
-    try {
-      const data = await this.usersRepository.findOneBy({ username });
-      return data;
-    } catch (err) {
-      throw new BadRequestException(err.message);
-    }
+    const data = await this.usersRepository.findOneBy({ username });
+    return data;
   };
   isValidPassword = async (password: string, hash: string) => {
     return compareSync(password, hash);
   };
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

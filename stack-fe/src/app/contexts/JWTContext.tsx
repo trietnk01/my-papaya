@@ -1,9 +1,14 @@
+"use client";
 import { useMutation } from "@apollo/client";
-import { loginMutation } from "app/graphql-client/mutations";
+import {
+  loginMutation,
+  checkValidTokenMutation,
+  logoutMutation
+} from "app/graphql-client/mutations";
 import { dispatch, useSelector } from "app/store";
 import auth_service from "app/utils/authService";
 import React from "react";
-import { loginAction } from "app/store/slices/accountSlice";
+import { loginAction, logoutAction } from "app/store/slices/accountSlice";
 import IUser from "app/types/user-profile";
 interface JWTContextType {
   isLoggedIn: boolean;
@@ -18,22 +23,74 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
 }) => {
   const { isLoggedIn, user } = useSelector((state) => state.account);
   const [loginUser] = useMutation(loginMutation);
+  const [logoutUser] = useMutation(logoutMutation);
+  const [checkValidTokenUser] = useMutation(checkValidTokenMutation);
+  React.useEffect(() => {
+    const init = async () => {
+      let isValid: boolean = true;
+      const accessToken: string = auth_service.getAccessToken();
+      if (!accessToken) {
+        isValid = false;
+      } else {
+        const res: any = await checkValidTokenUser({ variables: { token: accessToken } });
+        if (!res) {
+          isValid = false;
+        } else {
+          const { checkValidToken } = res.data;
+          if (!checkValidToken) {
+            isValid = false;
+          } else {
+            const { _id, email, username, displayName, token } = checkValidToken;
+            const user: IUser = { _id, username, email, displayName };
+            auth_service.setAccessToken(token);
+            dispatch(loginAction(user));
+          }
+        }
+      }
+      if (!isValid) {
+        auth_service.clearAccessToken();
+        dispatch(logoutAction());
+      }
+    };
+    init();
+  }, []);
   const login = async (username: string, password: string) => {
-    const res: any = await loginUser({
+    let isValid: boolean = true;
+    const res = await loginUser({
       variables: {
         username,
         password
       }
     });
-    const { login } = res.data;
-    if (login) {
-      const { _id, email, displayName, token } = login;
-      const user: IUser = { _id, username, email, displayName };
-      auth_service.setAccessToken(token);
-      dispatch(loginAction(user));
+    if (!res) {
+      isValid = false;
+    } else {
+      const { login } = res.data;
+      if (!login) {
+        isValid = false;
+      } else {
+        const { _id, email, displayName, token } = login;
+        const user: IUser = { _id, username, email, displayName };
+        auth_service.setAccessToken(token);
+        dispatch(loginAction(user));
+      }
+    }
+    if (!isValid) {
+      auth_service.clearAccessToken();
+      dispatch(logoutAction());
     }
   };
-  const logout = async (id: string) => {};
+  const logout = async (id: string) => {
+    const res = await logoutUser({
+      variables: {
+        id
+      }
+    });
+    if (res && res.data && res.data.logout) {
+      auth_service.clearAccessToken();
+      dispatch(logoutAction());
+    }
+  };
   return (
     <JWTContext.Provider value={{ isLoggedIn, user, login, logout }}>
       {children}

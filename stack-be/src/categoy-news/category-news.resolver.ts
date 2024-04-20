@@ -16,7 +16,7 @@ export class CategoryNewsResolver {
     return this.categoyNewsService.create(createCategoyNewInput, req);
   }
 
-  @Query((returns) => [CategoryNewsType])
+  @Query((returns) => CategoryNewsType)
   findAllCategoryNews(@Context("req") req: Request) {
     return this.categoyNewsService.findAll(req);
   }

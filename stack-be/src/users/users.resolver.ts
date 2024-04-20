@@ -4,6 +4,7 @@ import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { UsersService } from "./users.service";
 import { UsersType } from "./users.type";
+import { ResponseMessage } from "decorator/customize";
 
 @Resolver(() => UsersType)
 export class UsersResolver {
@@ -31,25 +32,5 @@ export class UsersResolver {
   @Mutation(() => UsersType)
   createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
     return this.usersService.create(createUserInput);
-  }
-
-  @Query(() => [UsersType], { name: "users" })
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Query(() => UsersType, { name: "user" })
-  findOne(@Args("id", { type: () => Int }) id: number) {
-    return this.usersService.findOne(id);
-  }
-
-  @Mutation(() => UsersType)
-  updateUser(@Args("updateUserInput") updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
-  }
-
-  @Mutation(() => UsersType)
-  removeUser(@Args("id", { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
   }
 }
