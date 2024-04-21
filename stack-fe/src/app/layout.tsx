@@ -1,21 +1,22 @@
 "use client";
-import { Provider } from "react-redux";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
+import { Provider } from "react-redux";
 import styles from "scss/global.module.scss";
 import "scss/style.min.css";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
-import END_POINT from "./configs";
 import { store } from "./store";
-const client = new ApolloClient({
-  uri: END_POINT.API_ENDPOINT,
-  cache: new InMemoryCache()
-});
+
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const uri = `${process.env.BACKEND_URI}/graphql`;
+  const client = new ApolloClient({
+    uri,
+    cache: new InMemoryCache()
+  });
   return (
     <html>
       <body className={styles.body}>
