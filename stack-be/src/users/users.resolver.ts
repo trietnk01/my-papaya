@@ -33,4 +33,9 @@ export class UsersResolver {
   createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
     return this.usersService.create(createUserInput);
   }
+
+  @Query(() => UsersType)
+  findAllUsersUnauthenticated() {
+    return this.usersService.findAllUsersUnauthenticated();
+  }
 }

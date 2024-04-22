@@ -17,7 +17,7 @@ export class CategoryNewsResolver {
   }
 
   @Query((returns) => CategoryNewsType)
-  findAllCategoryNews(@Context("req") req: Request) {
-    return this.categoyNewsService.findAll(req);
+  findAllCategoryNewsUnauthenticated(@Context("req") req: Request) {
+    return this.categoyNewsService.findAllCategoryNewsUnauthenticated(req);
   }
 }

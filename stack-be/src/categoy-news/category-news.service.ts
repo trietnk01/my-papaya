@@ -21,7 +21,7 @@ export class CategoryNewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
         const categoryNewsItem = this.categoryNewsRepository.create({
           _id: uuid(),
@@ -39,18 +39,12 @@ export class CategoryNewsService {
       item
     };
   };
-  findAll = async (req: Request) => {
+  findAllCategoryNewsUnauthenticated = async (req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let list = null;
     try {
-      const isValid: boolean = await this.usersService.checkAuthorized(req);
-      if (!isValid) {
-        status = false;
-        message = "NOT_AUTHORIZATION";
-      } else {
-        list = await this.categoryNewsRepository.find();
-      }
+      list = await this.categoryNewsRepository.find();
     } catch (err) {
       status = false;
       message = err.message;
@@ -69,7 +63,7 @@ export class CategoryNewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
         item = await this.categoryNewsRepository.findOneBy({ _id: id });
       }

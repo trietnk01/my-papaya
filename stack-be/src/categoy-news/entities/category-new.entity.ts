@@ -9,7 +9,9 @@ export class CategoryNews {
   @Column()
   categoryName: string;
 
-  @OneToMany(() => News, (news) => news.categoryNews)
-  @JoinColumn({ referencedColumnName: "categoryNewsId", foreignKeyConstraintName: "_id" })
+  @OneToMany(() => News, (news) => news.categoryNews, {
+    cascade: true,
+    eager: true
+  })
   newsItems: [];
 }

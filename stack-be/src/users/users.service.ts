@@ -143,7 +143,7 @@ export class UsersService {
       const isValid: boolean = await this.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
         item = await this.usersRepository.findOneBy({ _id: id });
       }
@@ -161,7 +161,30 @@ export class UsersService {
     const data = await this.usersRepository.findOneBy({ username });
     return data;
   };
+  findUserByToken = async (req: Request) => {
+    const bearerHeader = req.headers["authorization"];
+    const bearerData = bearerHeader.split(" ");
+    let token = bearerData[1];
+    const userItem = await this.usersRepository.findOneBy({ token });
+    return userItem;
+  };
   isValidPassword = async (password: string, hash: string) => {
     return compareSync(password, hash);
+  };
+  findAllUsersUnauthenticated = async () => {
+    let status: boolean = true;
+    let message: string = "";
+    let list = null;
+    try {
+      list = await this.usersRepository.find({});
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      list
+    };
   };
 }

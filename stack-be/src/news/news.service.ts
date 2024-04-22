@@ -22,12 +22,14 @@ export class NewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
+        const userItem = await this.usersService.findUserByToken(req);
         const newsItem = this.newsRepository.create({
           _id: uuid(),
           newsTitle: createNewsInput.newsTitle,
-          categoryNewsId: createNewsInput.categoryNewsId
+          categoryNewsId: createNewsInput.categoryNewsId,
+          publisherId: userItem._id
         });
         item = await this.newsRepository.save(newsItem);
       }
@@ -42,7 +44,43 @@ export class NewsService {
     };
   };
 
-  findAll = async (
+  findNewsUnauthenticated = async (
+    keyword: string,
+    categoryNewsId: string,
+    page: number,
+    req: Request
+  ) => {
+    let status: boolean = true;
+    let message: string = "";
+    let list = null;
+    try {
+      let totalItemPerpage: number = 5;
+      let position: number = (page - 1) * totalItemPerpage;
+      let where = {};
+      if (keyword) {
+        where["newsTitle"] = new RegExp(keyword, "i");
+      }
+      if (categoryNewsId) {
+        where["categoryNewsId"] = categoryNewsId;
+      }
+      list = await this.newsRepository.find({
+        relations: { categoryNews: true, user: true },
+        where,
+        skip: position,
+        take: totalItemPerpage
+      });
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      list
+    };
+  };
+
+  findNewsAuthenticated = async (
     keyword: string,
     categoryNewsId: string,
     page: number,
@@ -55,8 +93,9 @@ export class NewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
+        const userItem = await this.usersService.findUserByToken(req);
         let totalItemPerpage: number = 5;
         let position: number = (page - 1) * totalItemPerpage;
         let where = {};
@@ -66,7 +105,11 @@ export class NewsService {
         if (categoryNewsId) {
           where["categoryNewsId"] = categoryNewsId;
         }
+        if (userItem && userItem._id) {
+          where["publisherId"] = userItem._id;
+        }
         list = await this.newsRepository.find({
+          relations: { categoryNews: true, user: true },
           where,
           skip: position,
           take: totalItemPerpage
@@ -91,7 +134,7 @@ export class NewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
         await this.newsRepository.update(
           { _id: updateNewsInput._id },
@@ -121,7 +164,7 @@ export class NewsService {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
         status = false;
-        message = "NOT_AUTHORIZATION";
+        message = "NOT_AUTHENTICATED";
       } else {
         item = await this.newsRepository.findOneBy({ _id: id });
         await this.newsRepository.delete({ _id: id });
@@ -136,21 +179,15 @@ export class NewsService {
       item
     };
   };
-  findDetail = async (id: string, req: Request) => {
+  findNewsDetailUnauthenticated = async (id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
     try {
-      const isValid: boolean = await this.usersService.checkAuthorized(req);
-      if (!isValid) {
-        status = false;
-        message = "NOT_AUTHORIZATION";
-      } else {
-        item = await this.newsRepository.findOne({
-          relations: { categoryNews: true },
-          where: { _id: id }
-        });
-      }
+      item = await this.newsRepository.findOne({
+        relations: { categoryNews: true, user: true },
+        where: { _id: id }
+      });
     } catch (err) {
       status = false;
       message = err.message;

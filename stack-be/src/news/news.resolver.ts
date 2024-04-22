@@ -24,13 +24,23 @@ export class NewsResolver {
   }
 
   @Query(() => NewsType)
-  findNewsAll(
+  findNewsUnauthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
     @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
     @Args("page", { type: () => Number }) page: number,
     @Context("req") req: Request
   ) {
-    return this.newsService.findAll(keyword, categoryNewsId, page, req);
+    return this.newsService.findNewsUnauthenticated(keyword, categoryNewsId, page, req);
+  }
+
+  @Query(() => NewsType)
+  findNewsAuthenticated(
+    @Args("keyword", { type: () => String }) keyword: string,
+    @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
+    @Args("page", { type: () => Number }) page: number,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.findNewsAuthenticated(keyword, categoryNewsId, page, req);
   }
 
   @Mutation(() => NewsType)
@@ -50,10 +60,10 @@ export class NewsResolver {
   }
 
   @Query(() => NewsType)
-  findNewsDetail(
+  findNewsDetailUnauthenticated(
     @Args("id", { type: () => String }) id: string,
     @Context("req") req: Request
   ) {
-    return this.newsService.findDetail(id, req);
+    return this.newsService.findNewsDetailUnauthenticated(id, req);
   }
 }

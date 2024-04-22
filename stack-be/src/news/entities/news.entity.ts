@@ -1,5 +1,6 @@
 import { CategoryNews } from "categoy-news/entities/category-new.entity";
 import { Column, Entity, JoinColumn, ManyToOne, ObjectIdColumn } from "typeorm";
+import { Users } from "users/entities/users.entity";
 
 @Entity({ name: "news" })
 export class News {
@@ -16,6 +17,10 @@ export class News {
   publisherId: string;
 
   @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
-  @JoinColumn({ referencedColumnName: "_id", foreignKeyConstraintName: "categoryNewsId" })
+  @JoinColumn({ name: "categoryNewsId" })
   categoryNews: CategoryNews;
+
+  @ManyToOne(() => Users, (users) => users.userItems)
+  @JoinColumn({ name: "publisherId" })
+  user: Users;
 }

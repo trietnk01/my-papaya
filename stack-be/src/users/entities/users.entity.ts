@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { News } from "news/entities/news.entity";
+import { Column, Entity, ObjectIdColumn, OneToMany } from "typeorm";
 
 @Entity({ name: "users" })
 export class Users {
@@ -19,4 +20,10 @@ export class Users {
 
   @Column()
   token: string;
+
+  @OneToMany(() => News, (news) => news.categoryNews, {
+    cascade: true,
+    eager: true
+  })
+  userItems: [];
 }
