@@ -17,9 +17,9 @@ services:
     environment:
       - MONGO_INITDB_DATABASE=papaya
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=devtutorial246357
+      - MONGO_INITDB_ROOT_PASSWORD=mongocloud246357
     ports:
-      - 4200:27017
+      - 27017:27017
     networks:
       - papaya-net
     volumes:
