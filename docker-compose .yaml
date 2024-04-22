@@ -1,0 +1,36 @@
+version: "3.9"
+networks:
+  papaya-net:
+    driver: bridge
+services:
+  backend:
+    container_name: backend_papaya
+    build:
+      context: ./stack-be
+    ports:
+      - 8000:8000
+    networks:
+      - papaya-net
+  mongo:
+    container_name: mongo_papaya
+    image: mongo:6.0
+    environment:
+      - MONGO_INITDB_DATABASE=papaya
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=papaya246357
+    ports:
+      - 4200:27017
+    networks:
+      - papaya-net
+    volumes:
+      - mongo_papaya_volume:/data/db
+    restart: unless-stopped
+volumes:
+  mongo_papaya_volume:
+# docker compose -p my-papaya up -d
+# docker volume ls
+# docker volume rm my-papaya_rediscache_volume
+# jenkins username : root - password : Jenkins@246357 - https://872d-1-53-19-150.ngrok-free.app
+# redis password : Redis@246357
+# docker run -u 0 -d --name my-jenkins -p 8080:8080 -p 50000:50000 -v /home/diennk/my-jenkins:/var/jenkins_home jenkins/jenkins:lts
+# docker run -d --restart=always -p 127.0.0.1:2376:2375 --network jenkins -v /var/run/docker.sock:/var/run/docker.sock alpine/socat tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
