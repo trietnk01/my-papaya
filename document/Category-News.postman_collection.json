@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "ce9c8103-2d21-47ef-a500-b4cb728327ea",
+		"name": "Category News",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31572820"
+	},
+	"item": [
+		{
+			"name": "Create category news",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateCategoryNews{\r\n    createCategoyNews(createCategoyNewInput:{categoryName:\"Nhịp sống trẻ\"}){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n        categoryName\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unauthenticated list category news",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query FindAllCategoryNewsUnauthenticated {\r\n    findAllCategoryNewsUnauthenticated {\r\n        status\r\n        message\r\n        list{\r\n            _id\r\n            categoryName\r\n        }\r\n    }\r\n}\r\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,9 +1,9 @@
-# 1. Clone code from https://github.com/trietnk01/my-burningb from master branch
+# 1. Clone code from https://github.com/trietnk01/my-papaya from main branch
 
-# 2. Press code . to open Vscode
+# 2. Please open the document to get instruction screenshot
 
-# 3. cd stack-fe
+# 3. Please import postman json file created by diennk and named .json type . Like that Category-News.postman_collection.json / News.postman_collection.json / User.postman_collection.json
 
-# 4. npm install --legacy-peer-deps
+# 4. Please create Environment base_url and token . base_url = http://14.225.218.38:8000
 
-# 5. Press npm run dev and join
+# Thanks and Best regards

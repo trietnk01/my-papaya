@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "068f724c-f437-4196-8807-bdc4afbdfcb3",
+		"name": "News",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31572820"
+	},
+	"item": [
+		{
+			"name": "Create news",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateNews{\r\n    createNews(createNewsInput:{newsTitle:\"Ba học sinh tử vong dưới hồ\",categoryNewsId:\"4502589f-1034-4abc-be8e-658c0f540374\"}){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n            newsTitle\r\n            categoryNews{\r\n                _id\r\n                categoryName\r\n            }\r\n            user{\r\n                _id\r\n                username\r\n                email\r\n                displayName                \r\n            }\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List news unauthenticated",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query FindNewsUnauthenticated{\r\n    findNewsUnauthenticated(keyword:\"duyệt quy hoạch\",categoryNewsId:\"4502589f-1034-4abc-be8e-658c0f540374\",page:1){\r\n        status\r\n        message\r\n        list{\r\n            _id\r\n            newsTitle\r\n            categoryNews{\r\n                _id\r\n                categoryName\r\n            }\r\n            user{\r\n                _id\r\n                username\r\n                email\r\n                displayName                \r\n            }\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update news",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateNews{\r\n    updateNews(updateNewsInput:{_id:\"1692a932-cc22-4dd3-aee4-f741cc8478ba\",newsTitle:\"Bụi mù mịt trên quốc lộ 14D qua Quảng Nam\",categoryNewsId:\"852a1303-a14a-48f4-8c5d-811f9dc14730\"}){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n        newsTitle\r\n        categoryNews{\r\n            _id\r\n            categoryName\r\n        }\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete news",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation RemoveNews{\r\n    removeNews(id:\"09d745dd-be67-48b1-b2f6-7a1cde93f5e2\"){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n        newsTitle\r\n        categoryNews{\r\n            _id\r\n            categoryName\r\n        }\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find news detail unauthenticated",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query FindNewsDetailUnauthenticated{\r\n    findNewsDetailUnauthenticated(id:\"ccae0fb1-a17a-47d1-8303-7bbcb112f913\"){\r\n        status\r\n        message\r\n        item{\r\n            _id\r\n            newsTitle\r\n            categoryNews{\r\n                _id\r\n                categoryName\r\n            }\r\n            user{\r\n                _id\r\n                username\r\n                email\r\n                displayName                \r\n            }\r\n        }        \r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List news authenticated",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query FindNewsauthenticated{\r\n    findNewsAuthenticated(keyword:\"\",categoryNewsId:\"\",page:1){\r\n        status\r\n        message\r\n        list{\r\n            _id\r\n            newsTitle\r\n            categoryNews{\r\n                _id\r\n                categoryName\r\n            }\r\n            user{\r\n                _id\r\n                username\r\n                email\r\n                displayName                \r\n            }\r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
