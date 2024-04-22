@@ -3,14 +3,6 @@ networks:
   papaya-net:
     driver: bridge
 services:
-  backend:
-    container_name: backend_papaya
-    build:
-      context: ./stack-be
-    ports:
-      - 8000:8000
-    networks:
-      - papaya-net
   mongo:
     container_name: mongo_papaya
     image: mongo:6.0
@@ -25,6 +17,17 @@ services:
     volumes:
       - mongo_papaya_volume:/data/db
     restart: unless-stopped
+  backend:
+    restart: unless-stopped
+    container_name: backend_papaya
+    build:
+      context: ./stack-be
+    links:
+      - mongo
+    ports:
+      - 6000:8000
+    networks:
+      - papaya-net
 volumes:
   mongo_papaya_volume:
 # docker compose -p my-papaya up -d

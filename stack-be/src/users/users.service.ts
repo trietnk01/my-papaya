@@ -48,6 +48,7 @@ export class UsersService {
     let message: string = "";
     let item = null;
     try {
+      console.log("User login resolver");
       let userItem = await this.usersRepository.findOneBy({ username });
       if (!userItem) {
         status = false;
