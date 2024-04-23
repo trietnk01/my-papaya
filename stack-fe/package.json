@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenvx run --env-file=.env.development -- next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "dotenvx run --env-file=.env.production -- next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@apollo/client": "^3.9.11",
+    "@dotenvx/dotenvx": "^0.35.1",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
@@ -22,8 +23,6 @@
     "apollo-server-express": "^3.12.0",
     "axios": "^0.27.2",
     "clsx": "^2.1.0",
-    "dotenv": "^16.4.5",
-    "dotenv-cli": "^7.4.1",
     "graphql": "^16.8.1",
     "next": "14.1.4",
     "react": "^18",

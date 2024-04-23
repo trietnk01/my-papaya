@@ -27,17 +27,16 @@ export class NewsResolver {
   findNewsUnauthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
     @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
-    @Args("page", { type: () => Number }) page: number,
-    @Context("req") req: Request
+    @Args("page", { type: () => String }) page: string
   ) {
-    return this.newsService.findNewsUnauthenticated(keyword, categoryNewsId, page, req);
+    return this.newsService.findNewsUnauthenticated(keyword, categoryNewsId, page);
   }
 
   @Query(() => NewsType)
   findNewsAuthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
     @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
-    @Args("page", { type: () => Number }) page: number,
+    @Args("page", { type: () => String }) page: string,
     @Context("req") req: Request
   ) {
     return this.newsService.findNewsAuthenticated(keyword, categoryNewsId, page, req);

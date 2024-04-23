@@ -13,7 +13,7 @@ const AuthGuard: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { isLoggedIn, user } = useAuth();
   React.useEffect(() => {
     if (!isLoggedIn) {
-      redirect("/");
+      redirect("/login");
     }
   }, [isLoggedIn, user]);
 

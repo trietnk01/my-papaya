@@ -20,13 +20,21 @@ export class UsersResolver {
   }
 
   @Mutation(() => UsersType)
+  logout(@Args("_id", { type: () => String }) _id: string) {
+    return this.usersService.removeToken(_id);
+  }
+
+  @Mutation(() => UsersType)
   checkValidToken(@Args("token", { type: () => String }) token: string) {
     return this.usersService.checkValidToken(token);
   }
 
   @Query(() => UsersType)
-  account(@Args("id", { type: () => String }) id: string, @Context("req") req: Request) {
-    return this.usersService.getAccount(id, req);
+  account(
+    @Args("_id", { type: () => String }) _id: string,
+    @Context("req") req: Request
+  ) {
+    return this.usersService.getAccount(_id, req);
   }
 
   @Mutation(() => UsersType)

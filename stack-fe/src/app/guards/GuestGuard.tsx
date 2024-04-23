@@ -14,7 +14,7 @@ const GuestGuard: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { isLoggedIn } = useAuth();
   React.useEffect(() => {
     if (isLoggedIn) {
-      redirect("/admin/dashboard");
+      redirect("/admin/category-news");
     }
   }, [isLoggedIn]);
 

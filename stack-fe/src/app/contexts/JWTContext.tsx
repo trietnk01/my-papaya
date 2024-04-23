@@ -1,15 +1,11 @@
 "use client";
 import { useMutation } from "@apollo/client";
-import {
-  loginMutation,
-  checkValidTokenMutation,
-  logoutMutation
-} from "app/graphql-client/gql-user";
+import { LOGIN, LOGOUT, CHECK_VALID_TOKEN } from "app/graphql-client/gql-user";
 import { dispatch, useSelector } from "app/store";
-import auth_service from "app/utils/authService";
-import React from "react";
 import { loginAction, logoutAction } from "app/store/slices/accountSlice";
 import IUser from "app/types/user-profile";
+import auth_service from "app/utils/authService";
+import React from "react";
 interface JWTContextType {
   isLoggedIn: boolean;
   user: IUser | null;
@@ -22,9 +18,9 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
   children
 }) => {
   const { isLoggedIn, user } = useSelector((state) => state.account);
-  const [loginUser] = useMutation(loginMutation);
-  const [logoutUser] = useMutation(logoutMutation);
-  const [checkValidTokenUser] = useMutation(checkValidTokenMutation);
+  const [loginUser] = useMutation(LOGIN);
+  const [logoutUser] = useMutation(LOGOUT);
+  const [checkValidTokenUser] = useMutation(CHECK_VALID_TOKEN);
   React.useEffect(() => {
     const init = async () => {
       let isValid: boolean = true;

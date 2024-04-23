@@ -1,16 +1,16 @@
 "use client";
-import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
-import { faUser, faKey } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "scss/login.module.scss";
+import type { FormProps } from "antd";
+import { Button, Form, Input } from "antd";
 import useAuth from "app/hooks/useAuth";
+import styles from "scss/login.module.scss";
 type FieldType = {
   username?: string;
   password?: string;
   remember?: string;
 };
-const HomePage = () => {
+const LoginPage = () => {
   const { login } = useAuth();
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { username, password } = values;
@@ -73,4 +73,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LoginPage;

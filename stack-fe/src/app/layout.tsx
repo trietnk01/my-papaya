@@ -12,7 +12,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const uri = `${process.env.BACKEND_URI}/graphql`;
+  const uri = `${process.env.NEXT_PUBLIC_BACKEND_URI}/graphql`;
   const client = new ApolloClient({
     uri,
     cache: new InMemoryCache()

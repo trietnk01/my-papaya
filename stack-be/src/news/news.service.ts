@@ -47,15 +47,14 @@ export class NewsService {
   findNewsUnauthenticated = async (
     keyword: string,
     categoryNewsId: string,
-    page: number,
-    req: Request
+    page: string
   ) => {
     let status: boolean = true;
     let message: string = "";
     let list = null;
     try {
       let totalItemPerpage: number = 5;
-      let position: number = (page - 1) * totalItemPerpage;
+      let position: number = (parseInt(page) - 1) * totalItemPerpage;
       let where = {};
       if (keyword) {
         where["newsTitle"] = new RegExp(keyword, "i");
@@ -83,7 +82,7 @@ export class NewsService {
   findNewsAuthenticated = async (
     keyword: string,
     categoryNewsId: string,
-    page: number,
+    page: string,
     req: Request
   ) => {
     let status: boolean = true;
@@ -97,7 +96,7 @@ export class NewsService {
       } else {
         const userItem = await this.usersService.findUserByToken(req);
         let totalItemPerpage: number = 5;
-        let position: number = (page - 1) * totalItemPerpage;
+        let position: number = (parseInt(page) - 1) * totalItemPerpage;
         let where = {};
         if (keyword) {
           where["newsTitle"] = new RegExp(keyword, "i");

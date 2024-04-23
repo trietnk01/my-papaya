@@ -48,7 +48,6 @@ export class UsersService {
     let message: string = "";
     let item = null;
     try {
-      console.log("User login resolver");
       let userItem = await this.usersRepository.findOneBy({ username });
       if (!userItem) {
         status = false;
@@ -72,10 +71,10 @@ export class UsersService {
             expiresIn: this.confService.get<string>("JWT_ACCESS_EXPIRE").toString()
           });
           await this.usersRepository.update({ _id: userItem._id }, { token });
-          res.cookie("refreshToken", token, {
+          /*           res.cookie("refreshToken", token, {
             httpOnly: false,
             maxAge: ms(this.confService.get<string>("JWT_ACCESS_EXPIRE").toString())
-          });
+          }); */
           item = {
             _id: userItem._id,
             username: userItem.username,
@@ -115,6 +114,31 @@ export class UsersService {
       item
     };
   };
+  removeToken = async (_id: string) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      item = await this.usersRepository.update(
+        { _id },
+        {
+          token: ""
+        }
+      );
+      if (!item) {
+        status = false;
+        message = "INVALID_TOKEN";
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
+  };
   checkAuthorized = async (req: Request) => {
     let isValid: boolean = true;
     const bearerHeader = req.headers["authorization"];
@@ -135,7 +159,7 @@ export class UsersService {
     }
     return isValid;
   };
-  getAccount = async (id: string, req: Request) => {
+  getAccount = async (_id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
@@ -145,7 +169,7 @@ export class UsersService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.usersRepository.findOneBy({ _id: id });
+        item = await this.usersRepository.findOneBy({ _id });
       }
     } catch (err) {
       status = false;
