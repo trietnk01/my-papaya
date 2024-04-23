@@ -48,7 +48,7 @@ for (let i = 10; i < 36; i++) {
 }
 const NewsPage = () => {
   const { refetch } = useQuery(FIND_NEWS_AUTHENTICATED);
-  const { refetch } = useQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
+  /* const { refetch } = useQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED); */
   const [newsData, setNewsData] = React.useState<INews[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [keyword, setKeyword] = React.useState<string>("");
