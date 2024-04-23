@@ -3,12 +3,14 @@ const FIND_NEWS_AUTHENTICATED = gql`
   query FindNewsAuthenticated(
     $keyword: String!
     $categoryNewsId: String!
-    $page: String!
+    $current: String!
+    $pageSize: String!
   ) {
     findNewsAuthenticated(
       keyword: $keyword
       categoryNewsId: $categoryNewsId
-      page: $page
+      current: $current
+      pageSize: $pageSize
     ) {
       status
       message
@@ -26,6 +28,7 @@ const FIND_NEWS_AUTHENTICATED = gql`
           displayName
         }
       }
+      total
     }
   }
 `;

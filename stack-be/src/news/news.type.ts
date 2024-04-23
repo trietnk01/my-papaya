@@ -28,4 +28,7 @@ export class NewsType {
 
   @Field((type) => INews, { nullable: true })
   item: INews;
+
+  @Field((type) => Number, { nullable: true })
+  total: Number;
 }

@@ -1,11 +1,18 @@
 "use client";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  createHttpLink
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import React from "react";
 import { Provider } from "react-redux";
 import styles from "scss/global.module.scss";
 import "scss/style.min.css";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
 import { store } from "./store";
+import auth_service from "./utils/authService";
 
 export default function RootLayout({
   children
@@ -13,8 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const uri = `${process.env.NEXT_PUBLIC_BACKEND_URI}/graphql`;
+  const httpLink = createHttpLink({ uri });
+  const authLink = setContext((_, { headers }) => {
+    const token: string = auth_service.getAccessToken();
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : ""
+      }
+    };
+  });
   const client = new ApolloClient({
-    uri,
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache()
   });
   return (

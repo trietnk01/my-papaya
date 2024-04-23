@@ -10,7 +10,7 @@ interface JWTContextType {
   isLoggedIn: boolean;
   user: IUser | null;
   login: (username: string, password: string) => void;
-  logout: (id: string) => void;
+  logout: (_id: string) => void;
 }
 const JWTContext = React.createContext<JWTContextType | null>(null);
 interface JWTProviderProps {}
@@ -24,18 +24,18 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
   React.useEffect(() => {
     const init = async () => {
       let isValid: boolean = true;
-      const accessToken: string = auth_service.getAccessToken();
-      if (!accessToken) {
+      const token: string = auth_service.getAccessToken();
+      if (!token) {
         isValid = false;
       } else {
-        const res: any = await checkValidTokenUser({ variables: { token: accessToken } });
+        const res: any = await checkValidTokenUser({ variables: { token } });
         if (res && res.data && res.data.checkValidToken) {
           const { status, item } = res.data.checkValidToken;
           if (!status) {
             isValid = false;
           } else {
             const user: IUser = item;
-            auth_service.setAccessToken(accessToken);
+            auth_service.setAccessToken(token);
             dispatch(loginAction(user));
           }
         }
@@ -71,12 +71,8 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
       dispatch(logoutAction());
     }
   };
-  const logout = async (id: string) => {
-    const res = await logoutUser({
-      variables: {
-        id
-      }
-    });
+  const logout = async (_id: string) => {
+    const res = await logoutUser({ variables: { _id } });
     if (res && res.data && res.data.logout) {
       const { status } = res.data.logout;
       if (status) {

@@ -36,10 +36,17 @@ export class NewsResolver {
   findNewsAuthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
     @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
-    @Args("page", { type: () => String }) page: string,
+    @Args("current", { type: () => String }) current: string,
+    @Args("pageSize", { type: () => String }) pageSize: string,
     @Context("req") req: Request
   ) {
-    return this.newsService.findNewsAuthenticated(keyword, categoryNewsId, page, req);
+    return this.newsService.findNewsAuthenticated(
+      keyword,
+      categoryNewsId,
+      current,
+      pageSize,
+      req
+    );
   }
 
   @Mutation(() => NewsType)

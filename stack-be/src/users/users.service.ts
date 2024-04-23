@@ -114,20 +114,22 @@ export class UsersService {
       item
     };
   };
-  removeToken = async (_id: string) => {
+  logout = async (_id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
     try {
-      item = await this.usersRepository.update(
-        { _id },
-        {
-          token: ""
-        }
-      );
-      if (!item) {
+      const isValid: boolean = await this.checkAuthorized(req);
+      if (!isValid) {
         status = false;
-        message = "INVALID_TOKEN";
+        message = "NOT_AUTHENTICATED";
+      } else {
+        item = await this.usersRepository.update(
+          { _id },
+          {
+            token: ""
+          }
+        );
       }
     } catch (err) {
       status = false;

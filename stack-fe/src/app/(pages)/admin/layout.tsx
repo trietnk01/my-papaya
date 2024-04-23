@@ -3,6 +3,7 @@ import { MailOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Flex, Menu } from "antd";
 import AuthGuard from "app/guards/AuthGuard";
+import useAuth from "app/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "scss/admin-layout.module.scss";
@@ -30,13 +31,14 @@ const items: MenuProps["items"] = [
       "News section",
       "g1",
       null,
-      [getItem("Category news", "1"), getItem("News", "2")],
+      [getItem("Category news", "1"), getItem("News", "2"), getItem("Logout", "3")],
       "group"
     )
   ])
 ];
 const AdminLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const router = useRouter();
+  const { logout, user } = useAuth();
   const onClick: MenuProps["onClick"] = (e) => {
     const key: number = e.key ? parseInt(e.key) : 1;
     switch (key) {
@@ -45,6 +47,11 @@ const AdminLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         break;
       case 2:
         router.push("/admin/news");
+        break;
+      case 3:
+        if (user) {
+          logout(user._id);
+        }
         break;
     }
   };

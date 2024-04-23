@@ -82,12 +82,14 @@ export class NewsService {
   findNewsAuthenticated = async (
     keyword: string,
     categoryNewsId: string,
-    page: string,
+    current: string,
+    pageSize: string,
     req: Request
   ) => {
     let status: boolean = true;
     let message: string = "";
     let list = null;
+    let total: number = 0;
     try {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
@@ -95,8 +97,7 @@ export class NewsService {
         message = "NOT_AUTHENTICATED";
       } else {
         const userItem = await this.usersService.findUserByToken(req);
-        let totalItemPerpage: number = 5;
-        let position: number = (parseInt(page) - 1) * totalItemPerpage;
+        let position: number = (parseInt(current) - 1) * parseInt(pageSize);
         let where = {};
         if (keyword) {
           where["newsTitle"] = new RegExp(keyword, "i");
@@ -107,11 +108,12 @@ export class NewsService {
         if (userItem && userItem._id) {
           where["publisherId"] = userItem._id;
         }
+        total = await this.newsRepository.count(where);
         list = await this.newsRepository.find({
           relations: { categoryNews: true, user: true },
           where,
           skip: position,
-          take: totalItemPerpage
+          take: parseInt(pageSize)
         });
       }
     } catch (err) {
@@ -121,7 +123,8 @@ export class NewsService {
     return {
       status,
       message,
-      list
+      list,
+      total
     };
   };
 
