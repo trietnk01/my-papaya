@@ -22,5 +22,5 @@ export class News {
 
   @ManyToOne(() => Users, (users) => users.userItems)
   @JoinColumn({ name: "publisherId" })
-  user: Users;
+  publisher: Users;
 }

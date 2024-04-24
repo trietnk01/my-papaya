@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { UsersService } from "users/users.service";
 import { v4 as uuid } from "uuid";
 import { CreateNewsInput } from "./dto/create-news.input";
@@ -63,7 +63,7 @@ export class NewsService {
         where["categoryNewsId"] = categoryNewsId;
       }
       list = await this.newsRepository.find({
-        relations: { categoryNews: true, user: true },
+        relations: { categoryNews: true, publisher: true },
         where,
         skip: position,
         take: totalItemPerpage
@@ -110,7 +110,7 @@ export class NewsService {
         }
         total = await this.newsRepository.count(where);
         list = await this.newsRepository.find({
-          relations: { categoryNews: true, user: true },
+          relations: { categoryNews: true, publisher: true },
           where,
           skip: position,
           take: parseInt(pageSize)
@@ -181,15 +181,71 @@ export class NewsService {
       item
     };
   };
-  findNewsDetailUnauthenticated = async (id: string, req: Request) => {
+  removeMulti = async (selectedIds: string, req: Request) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHENTICATED";
+      } else {
+        if (!selectedIds) {
+          status = false;
+          message = "Please choose at least one id to delete";
+        } else {
+          const ids: string[] = JSON.parse(selectedIds);
+          for (let i = 0; i < ids.length; i++) {
+            await this.newsRepository.delete({ _id: ids[i].toString() });
+          }
+          message = "Delete news successfully";
+        }
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
+  };
+  findNewsDetailUnauthenticated = async (id: string) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
     try {
       item = await this.newsRepository.findOne({
-        relations: { categoryNews: true, user: true },
+        relations: { categoryNews: true, publisher: true },
         where: { _id: id }
       });
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
+  };
+  findNewsDetailAuthenticated = async (id: string, req: Request) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHENTICATED";
+      } else {
+        item = await this.newsRepository.findOne({
+          relations: { categoryNews: true, publisher: true },
+          where: { _id: id }
+        });
+      }
     } catch (err) {
       status = false;
       message = err.message;

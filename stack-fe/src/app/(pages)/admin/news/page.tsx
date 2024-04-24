@@ -1,17 +1,21 @@
 "use client";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import Swal from "sweetalert2";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
-import { FIND_NEWS_AUTHENTICATED, DELETE_NEWS } from "app/graphql-client/gql-news";
+import {
+  DELETE_NEWS,
+  FIND_NEWS_AUTHENTICATED,
+  DELETE_NEWS_MULTI
+} from "app/graphql-client/gql-news";
 import { produce } from "immer";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "scss/admin-layout.module.scss";
+import Swal from "sweetalert2";
 type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>;
 interface INews {
-  key: string;
+  key: React.Key;
   _id: string;
   newsTitle: string;
 }
@@ -26,6 +30,17 @@ interface TableParams {
   sortOrder?: string;
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
+const Toast = Swal.mixin({
+  toast: true,
+  position: "bottom-start",
+  showConfirmButton: false,
+  timer: 8000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 const NewsPage = () => {
   const router = useRouter();
   const [newsData, setNewsData] = React.useState<INews[]>([]);
@@ -33,15 +48,21 @@ const NewsPage = () => {
   const [loading, setLoading] = React.useState(false);
   const [keyword, setKeyword] = React.useState<string>("");
   const [categoryNewsId, setCategoryNewsId] = React.useState<string>("");
+  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [tableParams, setTableParams] = React.useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10
     }
   });
-  const { refetch } = useQuery(FIND_NEWS_AUTHENTICATED);
-  let [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
-  let [deleteNews] = useMutation(DELETE_NEWS);
+  const [getNews] = useLazyQuery(FIND_NEWS_AUTHENTICATED, {
+    fetchPolicy: "network-only"
+  });
+  const [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED, {
+    fetchPolicy: "network-only"
+  });
+  const [deleteNews] = useMutation(DELETE_NEWS);
+  const [deleteNewsMulti] = useMutation(DELETE_NEWS_MULTI);
   const columns: TableProps<INews>["columns"] = [
     {
       title: "Title",
@@ -86,17 +107,6 @@ const NewsPage = () => {
             "1",
             tableParams.pagination?.pageSize?.toString()
           );
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "bottom-start",
-            showConfirmButton: false,
-            timer: 8000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
           Toast.fire({
             icon: "success",
             title: "Delete successfully"
@@ -114,11 +124,13 @@ const NewsPage = () => {
     current: string | undefined,
     pageSize: string | undefined
   ) => {
-    refetch({
-      keyword,
-      categoryNewsId,
-      current: current ? current.toString() : "",
-      pageSize: pageSize ? pageSize.toString() : ""
+    getNews({
+      variables: {
+        keyword,
+        categoryNewsId,
+        current: current ? current.toString() : "",
+        pageSize: pageSize ? pageSize.toString() : ""
+      }
     }).then((res) => {
       if (res && res.data && res.data.findNewsAuthenticated) {
         const { status, list, total } = res.data.findNewsAuthenticated;
@@ -195,6 +207,55 @@ const NewsPage = () => {
   const handleCategoryNewsChange = (e: any) => {
     setCategoryNewsId(e.toString());
   };
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  };
+  const handleDeleteMulti = () => {
+    if (selectedRowKeys.length > 0) {
+      Swal.fire({
+        title: "Do you want to delete this item?",
+        showDenyButton: true,
+        confirmButtonText: "Confirm",
+        denyButtonText: "Cancel"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteNewsMulti({
+            variables: { selectedIds: JSON.stringify(selectedRowKeys) }
+          }).then((res) => {
+            if (res && res.data && res.data.deleteNewsMulti) {
+              const { status, message } = res.data.deleteNewsMulti;
+              if (status) {
+                loadNewsTable(
+                  keyword,
+                  categoryNewsId,
+                  "1",
+                  tableParams.pagination?.pageSize?.toString()
+                );
+                Toast.fire({
+                  icon: "success",
+                  title: message
+                });
+              } else {
+                Toast.fire({
+                  icon: "error",
+                  title: message
+                });
+              }
+            }
+          });
+        }
+      });
+    } else {
+      Toast.fire({
+        icon: "warning",
+        title: "Please choose at least one item to delete"
+      });
+    }
+  };
   return (
     <React.Fragment>
       <h2 className={styles.titleHeading}>News</h2>
@@ -228,10 +289,17 @@ const NewsPage = () => {
             size="large"
             onClick={handleAddItem}
           />
-          <Button type="primary" icon={<DeleteOutlined />} size="large" danger />
+          <Button
+            type="primary"
+            icon={<DeleteOutlined />}
+            size="large"
+            danger
+            onClick={handleDeleteMulti}
+          />
         </div>
       </div>
       <Table
+        rowSelection={rowSelection}
         columns={columns}
         dataSource={newsData}
         pagination={tableParams.pagination}

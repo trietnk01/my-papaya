@@ -9,11 +9,17 @@ class INews {
   @Field((type) => String, { nullable: true })
   newsTitle: string;
 
+  @Field((type) => String, { nullable: true })
+  categoryNewsId: string;
+
+  @Field((type) => String, { nullable: true })
+  publisherId: string;
+
   @Field((type) => ICategoryNews, { nullable: true })
   categoryNews: ICategoryNews;
 
   @Field((type) => IUser, { nullable: true })
-  user: IUser;
+  publisher: IUser;
 }
 @ObjectType()
 export class NewsType {

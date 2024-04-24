@@ -65,11 +65,24 @@ export class NewsResolver {
     return this.newsService.remove(id, req);
   }
 
+  @Mutation(() => NewsType)
+  deleteNewsMulti(
+    @Args("selectedIds", { type: () => String }) selectedIs: string,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.removeMulti(selectedIs, req);
+  }
+
   @Query(() => NewsType)
-  findNewsDetailUnauthenticated(
+  findNewsDetailUnauthenticated(@Args("id", { type: () => String }) id: string) {
+    return this.newsService.findNewsDetailUnauthenticated(id);
+  }
+
+  @Query(() => NewsType)
+  findNewsDetailAuthenticated(
     @Args("id", { type: () => String }) id: string,
     @Context("req") req: Request
   ) {
-    return this.newsService.findNewsDetailUnauthenticated(id, req);
+    return this.newsService.findNewsDetailAuthenticated(id, req);
   }
 }
