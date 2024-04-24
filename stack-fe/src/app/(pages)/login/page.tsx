@@ -21,10 +21,9 @@ const LoginPage = () => {
   return (
     <Form
       className={styles.sectionLogin}
-      name="basic"
+      name="loginFrm"
       initialValues={{ remember: true }}
       onFinish={onFinish}
-      autoComplete="off"
     >
       <div className={styles.container}>
         <h1 className={styles.title}>LOGIN</h1>

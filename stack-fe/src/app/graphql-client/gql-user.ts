@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 const LOGIN = gql`
-  mutation Login($username: String!, $password: String!) {
+  mutation ($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       status
       message
@@ -15,7 +15,7 @@ const LOGIN = gql`
   }
 `;
 const LOGOUT = gql`
-  mutation Logout($_id: String!) {
+  mutation ($_id: String!) {
     logout(_id: $_id) {
       status
       message
@@ -23,7 +23,7 @@ const LOGOUT = gql`
   }
 `;
 const CHECK_VALID_TOKEN = gql`
-  mutation CheckValidToken($token: String!) {
+  mutation ($token: String!) {
     checkValidToken(token: $token) {
       status
       message

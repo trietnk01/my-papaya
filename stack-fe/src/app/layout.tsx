@@ -6,13 +6,14 @@ import {
   createHttpLink
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import React from "react";
+import React, { Suspense } from "react";
 import { Provider } from "react-redux";
 import styles from "scss/global.module.scss";
 import "scss/style.min.css";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
 import { store } from "./store";
 import auth_service from "./utils/authService";
+import { Loader } from "./components";
 
 export default function RootLayout({
   children
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body className={styles.body}>
         <Provider store={store}>
           <ApolloProvider client={client}>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <Suspense fallback={<Loader />}>{children}</Suspense>
+            </AuthProvider>
           </ApolloProvider>
         </Provider>
       </body>

@@ -1,11 +1,11 @@
 "use client";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { useQuery } from "@apollo/client";
-import type { SelectProps } from "antd";
+import { useLazyQuery } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
-import { FIND_NEWS_AUTHENTICATED } from "app/graphql-client/gql-news";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
+import { FIND_NEWS_AUTHENTICATED } from "app/graphql-client/gql-news";
 import { produce } from "immer";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "scss/admin-layout.module.scss";
@@ -15,53 +15,62 @@ interface INews {
   _id: string;
   newsTitle: string;
 }
-const columns: TableProps<INews>["columns"] = [
-  {
-    title: "Title",
-    dataIndex: "newsTitle",
-    key: "newsTitle",
-    render: (text) => <a>{text}</a>
-  },
+interface ICategoryNews {
+  value: string;
+  label: string;
+}
 
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Delete</a>
-      </Space>
-    )
-  }
-];
 interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: string;
   sortOrder?: string;
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
-const options: SelectProps["options"] = [];
-for (let i = 10; i < 36; i++) {
-  options.push({
-    label: i.toString(36) + i,
-    value: i.toString(36) + i
-  });
-}
 const NewsPage = () => {
-  const { refetch } = useQuery(FIND_NEWS_AUTHENTICATED);
-  /* const { refetch } = useQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED); */
+  const router = useRouter();
+  let [getNews] = useLazyQuery(FIND_NEWS_AUTHENTICATED);
+  let [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
   const [newsData, setNewsData] = React.useState<INews[]>([]);
+  const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [keyword, setKeyword] = React.useState<string>("");
-  const [categoryNewsId, setCategoryNewsId] = React.useState<string>();
+  const [categoryNewsId, setCategoryNewsId] = React.useState<string>("");
   const [tableParams, setTableParams] = React.useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10
     }
   });
-  const router = useRouter();
+  const columns: TableProps<INews>["columns"] = [
+    {
+      title: "Title",
+      dataIndex: "newsTitle",
+      key: "newsTitle",
+      render: (text) => text
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => {
+        return (
+          <React.Fragment>
+            <Space size="middle">
+              <Button type="primary" onClick={handleNewsEdit(record._id)}>
+                Edit
+              </Button>
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Space>
+          </React.Fragment>
+        );
+      }
+    }
+  ];
+  const handleNewsEdit = (_id: string) => () => {};
   const handleAddItem = () => {
-    router.push("/admin/news/add");
+    router.push("/admin/news/form?action=add");
   };
   const loadNewsTable = async (
     keyword: string,
@@ -69,11 +78,13 @@ const NewsPage = () => {
     current: string | undefined,
     pageSize: string | undefined
   ) => {
-    const res = await refetch({
-      keyword,
-      categoryNewsId,
-      current: current ? current.toString() : "",
-      pageSize: pageSize ? pageSize.toString() : ""
+    const res = await getNews({
+      variables: {
+        keyword,
+        categoryNewsId,
+        current: current ? current.toString() : "",
+        pageSize: pageSize ? pageSize.toString() : ""
+      }
     });
     if (res && res.data && res.data.findNewsAuthenticated) {
       const { status, list, total } = res.data.findNewsAuthenticated;
@@ -96,15 +107,6 @@ const NewsPage = () => {
       }
     }
   };
-  const handleSearch = () => {
-    setLoading(true);
-    loadNewsTable(
-      keyword,
-      "",
-      tableParams.pagination?.current?.toString(),
-      tableParams.pagination?.pageSize?.toString()
-    );
-  };
   React.useEffect(() => {
     setLoading(true);
     loadNewsTable(
@@ -116,10 +118,32 @@ const NewsPage = () => {
   }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
   React.useEffect(() => {
     const loadSelectedCategoryNews = async () => {
-      const res = await refetch({});
+      const res = await getCategoryNews();
+      if (res && res.data && res.data.findAllCategoryNewsUnauthenticated) {
+        const { status, list } = res.data.findAllCategoryNewsUnauthenticated;
+        if (status) {
+          let categoryNewsList: ICategoryNews[] = list.map((item: any) => {
+            return { value: item._id, label: item.categoryName };
+          });
+          categoryNewsList.unshift({
+            value: "",
+            label: "-- Please choose on category --"
+          });
+          setCategoryNewsData(categoryNewsList);
+        }
+      }
     };
     loadSelectedCategoryNews();
   }, []);
+  const handleSearch = () => {
+    setLoading(true);
+    loadNewsTable(
+      keyword,
+      categoryNewsId,
+      tableParams.pagination?.current?.toString(),
+      tableParams.pagination?.pageSize?.toString()
+    );
+  };
   const handleTableChange: TableProps["onChange"] = (pagination, filters, sorter) => {
     setTableParams({
       pagination,
@@ -130,10 +154,12 @@ const NewsPage = () => {
       setNewsData([]);
     }
   };
-  const handleKeywordChange = (val: any) => {
-    setKeyword(val.target.value);
+  const handleKeywordChange = (e: any) => {
+    setKeyword(e.target.value.toString());
   };
-
+  const handleCategoryNewsChange = (e: any) => {
+    setCategoryNewsId(e.toString());
+  };
   return (
     <React.Fragment>
       <h2 className={styles.titleHeading}>News</h2>
@@ -148,14 +174,10 @@ const NewsPage = () => {
           />
           <Select
             size="large"
-            defaultValue="lucy"
+            defaultValue=""
             className={styles.selectedText}
-            options={[
-              { value: "jack", label: "Jack" },
-              { value: "lucy", label: "Lucy" },
-              { value: "Yiminghe", label: "yiminghe" },
-              { value: "disabled", label: "Disabled", disabled: true }
-            ]}
+            options={categoryNewsData}
+            onChange={handleCategoryNewsChange}
           />
           <Button
             type="primary"
@@ -184,5 +206,4 @@ const NewsPage = () => {
     </React.Fragment>
   );
 };
-
 export default NewsPage;
