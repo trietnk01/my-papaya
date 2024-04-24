@@ -71,8 +71,8 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({
       dispatch(logoutAction());
     }
   };
-  const logout = async (_id: string) => {
-    const res = await logoutUser({ variables: { _id } });
+  const logout = async (id: string) => {
+    const res = await logoutUser({ variables: { id } });
     if (res && res.data && res.data.logout) {
       const { status } = res.data.logout;
       if (status) {

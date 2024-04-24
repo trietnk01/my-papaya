@@ -18,7 +18,7 @@ interface ICategoryNews {
 const NewsForm = () => {
   const searchParams = useSearchParams();
   const action = searchParams.get("action");
-  const _id = searchParams.get("_id");
+  const id = searchParams.get("id");
   const router = useRouter();
   const [addNews] = useMutation(ADD_NEWS);
   const [updateNews] = useMutation(UPDATE_NEWS);
@@ -31,7 +31,7 @@ const NewsForm = () => {
         addNews({ variables: { newsTitle, categoryNewsId } });
         break;
       case "edit":
-        updateNews({ variables: { _id, newsTitle, categoryNewsId } });
+        updateNews({ variables: { id, newsTitle, categoryNewsId } });
         break;
     }
   };

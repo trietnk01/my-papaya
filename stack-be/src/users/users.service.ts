@@ -114,7 +114,7 @@ export class UsersService {
       item
     };
   };
-  logout = async (_id: string, req: Request) => {
+  logout = async (id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
@@ -125,7 +125,7 @@ export class UsersService {
         message = "NOT_AUTHENTICATED";
       } else {
         item = await this.usersRepository.update(
-          { _id },
+          { _id: id },
           {
             token: ""
           }

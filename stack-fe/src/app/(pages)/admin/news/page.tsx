@@ -1,11 +1,11 @@
 "use client";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { useLazyQuery } from "@apollo/client";
+import Swal from "sweetalert2";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
-import { FIND_NEWS_AUTHENTICATED } from "app/graphql-client/gql-news";
+import { FIND_NEWS_AUTHENTICATED, DELETE_NEWS } from "app/graphql-client/gql-news";
 import { produce } from "immer";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "scss/admin-layout.module.scss";
@@ -28,8 +28,9 @@ interface TableParams {
 }
 const NewsPage = () => {
   const router = useRouter();
-  let [getNews] = useLazyQuery(FIND_NEWS_AUTHENTICATED);
+  let [getNews, { refetch }] = useLazyQuery(FIND_NEWS_AUTHENTICATED);
   let [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
+  let [deleteNews] = useMutation(DELETE_NEWS);
   const [newsData, setNewsData] = React.useState<INews[]>([]);
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -48,7 +49,6 @@ const NewsPage = () => {
       key: "newsTitle",
       render: (text) => text
     },
-
     {
       title: "Action",
       key: "action",
@@ -59,7 +59,7 @@ const NewsPage = () => {
               <Button type="primary" onClick={handleNewsEdit(record._id)}>
                 Edit
               </Button>
-              <Button type="primary" danger>
+              <Button type="primary" danger onClick={handleNewsDelete(record._id)}>
                 Delete
               </Button>
             </Space>
@@ -68,7 +68,43 @@ const NewsPage = () => {
       }
     }
   ];
-  const handleNewsEdit = (_id: string) => () => {};
+  const handleNewsEdit = (id: string) => () => {
+    router.push(`/admin/news/form?action=edit&id=${id}`);
+  };
+  const handleNewsDelete = (id: string) => () => {
+    Swal.fire({
+      title: "Do you want to delete this item?",
+      showDenyButton: true,
+      confirmButtonText: "Confirm",
+      denyButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteNews({ variables: { id } }).then(() => {
+          loadNewsTable(
+            keyword,
+            categoryNewsId,
+            "1",
+            tableParams.pagination?.pageSize?.toString()
+          );
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "bottom-start",
+            showConfirmButton: false,
+            timer: 8000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Delete successfully"
+          });
+        });
+      }
+    });
+  };
   const handleAddItem = () => {
     router.push("/admin/news/form?action=add");
   };

@@ -20,8 +20,8 @@ export class UsersResolver {
   }
 
   @Mutation(() => UsersType)
-  logout(@Args("_id", { type: () => String }) _id: string, @Context("req") req: Request) {
-    return this.usersService.logout(_id, req);
+  logout(@Args("id", { type: () => String }) id: string, @Context("req") req: Request) {
+    return this.usersService.logout(id, req);
   }
 
   @Mutation(() => UsersType)

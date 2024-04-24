@@ -15,8 +15,8 @@ const LOGIN = gql`
   }
 `;
 const LOGOUT = gql`
-  mutation ($_id: String!) {
-    logout(_id: $_id) {
+  mutation ($id: String!) {
+    logout(id: $id) {
       status
       message
     }

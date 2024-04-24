@@ -55,13 +55,9 @@ const ADD_NEWS = gql`
   }
 `;
 const UPDATE_NEWS = gql`
-  mutation ($_id: String!, $newsTitle: String!, $categoryNewId: String!) {
+  mutation ($id: String!, $newsTitle: String!, $categoryNewId: String!) {
     addNews(
-      createNewsInput: {
-        _id: $_id
-        newsTitle: $newsTitle
-        categoryNewsId: $categoryNewsId
-      }
+      createNewsInput: { id: $id, newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }
     ) {
       status
       message
@@ -82,4 +78,26 @@ const UPDATE_NEWS = gql`
     }
   }
 `;
-export { FIND_NEWS_AUTHENTICATED, ADD_NEWS, UPDATE_NEWS };
+const DELETE_NEWS = gql`
+  mutation ($id: String!) {
+    deleteNews(id: $id) {
+      status
+      message
+      item {
+        _id
+        newsTitle
+        categoryNews {
+          _id
+          categoryName
+        }
+        user {
+          _id
+          username
+          email
+          displayName
+        }
+      }
+    }
+  }
+`;
+export { FIND_NEWS_AUTHENTICATED, ADD_NEWS, UPDATE_NEWS, DELETE_NEWS };

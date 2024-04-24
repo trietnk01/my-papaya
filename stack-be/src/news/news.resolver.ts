@@ -58,7 +58,7 @@ export class NewsResolver {
   }
 
   @Mutation(() => NewsType)
-  removeNews(
+  deleteNews(
     @Args("id", { type: () => String }) id: string,
     @Context("req") req: Request
   ) {
