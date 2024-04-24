@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 interface ISnackbar {
   open: boolean;
 }
-
 const initialState: ISnackbar = {
   open: false
 };
@@ -14,7 +13,7 @@ const snackbar = createSlice({
   name: "snackbar",
   initialState,
   reducers: {
-    openSnackbar(state) {
+    openSnackbar(state, action) {
       state.open = true;
     },
 

@@ -17,8 +17,6 @@ interface ICategoryNews {
 }
 const NewsForm = () => {
   const searchParams = useSearchParams();
-  const action = searchParams.get("action");
-  const id = searchParams.get("id");
   const router = useRouter();
   const [addNews] = useMutation(ADD_NEWS);
   const [updateNews] = useMutation(UPDATE_NEWS);
@@ -26,19 +24,31 @@ const NewsForm = () => {
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { newsTitle, categoryNewsId } = values;
-    switch (action) {
-      case "add":
-        addNews({ variables: { newsTitle, categoryNewsId } });
-        break;
-      case "edit":
-        updateNews({ variables: { id, newsTitle, categoryNewsId } });
-        break;
+    if (searchParams.get("action")) {
+      switch (searchParams.get("action")) {
+        case "add":
+          addNews({ variables: { newsTitle, categoryNewsId } }).then((res) => {
+            if (res && res.data && res.data.createNews) {
+              const { status, item } = res.data.createNews;
+              if (status) {
+                const { _id } = item;
+                router.push(`/admin/news/form?action=edit&id=${_id}`);
+              }
+            }
+          });
+          break;
+        case "edit":
+          const id = searchParams.get("id");
+          if (id) {
+            updateNews({ variables: { id, newsTitle, categoryNewsId } });
+          }
+          break;
+      }
     }
   };
   const handleBack = () => {
     router.push("/admin/news");
   };
-
   React.useEffect(() => {
     const loadSelectedCategoryNews = async () => {
       const res = await getCategoryNews();

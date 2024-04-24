@@ -1,7 +1,7 @@
 "use client";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
 import { FIND_NEWS_AUTHENTICATED, DELETE_NEWS } from "app/graphql-client/gql-news";
@@ -28,9 +28,6 @@ interface TableParams {
 }
 const NewsPage = () => {
   const router = useRouter();
-  let [getNews, { refetch }] = useLazyQuery(FIND_NEWS_AUTHENTICATED);
-  let [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
-  let [deleteNews] = useMutation(DELETE_NEWS);
   const [newsData, setNewsData] = React.useState<INews[]>([]);
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -42,6 +39,9 @@ const NewsPage = () => {
       pageSize: 10
     }
   });
+  const { refetch } = useQuery(FIND_NEWS_AUTHENTICATED);
+  let [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED);
+  let [deleteNews] = useMutation(DELETE_NEWS);
   const columns: TableProps<INews>["columns"] = [
     {
       title: "Title",
@@ -108,40 +108,39 @@ const NewsPage = () => {
   const handleAddItem = () => {
     router.push("/admin/news/form?action=add");
   };
-  const loadNewsTable = async (
+  const loadNewsTable = (
     keyword: string,
     categoryNewsId: string,
     current: string | undefined,
     pageSize: string | undefined
   ) => {
-    const res = await getNews({
-      variables: {
-        keyword,
-        categoryNewsId,
-        current: current ? current.toString() : "",
-        pageSize: pageSize ? pageSize.toString() : ""
+    refetch({
+      keyword,
+      categoryNewsId,
+      current: current ? current.toString() : "",
+      pageSize: pageSize ? pageSize.toString() : ""
+    }).then((res) => {
+      if (res && res.data && res.data.findNewsAuthenticated) {
+        const { status, list, total } = res.data.findNewsAuthenticated;
+        setLoading(false);
+        if (status) {
+          const newsItems: INews[] = list;
+          const nextState: INews[] = produce(newsItems, (drafState) => {
+            drafState.forEach((item) => {
+              item.key = item._id;
+            });
+          });
+          setNewsData(nextState);
+          setTableParams({
+            ...tableParams,
+            pagination: {
+              ...tableParams.pagination,
+              total
+            }
+          });
+        }
       }
     });
-    if (res && res.data && res.data.findNewsAuthenticated) {
-      const { status, list, total } = res.data.findNewsAuthenticated;
-      setLoading(false);
-      if (status) {
-        const newsItems: INews[] = list;
-        const nextState: INews[] = produce(newsItems, (drafState) => {
-          drafState.forEach((item) => {
-            item.key = item._id;
-          });
-        });
-        setNewsData(nextState);
-        setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total
-          }
-        });
-      }
-    }
   };
   React.useEffect(() => {
     setLoading(true);

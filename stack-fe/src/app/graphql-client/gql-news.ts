@@ -33,8 +33,10 @@ const FIND_NEWS_AUTHENTICATED = gql`
   }
 `;
 const ADD_NEWS = gql`
-  mutation ($newsTitle: String!, $categoryNewId: String!) {
-    addNews(createNewsInput: { newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }) {
+  mutation ($newsTitle: String!, $categoryNewsId: String!) {
+    createNews(
+      createNewsInput: { newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }
+    ) {
       status
       message
       item {
@@ -55,9 +57,9 @@ const ADD_NEWS = gql`
   }
 `;
 const UPDATE_NEWS = gql`
-  mutation ($id: String!, $newsTitle: String!, $categoryNewId: String!) {
-    addNews(
-      createNewsInput: { id: $id, newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }
+  mutation ($id: String!, $newsTitle: String!, $categoryNewsId: String!) {
+    updateNews(
+      updateNewsInput: { id: $id, newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }
     ) {
       status
       message
