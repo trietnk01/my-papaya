@@ -12,7 +12,7 @@ import { FileUploader } from "react-drag-drop-files";
 import Swal from "sweetalert2";
 import styles from "scss/admin-layout.module.scss";
 import useAuth from "app/hooks/useAuth";
-import "react-quill/dist/quill.snow.css";
+import "app/react-quill/dist/quill.snow.css";
 type FieldType = {
   newsTitle?: string;
   newsIntro?: string;
@@ -47,7 +47,7 @@ const NewsForm = () => {
   const [getNewsDetail] = useLazyQuery(GET_NEWS_DETAIL, { fetchPolicy: "network-only" });
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [base64Url, setBase64Url] = React.useState<string>("");
-  const [featuredImg, setFeaturedImg] = React.useState<any | null>(null);
+  const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
   const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { newsTitle, categoryNewsId, newsContent, newsIntro } = values;
@@ -59,7 +59,7 @@ const NewsForm = () => {
               newsTitle: newsTitle ? newsTitle.toString().trim() : "",
               newsIntro: newsIntro ? newsIntro.toString().trim() : "",
               newsContent: newsContent ? newsContent.toString().trim() : "",
-              featuredImg: featuredImg ? featuredImg : null,
+              newsImg: featuredImg,
               categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
               publisherId: user && user._id ? user._id : ""
             }
@@ -76,6 +76,7 @@ const NewsForm = () => {
               }
             }
           });
+
           break;
         case "edit":
           const id = searchParams.get("id");
@@ -86,7 +87,9 @@ const NewsForm = () => {
                 newsTitle: newsTitle ? newsTitle.toString().trim() : "",
                 newsIntro: newsIntro ? newsIntro.toString().trim() : "",
                 newsContent: newsContent ? newsContent.toString().trim() : "",
-                categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : ""
+                newsImg: featuredImg,
+                categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
+                removedNewsImg: removedFeaturedImg
               }
             }).then((res) => {
               if (res && res.data && res.data.updateNews) {
@@ -135,11 +138,12 @@ const NewsForm = () => {
           if (res && res.data && res.data.findNewsDetailAuthenticated) {
             const { status, item } = res.data.findNewsDetailAuthenticated;
             if (status) {
-              const { newsTitle, newsIntro, newsContent, categoryNewsId } = item;
+              const { newsTitle, newsIntro, newsContent, newsImg, categoryNewsId } = item;
               form.setFieldValue("newsTitle", newsTitle ? newsTitle : "");
               form.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
               form.setFieldValue("newsContent", newsContent ? newsContent : "");
               form.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
+              setBase64Url(`${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}`);
             }
           }
         }
@@ -156,7 +160,18 @@ const NewsForm = () => {
     setFeaturedImg(null);
     setRemovedFeaturedImg(true);
   };
-  const handleContentChange = (val: string) => {};
+  const handleTypeError = (err: any) => {
+    Toast.fire({
+      icon: "warning",
+      title: "File type must be .png | .jpg"
+    });
+  };
+  const handleSizeError = (err: any) => {
+    Toast.fire({
+      icon: "warning",
+      title: "Image file size must be less then 500KB"
+    });
+  };
   return (
     <Form
       form={form}
@@ -184,6 +199,7 @@ const NewsForm = () => {
         >
           <Input />
         </Form.Item>
+        <div>Featured image</div>
         <div className={styles.boxUploader}>
           {base64Url ? (
             <React.Fragment>
@@ -212,9 +228,17 @@ const NewsForm = () => {
                 types={["JPG", "PNG", "GIF", "JPEG"]}
                 hoverTitle="Drop here"
                 handleChange={handleUpload}
+                onTypeError={handleTypeError}
+                onSizeError={handleSizeError}
+                maxSize={0.5}
               >
                 <div className={styles.boxDragDropFile}>
-                  <Image src="/sprite.png" alt="spriteMultipleUpload" />
+                  <Image
+                    src="/sprite.png"
+                    alt="spriteMultipleUpload"
+                    width={300}
+                    height={200}
+                  />
                   <div>Upload image right here</div>
                   <div>Maxium 5MB</div>
                 </div>
@@ -236,7 +260,7 @@ const NewsForm = () => {
           rules={[{ required: true, message: "Please input news content!" }]}
           className={styles.categoryNewsBox}
         >
-          <ReactQuill onChange={handleContentChange} />
+          <ReactQuill />
         </Form.Item>
         <Form.Item<FieldType>
           name="categoryNewsId"

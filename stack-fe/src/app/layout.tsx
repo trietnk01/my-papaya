@@ -1,21 +1,15 @@
 "use client";
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  createHttpLink
-} from "@apollo/client";
-import { createUploadLink } from "apollo-upload-client";
-
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import createUploadLink from "./apollo-upload-client/createUploadLink.mjs";
 import React, { Suspense } from "react";
 import { Provider } from "react-redux";
 import styles from "scss/global.module.scss";
 import "scss/style.min.css";
+import { Loader } from "./components";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
 import { store } from "./store";
 import auth_service from "./utils/authService";
-import { Loader } from "./components";
 
 export default function RootLayout({
   children
@@ -29,7 +23,8 @@ export default function RootLayout({
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : ""
+        authorization: token ? `Bearer ${token}` : "",
+        "Apollo-Require-Preflight": "true"
       }
     };
   });

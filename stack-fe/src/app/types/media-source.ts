@@ -1,5 +1,4 @@
 interface IMediaSource {
-  id: number;
   name: string;
   path: string;
   type: string;

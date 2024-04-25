@@ -17,7 +17,7 @@ export class News {
   newsContent: string;
 
   @Column()
-  featuredImg: string;
+  newsImg: string;
 
   @Column()
   categoryNewsId: string;

@@ -23,8 +23,8 @@ export class CreateNewsInput {
   @Field((type) => String)
   newsContent: string;
 
-  @Field(() => GraphQLUpload)
-  featuredImg: Promise<FileUpload>;
+  @Field((type) => GraphQLUpload)
+  newsImg: Promise<FileUpload>;
 
   @MinLength(1)
   @Field((type) => String)

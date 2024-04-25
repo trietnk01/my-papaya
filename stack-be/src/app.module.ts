@@ -1,8 +1,10 @@
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { join } from "path";
 import { AppService } from "app.service";
 import { CategoryNews } from "categoy-news/entities/category-new.entity";
 import { News } from "news/entities/news.entity";
@@ -31,6 +33,9 @@ import { UsersModule } from "./users/users.module";
       driver: ApolloDriver,
       autoSchemaFile: true,
       context: ({ req, res }) => ({ req, res })
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "public")
     }),
     UsersModule,
     CategoryNewsModule,

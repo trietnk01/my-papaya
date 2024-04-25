@@ -26,11 +26,20 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const { featuredImg } = createNewsInput;
-        const { createReadStream, filename } = await featuredImg;
-        const pathName: string = join(process.cwd(), `./src/upload/${filename}`);
-        console.log("pathName = ", pathName);
-        /* await createReadStream().pipe(pathName); */
+        const { newsImg } = createNewsInput;
+        const { createReadStream, filename } = await newsImg;
+        const pathName = join(process.cwd(), `./public/${filename}`);
+        await createReadStream().pipe(fs.createWriteStream(pathName));
+        const newsItem = this.newsRepository.create({
+          _id: uuid(),
+          newsTitle: createNewsInput.newsTitle,
+          newsIntro: createNewsInput.newsIntro,
+          newsContent: createNewsInput.newsContent,
+          newsImg: filename,
+          categoryNewsId: createNewsInput.categoryNewsId,
+          publisherId: createNewsInput.publisherId
+        });
+        item = await this.newsRepository.save(newsItem);
       }
     } catch (err) {
       status = false;
@@ -52,13 +61,18 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
+        const { newsImg } = updateNewsInput;
+        const { createReadStream, filename } = await newsImg;
+        const pathName = join(process.cwd(), `./public/${filename}`);
+        await createReadStream().pipe(fs.createWriteStream(pathName));
         await this.newsRepository.update(
           { _id: updateNewsInput._id },
           {
             newsTitle: updateNewsInput.newsTitle,
             newsIntro: updateNewsInput.newsIntro,
-            categoryNewsId: updateNewsInput.categoryNewsId,
-            newsContent: updateNewsInput.newsContent
+            newsContent: updateNewsInput.newsContent,
+            newsImg: filename,
+            categoryNewsId: updateNewsInput.categoryNewsId
           }
         );
         item = this.newsRepository.findOneBy({ _id: updateNewsInput._id });

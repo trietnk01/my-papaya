@@ -42,6 +42,7 @@ const GET_NEWS_DETAIL = gql`
         newsTitle
         newsIntro
         newsContent
+        newsImg
         categoryNewsId
         publisherId
         categoryNews {
@@ -64,7 +65,7 @@ const ADD_NEWS = gql`
     $newsIntro: String!
     $newsContent: String!
     $categoryNewsId: String!
-    $featuredImg: Upload!
+    $newsImg: Upload
     $publisherId: String!
   ) {
     createNews(
@@ -73,7 +74,7 @@ const ADD_NEWS = gql`
         newsIntro: $newsIntro
         newsContent: $newsContent
         categoryNewsId: $categoryNewsId
-        featuredImg: $featuredImg
+        newsImg: $newsImg
         publisherId: $publisherId
       }
     ) {
@@ -84,6 +85,7 @@ const ADD_NEWS = gql`
         newsTitle
         newsIntro
         newsContent
+        newsImg
         categoryNews {
           _id
           categoryName
@@ -104,7 +106,9 @@ const UPDATE_NEWS = gql`
     $newsTitle: String!
     $newsIntro: String!
     $newsContent: String!
+    $newsImg: Upload
     $categoryNewsId: String!
+    $removedNewsImg: Boolean!
   ) {
     updateNews(
       updateNewsInput: {
@@ -112,7 +116,9 @@ const UPDATE_NEWS = gql`
         newsTitle: $newsTitle
         newsIntro: $newsIntro
         newsContent: $newsContent
+        newsImg: $newsImg
         categoryNewsId: $categoryNewsId
+        removedNewsImg: $removedNewsImg
       }
     ) {
       status
@@ -122,6 +128,7 @@ const UPDATE_NEWS = gql`
         newsTitle
         newsIntro
         newsContent
+        newsImg
         categoryNews {
           _id
           categoryName

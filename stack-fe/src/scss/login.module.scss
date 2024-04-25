@@ -49,13 +49,17 @@
           color: #fff;
         }
       }
+      .inputError {
+        margin-top: 5px;
+        color: #ff2361;
+      }
       .iconBox {
         position: absolute;
         height: 45px;
         top: 0;
         right: 0;
+        color: #fff;
         .faBarsIcon {
-          color: #fff;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -67,6 +71,11 @@
       display: flex;
       justify-content: space-between;
       margin-top: 15px;
+      .checkRememberMe {
+        display: flex;
+        justify-content: flex-start;
+        column-gap: 5px;
+      }
       .rememberTxt {
         color: #fff;
       }

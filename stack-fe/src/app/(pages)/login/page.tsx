@@ -1,74 +1,127 @@
 "use client";
+import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { UserOutlined, KeyOutlined } from "@ant-design/icons";
+import * as yup from "yup";
 import type { FormProps } from "antd";
 import { Button, Form, Input } from "antd";
 import useAuth from "app/hooks/useAuth";
 import styles from "scss/login.module.scss";
-type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: string;
-};
+import Link from "next/link";
+interface IFormInput {
+  username: string;
+  password: string;
+  remember_me: boolean;
+}
 const LoginPage = () => {
   const { login } = useAuth();
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    const { username, password } = values;
-    if (username && password) {
-      login(username, password);
-    }
+  const schema = yup
+    .object({
+      username: yup.string().required("Username required".toString()),
+      password: yup.string().required("Password required".toString())
+    })
+    .required();
+  const {
+    register,
+    handleSubmit,
+    control,
+    getValues,
+    watch,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors }
+  } = useForm<IFormInput>({
+    defaultValues: {
+      username: "",
+      password: ""
+    },
+    resolver: yupResolver(schema)
+  });
+  const onSubmit: SubmitHandler<IFormInput> = async (dataForm) => {
+    login(dataForm.username.toString().trim(), dataForm.password.toString());
   };
   return (
-    <Form
+    <form
+      onSubmit={handleSubmit(onSubmit)}
       className={styles.sectionLogin}
       name="loginFrm"
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
     >
       <div className={styles.container}>
         <h1 className={styles.title}>LOGIN</h1>
         <div className={styles.inputBox}>
-          <Form.Item<FieldType>
+          <Controller
             name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input className={styles.inputTxt} placeholder="Username" />
-          </Form.Item>
-          <div className={styles.iconBox}>
-            <FontAwesomeIcon icon={faUser} className={styles.faBarsIcon} />
-          </div>
+            defaultValue=""
+            control={control}
+            render={({ field }) => {
+              return (
+                <React.Fragment>
+                  <input
+                    {...field}
+                    type="text"
+                    placeholder="Email"
+                    className={styles.inputTxt}
+                  />
+                  {errors.username && (
+                    <div className={styles.inputError}>{errors.username.message}</div>
+                  )}
+                  <div className={styles.iconBox}>
+                    <UserOutlined className={styles.faBarsIcon} />
+                  </div>
+                </React.Fragment>
+              );
+            }}
+          />
         </div>
         <div className={styles.inputBox}>
-          <Form.Item<FieldType>
+          <Controller
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password className={styles.inputTxt} placeholder="Password" />
-          </Form.Item>
+            defaultValue=""
+            control={control}
+            render={({ field }) => {
+              return (
+                <React.Fragment>
+                  <input
+                    {...field}
+                    type="text"
+                    placeholder="Password"
+                    className={styles.inputTxt}
+                  />
+                  {errors.password && (
+                    <div className={styles.inputError}>{errors.password.message}</div>
+                  )}
+                  <div className={styles.iconBox}>
+                    <KeyOutlined className={styles.faBarsIcon} />
+                  </div>
+                </React.Fragment>
+              );
+            }}
+          />
         </div>
-        {/* <div className={styles.rembemberForgot}>
-          <Form.Item<FieldType> name="remember" valuePropName="checked">
-            <Checkbox>
-              <span className={styles.rememberTxt}>Remember me</span>
-            </Checkbox>
-          </Form.Item>
-          <a href="#" className={styles.forgotPasswordLink}>
+        <div className={styles.rembemberForgot}>
+          <div className={styles.checkRememberMe}>
+            <input type="checkbox" name="remember_me" />
+            <span className={styles.rememberTxt}>Remember me</span>
+          </div>
+          <Link href="/login" className={styles.forgotPasswordLink}>
             Forgot password?
-          </a>
-        </div> */}
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className={styles.btnLogin}>
-            Submit
-          </Button>
-        </Form.Item>
+          </Link>
+        </div>
+        <button type="submit" className={styles.btnLogin}>
+          Login
+        </button>
         <div className={styles.donHaveAccountRegisterLink}>
           <span className={styles.dontHaveAccount}>Don't have account?</span>&nbsp;
-          <a href="#" className={styles.registerLink}>
+          <Link href="/login" className={styles.registerLink}>
             Register
-          </a>
+          </Link>
         </div>
       </div>
-    </Form>
+    </form>
   );
 };
 
