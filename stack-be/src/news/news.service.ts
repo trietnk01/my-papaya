@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import * as fs from "fs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
 import { In, Repository } from "typeorm";
@@ -7,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { News } from "./entities/news.entity";
+import { join } from "path";
 
 @Injectable()
 export class NewsService {
@@ -24,15 +26,11 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const newsItem = this.newsRepository.create({
-          _id: uuid(),
-          newsTitle: createNewsInput.newsTitle,
-          newsIntro: createNewsInput.newsIntro,
-          newsContent: createNewsInput.newsContent,
-          categoryNewsId: createNewsInput.categoryNewsId,
-          publisherId: createNewsInput.publisherId
-        });
-        item = await this.newsRepository.save(newsItem);
+        const { featuredImg } = createNewsInput;
+        const { createReadStream, filename } = await featuredImg;
+        const pathName: string = join(process.cwd(), `./src/upload/${filename}`);
+        console.log("pathName = ", pathName);
+        /* await createReadStream().pipe(pathName); */
       }
     } catch (err) {
       status = false;

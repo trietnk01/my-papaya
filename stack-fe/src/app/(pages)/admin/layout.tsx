@@ -31,7 +31,7 @@ const items: MenuProps["items"] = [
       "News section",
       "g1",
       null,
-      [getItem("Category news", "1"), getItem("News", "2"), getItem("Logout", "3")],
+      [getItem("News", "1"), getItem("Logout", "2")],
       "group"
     )
   ])
@@ -43,12 +43,9 @@ const AdminLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     const key: number = e.key ? parseInt(e.key) : 1;
     switch (key) {
       case 1:
-        router.push("/admin/category-news");
-        break;
-      case 2:
         router.push("/admin/news");
         break;
-      case 3:
+      case 2:
         if (user) {
           logout(user._id);
         }

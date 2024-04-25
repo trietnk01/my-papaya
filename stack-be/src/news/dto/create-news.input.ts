@@ -23,6 +23,9 @@ export class CreateNewsInput {
   @Field((type) => String)
   newsContent: string;
 
+  @Field(() => GraphQLUpload)
+  featuredImg: Promise<FileUpload>;
+
   @MinLength(1)
   @Field((type) => String)
   categoryNewsId: string;

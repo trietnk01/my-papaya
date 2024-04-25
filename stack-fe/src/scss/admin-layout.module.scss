@@ -2,7 +2,6 @@
 @import "font.scss";
 .colMain {
   flex-grow: 1;
-  height: 100vh;
   padding: 10px;
 }
 .container {
@@ -73,7 +72,7 @@
   row-gap: 2;
 }
 .categoryNewsBox {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 .boxUploader {
   width: 500px;

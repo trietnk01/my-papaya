@@ -64,6 +64,7 @@ const ADD_NEWS = gql`
     $newsIntro: String!
     $newsContent: String!
     $categoryNewsId: String!
+    $featuredImg: Upload!
     $publisherId: String!
   ) {
     createNews(
@@ -72,6 +73,7 @@ const ADD_NEWS = gql`
         newsIntro: $newsIntro
         newsContent: $newsContent
         categoryNewsId: $categoryNewsId
+        featuredImg: $featuredImg
         publisherId: $publisherId
       }
     ) {

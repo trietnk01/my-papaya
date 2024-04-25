@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   createHttpLink
 } from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 
 import { setContext } from "@apollo/client/link/context";
 import React, { Suspense } from "react";
@@ -22,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const uri = `${process.env.NEXT_PUBLIC_BACKEND_URI}/graphql`;
-  const httpLink = createHttpLink({ uri });
+  const httpLink = createUploadLink({ uri });
   const authLink = setContext((_, { headers }) => {
     const token: string = auth_service.getAccessToken();
     return {

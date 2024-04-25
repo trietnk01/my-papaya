@@ -22,7 +22,13 @@ export class NewsResolver {
   ) {
     return this.newsService.create(createNewsInput, req);
   }
-
+  @Mutation(() => NewsType)
+  updateNews(
+    @Args("updateNewsInput") updateNewsInput: UpdateNewsInput,
+    @Context("req") req: Request
+  ) {
+    return this.newsService.update(updateNewsInput, req);
+  }
   @Query(() => NewsType)
   findNewsUnauthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
@@ -47,14 +53,6 @@ export class NewsResolver {
       pageSize,
       req
     );
-  }
-
-  @Mutation(() => NewsType)
-  updateNews(
-    @Args("updateNewsInput") updateNewsInput: UpdateNewsInput,
-    @Context("req") req: Request
-  ) {
-    return this.newsService.update(updateNewsInput, req);
   }
 
   @Mutation(() => NewsType)

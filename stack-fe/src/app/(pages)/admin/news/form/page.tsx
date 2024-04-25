@@ -47,7 +47,7 @@ const NewsForm = () => {
   const [getNewsDetail] = useLazyQuery(GET_NEWS_DETAIL, { fetchPolicy: "network-only" });
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [base64Url, setBase64Url] = React.useState<string>("");
-  const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
+  const [featuredImg, setFeaturedImg] = React.useState<any | null>(null);
   const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { newsTitle, categoryNewsId, newsContent, newsIntro } = values;
@@ -59,6 +59,7 @@ const NewsForm = () => {
               newsTitle: newsTitle ? newsTitle.toString().trim() : "",
               newsIntro: newsIntro ? newsIntro.toString().trim() : "",
               newsContent: newsContent ? newsContent.toString().trim() : "",
+              featuredImg: featuredImg ? featuredImg : null,
               categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
               publisherId: user && user._id ? user._id : ""
             }
@@ -135,10 +136,10 @@ const NewsForm = () => {
             const { status, item } = res.data.findNewsDetailAuthenticated;
             if (status) {
               const { newsTitle, newsIntro, newsContent, categoryNewsId } = item;
-              form.setFieldValue("newsTitle", newsTitle);
-              form.setFieldValue("newsIntro", newsIntro);
-              form.setFieldValue("newsContent", newsContent);
-              form.setFieldValue("categoryNewsId", categoryNewsId);
+              form.setFieldValue("newsTitle", newsTitle ? newsTitle : "");
+              form.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
+              form.setFieldValue("newsContent", newsContent ? newsContent : "");
+              form.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
             }
           }
         }
@@ -225,8 +226,9 @@ const NewsForm = () => {
           label="Intro"
           name="newsIntro"
           rules={[{ required: true, message: "Please input news intro!" }]}
+          className={styles.categoryNewsBox}
         >
-          <Input.TextArea />
+          <Input.TextArea rows={4} />
         </Form.Item>
         <Form.Item<FieldType>
           label="Content"

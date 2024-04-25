@@ -16,6 +16,9 @@ class INews {
   newsContent: string;
 
   @Field((type) => String, { nullable: true })
+  featuredImg: string;
+
+  @Field((type) => String, { nullable: true })
   categoryNewsId: string;
 
   @Field((type) => String, { nullable: true })
