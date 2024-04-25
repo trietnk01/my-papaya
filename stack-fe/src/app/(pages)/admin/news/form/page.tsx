@@ -1,13 +1,22 @@
 "use client";
-import { BackwardFilled, SaveOutlined, PlusOutlined } from "@ant-design/icons";
+import React from "react";
+import {
+  BackwardFilled,
+  SaveOutlined,
+  PlusOutlined,
+  DeleteOutlined
+} from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, Flex, Form, FormProps, Input, Select, Upload } from "antd";
+import { useRouter, useSearchParams } from "next/navigation";
+import Swal from "sweetalert2";
+import { FileUploader } from "react-drag-drop-files";
+import { Button, Flex, Form, FormProps, Input, Select, Upload, Image } from "antd";
+import type { GetProp, UploadFile, UploadProps } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
 import { ADD_NEWS, UPDATE_NEWS, GET_NEWS_DETAIL } from "app/graphql-client/gql-news";
-import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 import styles from "scss/admin-layout.module.scss";
-import Swal from "sweetalert2";
+import IMediaSource from "app/types/media-source";
+
 type FieldType = {
   newsTitle?: string;
   categoryNewsId?: string;
@@ -27,12 +36,6 @@ const Toast = Swal.mixin({
     toast.onmouseleave = Swal.resumeTimer;
   }
 });
-const normFile = (e: any) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
 const NewsForm = () => {
   const [form] = Form.useForm();
   const searchParams = useSearchParams();
@@ -44,26 +47,29 @@ const NewsForm = () => {
   });
   const [getNewsDetail] = useLazyQuery(GET_NEWS_DETAIL, { fetchPolicy: "network-only" });
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
+  const [base64Url, setBase64Url] = React.useState<string>("");
+  const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
+  const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     const { newsTitle, categoryNewsId } = values;
     if (searchParams.get("action")) {
       switch (searchParams.get("action")) {
         case "add":
-          addNews({ variables: { newsTitle: newsTitle?.trim(), categoryNewsId } }).then(
-            (res) => {
-              if (res && res.data && res.data.createNews) {
-                const { status, item } = res.data.createNews;
-                if (status) {
-                  const { _id } = item;
-                  Toast.fire({
-                    icon: "success",
-                    title: "Create news successfully"
-                  });
-                  router.push(`/admin/news/form?action=edit&id=${_id}`);
-                }
+          addNews({
+            variables: { newsTitle: newsTitle?.trim(), categoryNewsId, featuredImg }
+          }).then((res) => {
+            if (res && res.data && res.data.createNews) {
+              const { status, item } = res.data.createNews;
+              if (status) {
+                const { _id } = item;
+                Toast.fire({
+                  icon: "success",
+                  title: "Create news successfully"
+                });
+                router.push(`/admin/news/form?action=edit&id=${_id}`);
               }
             }
-          );
+          });
           break;
         case "edit":
           const id = searchParams.get("id");
@@ -127,6 +133,15 @@ const NewsForm = () => {
     };
     loadNewsDetail();
   }, [searchParams.get("id")]);
+  const handleUpload = (imageFile: any) => {
+    setBase64Url(URL.createObjectURL(imageFile));
+    setFeaturedImg(imageFile);
+  };
+  const handleRemovedFeaturedImg = () => {
+    setBase64Url("");
+    setFeaturedImg(null);
+    setRemovedFeaturedImg(true);
+  };
   return (
     <Form
       form={form}
@@ -146,33 +161,66 @@ const NewsForm = () => {
           onClick={handleBack}
         />
       </Flex>
-      <Form.Item<FieldType>
-        label="Title"
-        name="newsTitle"
-        rules={[{ required: true, message: "Please input your username!" }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item label="Upload" valuePropName="fileList" getValueFromEvent={normFile}>
-        <Upload action="/upload.do" listType="picture-card">
-          <button style={{ border: 0, background: "none" }} type="button">
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </button>
-        </Upload>
-      </Form.Item>
-      <Form.Item
-        name="categoryNewsId"
-        label="Category"
-        rules={[{ required: true, message: "Please select category!" }]}
-        initialValue=""
-      >
-        <Select
-          size="large"
-          placeholder="Select a option and change input text above"
-          options={categoryNewsData}
-        />
-      </Form.Item>
+      <div>
+        <Form.Item<FieldType>
+          label="Title"
+          name="newsTitle"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <div className={styles.boxUploader}>
+          {base64Url ? (
+            <React.Fragment>
+              <div className={styles.boxImage}>
+                <img
+                  src={base64Url}
+                  style={{ width: "100%", height: "100%", borderRadius: 6 }}
+                />
+                <Button
+                  type="primary"
+                  icon={<DeleteOutlined />}
+                  size="large"
+                  danger
+                  className={styles.removeFeaturedImg}
+                  onClick={handleRemovedFeaturedImg}
+                >
+                  Remove
+                </Button>
+              </div>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <FileUploader
+                name="avatar_file_upload"
+                multiple={false}
+                types={["JPG", "PNG", "GIF", "JPEG"]}
+                hoverTitle="Drop here"
+                handleChange={handleUpload}
+              >
+                <div className={styles.boxDragDropFile}>
+                  <Image src="/sprite.png" alt="spriteMultipleUpload" />
+                  <div>Upload image right here</div>
+                  <div>Maxium 5MB</div>
+                </div>
+              </FileUploader>
+            </React.Fragment>
+          )}
+        </div>
+        <Form.Item<FieldType>
+          name="categoryNewsId"
+          label="Category"
+          rules={[{ required: true, message: "Please select category!" }]}
+          initialValue=""
+          className={styles.categoryNewsBox}
+        >
+          <Select
+            size="large"
+            placeholder="Select a option and change input text above"
+            options={categoryNewsData}
+          />
+        </Form.Item>
+      </div>
     </Form>
   );
 };

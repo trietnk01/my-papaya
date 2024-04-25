@@ -31,7 +31,8 @@
     "react-redux": "^7.2.6",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
-    "sweetalert2": "^11.10.8"
+    "sweetalert2": "^11.10.8",
+    "react-drag-drop-files": "^2.3.10"
   },
   "devDependencies": {
     "@types/node": "^20",
