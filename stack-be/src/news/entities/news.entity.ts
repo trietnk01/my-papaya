@@ -11,6 +11,15 @@ export class News {
   newsTitle: string;
 
   @Column()
+  newsIntro: string;
+
+  @Column()
+  newsContent: string;
+
+  @Column()
+  featuredImg: string;
+
+  @Column()
   categoryNewsId: string;
 
   @Column()

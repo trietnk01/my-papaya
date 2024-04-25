@@ -40,6 +40,8 @@ const GET_NEWS_DETAIL = gql`
       item {
         _id
         newsTitle
+        newsIntro
+        newsContent
         categoryNewsId
         publisherId
         categoryNews {
@@ -57,15 +59,67 @@ const GET_NEWS_DETAIL = gql`
   }
 `;
 const ADD_NEWS = gql`
-  mutation CreateNews($newsTitle: String!, $categoryNewsId: String!) {
+  mutation CreateNews(
+    $newsTitle: String!
+    $newsIntro: String!
+    $newsContent: String!
+    $categoryNewsId: String!
+    $publisherId: String!
+  ) {
     createNews(
-      createNewsInput: { newsTitle: $newsTitle, categoryNewsId: $categoryNewsId }
+      createNewsInput: {
+        newsTitle: $newsTitle
+        newsIntro: $newsIntro
+        newsContent: $newsContent
+        categoryNewsId: $categoryNewsId
+        publisherId: $publisherId
+      }
     ) {
       status
       message
       item {
         _id
         newsTitle
+        newsIntro
+        newsContent
+        categoryNews {
+          _id
+          categoryName
+        }
+        publisher {
+          _id
+          username
+          email
+          displayName
+        }
+      }
+    }
+  }
+`;
+const UPDATE_NEWS = gql`
+  mutation UpdateNews(
+    $id: String!
+    $newsTitle: String!
+    $newsIntro: String!
+    $newsContent: String!
+    $categoryNewsId: String!
+  ) {
+    updateNews(
+      updateNewsInput: {
+        _id: $id
+        newsTitle: $newsTitle
+        newsIntro: $newsIntro
+        newsContent: $newsContent
+        categoryNewsId: $categoryNewsId
+      }
+    ) {
+      status
+      message
+      item {
+        _id
+        newsTitle
+        newsIntro
+        newsContent
         categoryNews {
           _id
           categoryName
@@ -85,34 +139,6 @@ const DELETE_NEWS_MULTI = gql`
     deleteNewsMulti(selectedIds: $selectedIds) {
       status
       message
-    }
-  }
-`;
-const UPDATE_NEWS = gql`
-  mutation UpdateNews($id: String!, $newsTitle: String!, $categoryNewsId: String!) {
-    updateNews(
-      updateNewsInput: {
-        _id: $id
-        newsTitle: $newsTitle
-        categoryNewsId: $categoryNewsId
-      }
-    ) {
-      status
-      message
-      item {
-        _id
-        newsTitle
-        categoryNews {
-          _id
-          categoryName
-        }
-        publisher {
-          _id
-          username
-          email
-          displayName
-        }
-      }
     }
   }
 `;

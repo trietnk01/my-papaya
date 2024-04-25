@@ -1,24 +1,22 @@
 "use client";
 import React from "react";
-import {
-  BackwardFilled,
-  SaveOutlined,
-  PlusOutlined,
-  DeleteOutlined
-} from "@ant-design/icons";
+import ReactQuill from "react-quill";
+import { BackwardFilled, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import Swal from "sweetalert2";
-import { FileUploader } from "react-drag-drop-files";
-import { Button, Flex, Form, FormProps, Input, Select, Upload, Image } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import { Button, Flex, Form, FormProps, Image, Input, Select } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
-import { ADD_NEWS, UPDATE_NEWS, GET_NEWS_DETAIL } from "app/graphql-client/gql-news";
-import styles from "scss/admin-layout.module.scss";
+import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "app/graphql-client/gql-news";
 import IMediaSource from "app/types/media-source";
-
+import { useRouter, useSearchParams } from "next/navigation";
+import { FileUploader } from "react-drag-drop-files";
+import Swal from "sweetalert2";
+import styles from "scss/admin-layout.module.scss";
+import useAuth from "app/hooks/useAuth";
+import "react-quill/dist/quill.snow.css";
 type FieldType = {
   newsTitle?: string;
+  newsIntro?: string;
+  newsContent?: string;
   categoryNewsId?: string;
 };
 interface ICategoryNews {
@@ -37,6 +35,7 @@ const Toast = Swal.mixin({
   }
 });
 const NewsForm = () => {
+  const { user } = useAuth();
   const [form] = Form.useForm();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -51,12 +50,18 @@ const NewsForm = () => {
   const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
   const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    const { newsTitle, categoryNewsId } = values;
+    const { newsTitle, categoryNewsId, newsContent, newsIntro } = values;
     if (searchParams.get("action")) {
       switch (searchParams.get("action")) {
         case "add":
           addNews({
-            variables: { newsTitle: newsTitle?.trim(), categoryNewsId, featuredImg }
+            variables: {
+              newsTitle: newsTitle ? newsTitle.toString().trim() : "",
+              newsIntro: newsIntro ? newsIntro.toString().trim() : "",
+              newsContent: newsContent ? newsContent.toString().trim() : "",
+              categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
+              publisherId: user && user._id ? user._id : ""
+            }
           }).then((res) => {
             if (res && res.data && res.data.createNews) {
               const { status, item } = res.data.createNews;
@@ -75,7 +80,13 @@ const NewsForm = () => {
           const id = searchParams.get("id");
           if (id) {
             updateNews({
-              variables: { id, newsTitle: newsTitle?.trim(), categoryNewsId }
+              variables: {
+                id,
+                newsTitle: newsTitle ? newsTitle.toString().trim() : "",
+                newsIntro: newsIntro ? newsIntro.toString().trim() : "",
+                newsContent: newsContent ? newsContent.toString().trim() : "",
+                categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : ""
+              }
             }).then((res) => {
               if (res && res.data && res.data.updateNews) {
                 const { status, item } = res.data.updateNews;
@@ -123,8 +134,10 @@ const NewsForm = () => {
           if (res && res.data && res.data.findNewsDetailAuthenticated) {
             const { status, item } = res.data.findNewsDetailAuthenticated;
             if (status) {
-              const { newsTitle, categoryNewsId } = item;
+              const { newsTitle, newsIntro, newsContent, categoryNewsId } = item;
               form.setFieldValue("newsTitle", newsTitle);
+              form.setFieldValue("newsIntro", newsIntro);
+              form.setFieldValue("newsContent", newsContent);
               form.setFieldValue("categoryNewsId", categoryNewsId);
             }
           }
@@ -142,6 +155,7 @@ const NewsForm = () => {
     setFeaturedImg(null);
     setRemovedFeaturedImg(true);
   };
+  const handleContentChange = (val: string) => {};
   return (
     <Form
       form={form}
@@ -207,6 +221,21 @@ const NewsForm = () => {
             </React.Fragment>
           )}
         </div>
+        <Form.Item<FieldType>
+          label="Intro"
+          name="newsIntro"
+          rules={[{ required: true, message: "Please input news intro!" }]}
+        >
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item<FieldType>
+          label="Content"
+          name="newsContent"
+          rules={[{ required: true, message: "Please input news content!" }]}
+          className={styles.categoryNewsBox}
+        >
+          <ReactQuill onChange={handleContentChange} />
+        </Form.Item>
         <Form.Item<FieldType>
           name="categoryNewsId"
           label="Category"

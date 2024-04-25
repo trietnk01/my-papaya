@@ -24,12 +24,13 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const userItem = await this.usersService.findUserByToken(req);
         const newsItem = this.newsRepository.create({
           _id: uuid(),
           newsTitle: createNewsInput.newsTitle,
+          newsIntro: createNewsInput.newsIntro,
+          newsContent: createNewsInput.newsContent,
           categoryNewsId: createNewsInput.categoryNewsId,
-          publisherId: userItem._id
+          publisherId: createNewsInput.publisherId
         });
         item = await this.newsRepository.save(newsItem);
       }
@@ -43,7 +44,37 @@ export class NewsService {
       item
     };
   };
-
+  update = async (updateNewsInput: UpdateNewsInput, req: Request) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    try {
+      const isValid: boolean = await this.usersService.checkAuthorized(req);
+      if (!isValid) {
+        status = false;
+        message = "NOT_AUTHENTICATED";
+      } else {
+        await this.newsRepository.update(
+          { _id: updateNewsInput._id },
+          {
+            newsTitle: updateNewsInput.newsTitle,
+            newsIntro: updateNewsInput.newsIntro,
+            categoryNewsId: updateNewsInput.categoryNewsId,
+            newsContent: updateNewsInput.newsContent
+          }
+        );
+        item = this.newsRepository.findOneBy({ _id: updateNewsInput._id });
+      }
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      item
+    };
+  };
   findNewsUnauthenticated = async (
     keyword: string,
     categoryNewsId: string,
@@ -125,36 +156,6 @@ export class NewsService {
       message,
       list,
       total
-    };
-  };
-
-  update = async (updateNewsInput: UpdateNewsInput, req: Request) => {
-    let status: boolean = true;
-    let message: string = "";
-    let item = null;
-    try {
-      const isValid: boolean = await this.usersService.checkAuthorized(req);
-      if (!isValid) {
-        status = false;
-        message = "NOT_AUTHENTICATED";
-      } else {
-        await this.newsRepository.update(
-          { _id: updateNewsInput._id },
-          {
-            newsTitle: updateNewsInput.newsTitle,
-            categoryNewsId: updateNewsInput.categoryNewsId
-          }
-        );
-        item = this.newsRepository.findOneBy({ _id: updateNewsInput._id });
-      }
-    } catch (err) {
-      status = false;
-      message = err.message;
-    }
-    return {
-      status,
-      message,
-      item
     };
   };
 

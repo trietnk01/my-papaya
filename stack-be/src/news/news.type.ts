@@ -10,6 +10,12 @@ class INews {
   newsTitle: string;
 
   @Field((type) => String, { nullable: true })
+  newsIntro: string;
+
+  @Field((type) => String, { nullable: true })
+  newsContent: string;
+
+  @Field((type) => String, { nullable: true })
   categoryNewsId: string;
 
   @Field((type) => String, { nullable: true })

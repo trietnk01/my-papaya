@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   createHttpLink
 } from "@apollo/client";
+
 import { setContext } from "@apollo/client/link/context";
 import React, { Suspense } from "react";
 import { Provider } from "react-redux";

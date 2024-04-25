@@ -3,9 +3,11 @@ import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import cookieParser from "cookie-parser";
+import { graphqlUploadExpress } from "graphql-upload-ts";
 import { AppModule } from "./app.module";
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
   const confService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
