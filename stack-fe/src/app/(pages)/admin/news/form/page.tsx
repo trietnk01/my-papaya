@@ -34,7 +34,7 @@ const Toast = Swal.mixin({
     toast.onmouseleave = Swal.resumeTimer;
   }
 });
-const NewsForm = () => {
+const NewsFormPage = () => {
   const { user } = useAuth();
   const [form] = Form.useForm();
   const searchParams = useSearchParams();
@@ -281,4 +281,4 @@ const NewsForm = () => {
   );
 };
 
-export default NewsForm;
+export default NewsFormPage;
