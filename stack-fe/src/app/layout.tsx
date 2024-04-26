@@ -1,7 +1,7 @@
 "use client";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import createUploadLink from "./apollo-upload-client/createUploadLink.mjs";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import React, { Suspense } from "react";
 import { Provider } from "react-redux";
 import styles from "scss/global.module.scss";
@@ -9,7 +9,7 @@ import "scss/style.min.css";
 import { Loader } from "./components";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
 import { store } from "./store";
-import auth_service from "./utils/authService";
+import auth_service from "utils/authService";
 
 export default function RootLayout({
   children

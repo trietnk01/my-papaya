@@ -2,12 +2,12 @@
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
-import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "app/graphql-client/gql-category-news";
+import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "graphql-client/gql-category-news";
 import {
   DELETE_NEWS,
   FIND_NEWS_AUTHENTICATED,
   DELETE_NEWS_MULTI
-} from "app/graphql-client/gql-news";
+} from "graphql-client/gql-news";
 import { produce } from "immer";
 import { useRouter } from "next/navigation";
 import React from "react";

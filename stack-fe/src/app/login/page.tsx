@@ -1,15 +1,11 @@
 "use client";
-import React from "react";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { UserOutlined, KeyOutlined } from "@ant-design/icons";
-import * as yup from "yup";
-import type { FormProps } from "antd";
-import { Button, Form, Input } from "antd";
+import { KeyOutlined, UserOutlined } from "@ant-design/icons";
 import useAuth from "app/hooks/useAuth";
-import styles from "scss/login.module.scss";
 import Link from "next/link";
+import React from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import styles from "scss/login.module.scss";
+import * as yup from "yup";
 interface IFormInput {
   username: string;
   password: string;

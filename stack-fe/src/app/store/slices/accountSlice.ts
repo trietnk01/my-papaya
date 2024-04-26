@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import IUser from "app/types/user-profile";
+import IUser from "types/user-profile";
 interface IProps {
   isLoggedIn: boolean;
   user: IUser | null;
