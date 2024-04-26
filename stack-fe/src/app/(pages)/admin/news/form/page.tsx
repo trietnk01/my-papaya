@@ -143,7 +143,9 @@ const NewsForm = () => {
               form.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
               form.setFieldValue("newsContent", newsContent ? newsContent : "");
               form.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
-              setBase64Url(`${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}`);
+              setBase64Url(
+                newsImg ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}` : ""
+              );
             }
           }
         }
