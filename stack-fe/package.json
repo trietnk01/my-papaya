@@ -36,8 +36,7 @@
     "redux-persist": "^6.0.0",
     "sweetalert2": "^11.10.8",
     "react-hook-form": "^7.31.1",
-    "yup": "^0.32.11",
-    "@hookform/resolvers": "^2.8.8"
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/apollo-upload-client": "^17.0.5",

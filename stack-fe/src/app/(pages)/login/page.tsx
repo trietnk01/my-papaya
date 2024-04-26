@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -38,8 +37,7 @@ const LoginPage = () => {
     defaultValues: {
       username: "",
       password: ""
-    },
-    resolver: yupResolver(schema)
+    }
   });
   const onSubmit: SubmitHandler<IFormInput> = async (dataForm) => {
     login(dataForm.username.toString().trim(), dataForm.password.toString());
