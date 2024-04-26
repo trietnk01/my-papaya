@@ -30,16 +30,16 @@
     "react": "^18",
     "react-dom": "^18",
     "react-drag-drop-files": "^2.3.10",
-    "react-hook-form": "^7.31.1",
     "react-quill": "^2.0.0",
     "react-redux": "^7.2.6",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
     "sweetalert2": "^11.10.8",
-    "yup": "^0.32.11"
+    "react-hook-form": "^7.31.1",
+    "yup": "^0.32.11",
+    "@hookform/resolvers": "^2.8.8"
   },
   "devDependencies": {
-    "@hookform/resolvers": "^2.8.8",
     "@types/apollo-upload-client": "^17.0.5",
     "@types/node": "^20",
     "@types/react": "^18",
