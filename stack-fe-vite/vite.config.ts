@@ -5,7 +5,7 @@ dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  define: { "process.env.VITE_BACKEND_URI": JSON.stringify(process.env.VITE_BACKEND_URI) },
+  define: { "process.env.VITE_BACKEND_URI": JSON.stringify(process.env.VITE_BACKEND_URI) },  
   server: {
     port: parseInt(process.env.VITE_PORT ? process.env.VITE_PORT : "3001")
   },

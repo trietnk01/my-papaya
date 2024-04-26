@@ -4,5 +4,6 @@
   "search.exclude": {
     "**/dist*": true,
     "**/node_modules*": true
-  }
+  },
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

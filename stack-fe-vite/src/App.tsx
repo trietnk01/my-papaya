@@ -1,30 +1,35 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+//import createUploadLink from "./apollo-upload-client/createUploadLink";
+import createUploadLink from "./apollo-upload-client/createUploadLink.mjs";
+import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
+import React from "react";
+import "./scss/style.min.css";
+import auth_service from "./utils/authService";
 
 function App() {
-  const [count, setCount] = useState(0);
   const backendUri: string = import.meta.env.VITE_BACKEND_URI;
+  const httpLink = createUploadLink({ backendUri });
+  const authLink = setContext((_, { headers }) => {
+    const token: string = auth_service.getAccessToken();
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+        "Apollo-Require-Preflight": "true"
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React + {backendUri}</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <ApolloProvider client={client}>
+      <AuthProvider>
+        <React.Fragment></React.Fragment>
+      </AuthProvider>
+    </ApolloProvider>
   );
 }
 
