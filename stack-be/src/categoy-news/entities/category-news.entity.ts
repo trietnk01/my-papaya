@@ -1,5 +1,5 @@
 import { News } from "news/entities/news.entity";
-import { Column, Entity, ObjectIdColumn, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ObjectIdColumn, OneToMany } from "typeorm";
 
 @Entity({ name: "category_news" })
 export class CategoryNews {
@@ -13,5 +13,6 @@ export class CategoryNews {
     cascade: true,
     eager: true
   })
+  @JoinColumn({ name: "_id", referencedColumnName: "categoryNewsId" })
   newsItems: News[];
 }
