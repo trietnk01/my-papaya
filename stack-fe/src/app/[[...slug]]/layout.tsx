@@ -1,4 +1,4 @@
-import GuestGuard from "app/guards/GuestGuard";
+import GuestGuard from "guards/GuestGuard";
 import React from "react";
 
 const PublicLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {

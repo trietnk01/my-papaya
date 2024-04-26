@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { redirect } from "next/navigation";
-import useAuth from "app/hooks/useAuth";
+import useAuth from "hooks/useAuth";
 
 // ==============================|| GUEST GUARD ||============================== //
 

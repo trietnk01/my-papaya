@@ -2,8 +2,8 @@
 import { MailOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Flex, Menu } from "antd";
-import AuthGuard from "app/guards/AuthGuard";
-import useAuth from "app/hooks/useAuth";
+import AuthGuard from "guards/AuthGuard";
+import useAuth from "hooks/useAuth";
 import { useRouter } from "next/navigation";
 import React from "react";
 import styles from "scss/admin-layout.module.scss";

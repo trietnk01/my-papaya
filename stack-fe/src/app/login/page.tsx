@@ -1,6 +1,6 @@
 "use client";
 import { KeyOutlined, UserOutlined } from "@ant-design/icons";
-import useAuth from "app/hooks/useAuth";
+import useAuth from "hooks/useAuth";
 import Link from "next/link";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";

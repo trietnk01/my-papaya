@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FileUploader } from "react-drag-drop-files";
 import Swal from "sweetalert2";
 import styles from "scss/admin-layout.module.scss";
-import useAuth from "app/hooks/useAuth";
+import useAuth from "hooks/useAuth";
 import "react-quill/dist/quill.snow.css";
 type FieldType = {
   newsTitle?: string;
