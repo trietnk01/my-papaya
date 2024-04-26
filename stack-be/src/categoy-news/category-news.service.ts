@@ -4,8 +4,8 @@ import { Request } from "express";
 import { Repository } from "typeorm";
 import { UsersService } from "users/users.service";
 import { v4 as uuid } from "uuid";
-import { CreateCategoryNewsInput } from "./dto/create-category-new.input";
-import { CategoryNews } from "./entities/category-new.entity";
+import { CreateCategoryNewsInput } from "./dto/create-category-news.input";
+import { CategoryNews } from "./entities/category-news.entity";
 @Injectable()
 export class CategoryNewsService {
   constructor(

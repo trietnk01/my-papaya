@@ -1,4 +1,4 @@
-import { CategoryNews } from "categoy-news/entities/category-new.entity";
+import { CategoryNews } from "categoy-news/entities/category-news.entity";
 import { Column, Entity, JoinColumn, ManyToOne, ObjectIdColumn } from "typeorm";
 import { Users } from "users/entities/users.entity";
 

@@ -1,6 +1,6 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CategoryNewsService } from "./category-news.service";
-import { CreateCategoryNewsInput } from "./dto/create-category-new.input";
+import { CreateCategoryNewsInput } from "./dto/create-category-news.input";
 import { CategoryNewsType } from "./category-news.type";
 import { Request } from "express";
 

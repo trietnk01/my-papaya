@@ -2,7 +2,6 @@ import { Stream } from "stream";
 import { Field, InputType } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
 import { GraphQLUpload } from "graphql-upload-ts";
-
 interface FileUpload {
   filename: string;
   mimetype: string;
@@ -19,7 +18,6 @@ export class CreateNewsInput {
   @Field((type) => String)
   newsIntro: string;
 
-  @MinLength(1)
   @Field((type) => String)
   newsContent: string;
 

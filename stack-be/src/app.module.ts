@@ -6,7 +6,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
 import { AppService } from "app.service";
-import { CategoryNews } from "categoy-news/entities/category-new.entity";
+import { CategoryNews } from "categoy-news/entities/category-news.entity";
 import { News } from "news/entities/news.entity";
 import { Users } from "users/entities/users.entity";
 import { CategoryNewsModule } from "./categoy-news/category-news.module";

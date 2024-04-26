@@ -63,9 +63,9 @@ const ADD_NEWS = gql`
   mutation CreateNews(
     $newsTitle: String!
     $newsIntro: String!
-    $newsContent: String!
-    $categoryNewsId: String!
+    $newsContent: String
     $newsImg: Upload
+    $categoryNewsId: String!
     $publisherId: String!
   ) {
     createNews(
@@ -73,8 +73,8 @@ const ADD_NEWS = gql`
         newsTitle: $newsTitle
         newsIntro: $newsIntro
         newsContent: $newsContent
-        categoryNewsId: $categoryNewsId
         newsImg: $newsImg
+        categoryNewsId: $categoryNewsId
         publisherId: $publisherId
       }
     ) {

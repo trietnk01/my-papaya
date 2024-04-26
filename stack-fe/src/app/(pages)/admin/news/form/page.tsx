@@ -257,7 +257,6 @@ const NewsForm = () => {
         <Form.Item<FieldType>
           label="Content"
           name="newsContent"
-          rules={[{ required: true, message: "Please input news content!" }]}
           className={styles.categoryNewsBox}
         >
           <ReactQuill />
