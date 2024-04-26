@@ -1,18 +1,18 @@
 "use client";
-import React from "react";
-import ReactQuill from "react-quill";
 import { BackwardFilled, DeleteOutlined, SaveOutlined } from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Flex, Form, FormProps, Image, Input, Select } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "graphql-client/gql-category-news";
 import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "graphql-client/gql-news";
-import IMediaSource from "types/media-source";
-import { useRouter, useSearchParams } from "next/navigation";
-import { FileUploader } from "react-drag-drop-files";
-import Swal from "sweetalert2";
-import styles from "scss/admin-layout.module.scss";
 import useAuth from "hooks/useAuth";
+import { useRouter, useSearchParams } from "next/navigation";
+import React from "react";
+import { FileUploader } from "react-drag-drop-files";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import styles from "scss/admin-layout.module.scss";
+import Swal from "sweetalert2";
+import IMediaSource from "types/media-source";
 type FieldType = {
   newsTitle?: string;
   newsIntro?: string;
@@ -36,7 +36,7 @@ const Toast = Swal.mixin({
 });
 const NewsFormPage = () => {
   const { user } = useAuth();
-  const [form] = Form.useForm();
+  const [frmNews] = Form.useForm();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [addNews] = useMutation(ADD_NEWS);
@@ -72,7 +72,7 @@ const NewsFormPage = () => {
                   icon: "success",
                   title: "Create news successfully"
                 });
-                router.push(`/admin/news/action-frm?action=edit&id=${_id}`);
+                router.push(`/admin/news/actfrm?action=edit&id=${_id}`);
               }
             }
           });
@@ -95,7 +95,6 @@ const NewsFormPage = () => {
               if (res && res.data && res.data.updateNews) {
                 const { status, item } = res.data.updateNews;
                 if (status) {
-                  const { _id } = item;
                   Toast.fire({
                     icon: "success",
                     title: "Update news successfully"
@@ -133,23 +132,19 @@ const NewsFormPage = () => {
   }, []);
   React.useEffect(() => {
     const loadNewsDetail = () => {
-      getNewsDetail({ variables: { id: searchParams.get("id")?.toString() } }).then(
-        (res) => {
-          if (res && res.data && res.data.findNewsDetailAuthenticated) {
-            const { status, item } = res.data.findNewsDetailAuthenticated;
-            if (status) {
-              const { newsTitle, newsIntro, newsContent, newsImg, categoryNewsId } = item;
-              form.setFieldValue("newsTitle", newsTitle ? newsTitle : "");
-              form.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
-              form.setFieldValue("newsContent", newsContent ? newsContent : "");
-              form.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
-              setBase64Url(
-                newsImg ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}` : ""
-              );
-            }
+      getNewsDetail({ variables: { id: searchParams.get("id")?.toString() } }).then((res) => {
+        if (res && res.data && res.data.findNewsDetailAuthenticated) {
+          const { status, item } = res.data.findNewsDetailAuthenticated;
+          if (status) {
+            const { newsTitle, newsIntro, newsContent, newsImg, categoryNewsId } = item;
+            frmNews.setFieldValue("newsTitle", newsTitle ? newsTitle : "");
+            frmNews.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
+            frmNews.setFieldValue("newsContent", newsContent ? newsContent : "");
+            frmNews.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
+            setBase64Url(newsImg ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}` : "");
           }
         }
-      );
+      });
     };
     loadNewsDetail();
   }, [searchParams.get("id")]);
@@ -175,30 +170,14 @@ const NewsFormPage = () => {
     });
   };
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      wrapperCol={{ span: 8 }}
-      onFinish={onFinish}
-      name="newsFrm"
-    >
+    <Form form={frmNews} layout="vertical" wrapperCol={{ span: 8 }} onFinish={onFinish} name="newsFrm">
       <h2 className={styles.titleHeading}>Create news</h2>
       <Flex justify="flex-end" gap={10}>
         <Button htmlType="submit" type="primary" icon={<SaveOutlined />} size="large" />
-        <Button
-          type="primary"
-          icon={<BackwardFilled />}
-          size="large"
-          danger
-          onClick={handleBack}
-        />
+        <Button type="primary" icon={<BackwardFilled />} size="large" danger onClick={handleBack} />
       </Flex>
       <div>
-        <Form.Item<FieldType>
-          label="Title"
-          name="newsTitle"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
+        <Form.Item<FieldType> label="Title" name="newsTitle" rules={[{ required: true, message: "Please input your username!" }]}>
           <Input />
         </Form.Item>
         <div>Featured image</div>
@@ -206,10 +185,7 @@ const NewsFormPage = () => {
           {base64Url ? (
             <React.Fragment>
               <div className={styles.boxImage}>
-                <img
-                  src={base64Url}
-                  style={{ width: "100%", height: "100%", borderRadius: 6 }}
-                />
+                <img src={base64Url} style={{ width: "100%", height: "100%", borderRadius: 6 }} />
                 <Button
                   type="primary"
                   icon={<DeleteOutlined />}
@@ -227,7 +203,7 @@ const NewsFormPage = () => {
               <FileUploader
                 name="avatar_file_upload"
                 multiple={false}
-                types={["JPG", "PNG", "GIF", "JPEG"]}
+                types={["JPG", "PNG", "JPEG"]}
                 hoverTitle="Drop here"
                 handleChange={handleUpload}
                 onTypeError={handleTypeError}
@@ -235,12 +211,7 @@ const NewsFormPage = () => {
                 maxSize={0.5}
               >
                 <div className={styles.boxDragDropFile}>
-                  <Image
-                    src="/sprite.png"
-                    alt="spriteMultipleUpload"
-                    width={300}
-                    height={200}
-                  />
+                  <Image src="/sprite.png" alt="spriteMultipleUpload" width={300} height={200} />
                   <div>Upload image right here</div>
                   <div>Maxium 5MB</div>
                 </div>
@@ -256,11 +227,7 @@ const NewsFormPage = () => {
         >
           <Input.TextArea rows={4} />
         </Form.Item>
-        <Form.Item<FieldType>
-          label="Content"
-          name="newsContent"
-          className={styles.categoryNewsBox}
-        >
+        <Form.Item<FieldType> label="Content" name="newsContent" className={styles.categoryNewsBox}>
           <ReactQuill />
         </Form.Item>
         <Form.Item<FieldType>
@@ -270,11 +237,7 @@ const NewsFormPage = () => {
           initialValue=""
           className={styles.categoryNewsBox}
         >
-          <Select
-            size="large"
-            placeholder="Select a option and change input text above"
-            options={categoryNewsData}
-          />
+          <Select size="large" placeholder="Select a option and change input text above" options={categoryNewsData} />
         </Form.Item>
       </div>
     </Form>

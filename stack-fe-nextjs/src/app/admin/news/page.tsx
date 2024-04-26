@@ -90,7 +90,7 @@ const NewsPage = () => {
     }
   ];
   const handleNewsEdit = (id: string) => () => {
-    router.push(`/admin/news/action-frm?action=edit&id=${id}`);
+    router.push(`/admin/news/actfrm?action=edit&id=${id}`);
   };
   const handleNewsDelete = (id: string) => () => {
     Swal.fire({
@@ -116,7 +116,7 @@ const NewsPage = () => {
     });
   };
   const handleAddItem = () => {
-    router.push("/admin/news/action-frm?action=add");
+    router.push("/admin/news/actfrm?action=add");
   };
   const loadNewsTable = (
     keyword: string,
