@@ -72,7 +72,7 @@ const NewsFormPage = () => {
                   icon: "success",
                   title: "Create news successfully"
                 });
-                router.push(`/admin/news/form?action=edit&id=${_id}`);
+                router.push(`/admin/news/action-frm?action=edit&id=${_id}`);
               }
             }
           });
