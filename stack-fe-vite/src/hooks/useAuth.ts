@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import JWTContext from "contexts/JWTContext";
+import JWTContext from "@/contexts/JWTContext";
 
 // ==============================|| AUTH HOOKS ||============================== //
 

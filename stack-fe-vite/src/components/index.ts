@@ -1,2 +1,2 @@
-import Loader from "./Loader";
-export { Loader };
+import Loadable from "./Loadable";
+export { Loadable };

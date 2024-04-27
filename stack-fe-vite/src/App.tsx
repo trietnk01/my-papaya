@@ -1,10 +1,10 @@
+import createUploadLink from "@/apollo-upload-client/createUploadLink.mjs";
+import { JWTProvider as AuthProvider } from "@/contexts/JWTContext";
+import "@/scss/style.min.css";
+import auth_service from "@/utils/authService";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import createUploadLink from "./apollo-upload-client/createUploadLink.mjs";
-import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
-import React from "react";
-import "./scss/style.min.css";
-import auth_service from "./utils/authService";
+import Routes from "@/routes";
 
 function App() {
   const backendUri: string = import.meta.env.VITE_BACKEND_URI;
@@ -26,7 +26,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <AuthProvider>
-        <React.Fragment></React.Fragment>
+        <Routes />
       </AuthProvider>
     </ApolloProvider>
   );

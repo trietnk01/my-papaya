@@ -1,15 +1,15 @@
 import { useMutation } from "@apollo/client";
 import React from "react";
-import { CHECK_VALID_TOKEN, LOGIN, LOGOUT } from "../graphql-client/gql-user";
-import { dispatch, useSelector } from "../store";
-import { loginAction, logoutAction } from "../store/slices/accountSlice";
-import IUser from "../types/user-profile";
-import auth_service from "../utils/authService";
+import { CHECK_VALID_TOKEN, LOGIN, LOGOUT } from "@/graphql-client/gql-user";
+import { dispatch, useSelector } from "@/store";
+import { loginAction, logoutAction } from "@/store/slices/accountSlice";
+import IUser from "@/types/user-profile";
+import auth_service from "@/utils/authService";
 interface JWTContextType {
   isLoggedIn: boolean;
   user: IUser | null;
   login: (username: string, password: string) => void;
-  logout: (_id: string) => void;
+  logout: (id: string) => void;
 }
 const JWTContext = React.createContext<JWTContextType | null>(null);
 interface JWTProviderProps {}

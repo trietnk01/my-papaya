@@ -1,7 +1,6 @@
-"use client";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
 
 // ==============================|| GUEST GUARD ||============================== //
 
@@ -15,7 +14,7 @@ const GuestGuard: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { isLoggedIn } = useAuth();
   React.useEffect(() => {
     if (isLoggedIn) {
-      navigate("/admin/news");
+      navigate("/admin/news/list");
     }
   }, [isLoggedIn]);
 
