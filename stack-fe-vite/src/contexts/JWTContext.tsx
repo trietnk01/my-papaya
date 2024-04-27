@@ -1,11 +1,10 @@
-"use client";
 import { useMutation } from "@apollo/client";
-import { LOGIN, LOGOUT, CHECK_VALID_TOKEN } from "graphql-client/gql-user";
-import { dispatch, useSelector } from "store";
-import { loginAction, logoutAction } from "store/slices/accountSlice";
-import IUser from "types/user-profile";
-import auth_service from "utils/authService";
 import React from "react";
+import { CHECK_VALID_TOKEN, LOGIN, LOGOUT } from "../graphql-client/gql-user";
+import { dispatch, useSelector } from "../store";
+import { loginAction, logoutAction } from "../store/slices/accountSlice";
+import IUser from "../types/user-profile";
+import auth_service from "../utils/authService";
 interface JWTContextType {
   isLoggedIn: boolean;
   user: IUser | null;

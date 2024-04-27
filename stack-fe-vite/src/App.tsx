@@ -1,6 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-//import createUploadLink from "./apollo-upload-client/createUploadLink";
 import createUploadLink from "./apollo-upload-client/createUploadLink.mjs";
 import { JWTProvider as AuthProvider } from "./contexts/JWTContext";
 import React from "react";
@@ -9,7 +8,7 @@ import auth_service from "./utils/authService";
 
 function App() {
   const backendUri: string = import.meta.env.VITE_BACKEND_URI;
-  const httpLink = createUploadLink({ backendUri });
+  const httpLink = createUploadLink({ uri: backendUri });
   const authLink = setContext((_, { headers }) => {
     const token: string = auth_service.getAccessToken();
     return {

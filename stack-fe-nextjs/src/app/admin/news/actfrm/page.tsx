@@ -170,14 +170,24 @@ const NewsFormPage = () => {
     });
   };
   return (
-    <Form form={frmNews} layout="vertical" wrapperCol={{ span: 8 }} onFinish={onFinish} name="newsFrm">
+    <Form
+      form={frmNews}
+      layout="vertical"
+      wrapperCol={{ span: 8 }}
+      onFinish={onFinish}
+      name="newsFrm"
+    >
       <h2 className={styles.titleHeading}>Create news</h2>
       <Flex justify="flex-end" gap={10}>
         <Button htmlType="submit" type="primary" icon={<SaveOutlined />} size="large" />
         <Button type="primary" icon={<BackwardFilled />} size="large" danger onClick={handleBack} />
       </Flex>
       <div>
-        <Form.Item<FieldType> label="Title" name="newsTitle" rules={[{ required: true, message: "Please input your username!" }]}>
+        <Form.Item<FieldType>
+          label="Title"
+          name="newsTitle"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
           <Input />
         </Form.Item>
         <div>Featured image</div>
@@ -237,7 +247,11 @@ const NewsFormPage = () => {
           initialValue=""
           className={styles.categoryNewsBox}
         >
-          <Select size="large" placeholder="Select a option and change input text above" options={categoryNewsData} />
+          <Select
+            size="large"
+            placeholder="Select a option and change input text above"
+            options={categoryNewsData}
+          />
         </Form.Item>
       </div>
     </Form>
