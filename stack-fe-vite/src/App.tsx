@@ -1,21 +1,19 @@
-import createUploadLink from "@/apollo-upload-client/createUploadLink.mjs";
-import { JWTProvider as AuthProvider } from "@/contexts/JWTContext";
-import "@/scss/style.min.css";
-import auth_service from "@/utils/authService";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import JWTProvider from "@/providers/jwt-provider";
 import Routes from "@/routes";
+import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
 function App() {
-  const backendUri: string = import.meta.env.VITE_BACKEND_URI;
-  const httpLink = createUploadLink({ uri: backendUri });
+  const backendUri = `${import.meta.env.VITE_BACKEND_URI}/graphql`;
+  const httpLink = createHttpLink({ uri: backendUri ? backendUri.toString().trim() : "" });
   const authLink = setContext((_, { headers }) => {
-    const token: string = auth_service.getAccessToken();
+    const token: string = window.localStorage.getItem("accessToken")
+      ? (window.localStorage.getItem("accessToken") as string)
+      : "";
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-        "Apollo-Require-Preflight": "true"
+        authorization: token ? `Bearer ${token}` : ""
       }
     };
   });
@@ -25,9 +23,9 @@ function App() {
   });
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>
+      <JWTProvider>
         <Routes />
-      </AuthProvider>
+      </JWTProvider>
     </ApolloProvider>
   );
 }

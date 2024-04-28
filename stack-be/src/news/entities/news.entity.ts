@@ -8,28 +8,28 @@ export class News {
   _id: string;
 
   @Column()
-  newsTitle: string;
+  news_title: string;
 
   @Column()
-  newsIntro: string;
+  news_intro: string;
 
   @Column()
-  newsContent: string;
+  news_content: string;
 
   @Column()
-  newsImg: string;
+  news_img: string;
 
   @Column()
-  categoryNewsId: string;
+  category_news_id: string;
 
   @Column()
-  publisherId: string;
+  publisher_id: string;
 
   @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
-  @JoinColumn({ name: "categoryNewsId" })
+  @JoinColumn({ name: "category_news_id" })
   categoryNews: CategoryNews;
 
   @ManyToOne(() => Users, (users) => users.userItems)
-  @JoinColumn({ name: "publisherId" })
+  @JoinColumn({ name: "publisher_id" })
   publisher: Users;
 }

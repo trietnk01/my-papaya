@@ -30,7 +30,7 @@ export class UsersService {
         username: userCreateInput.username,
         password: hashPassword,
         email: userCreateInput.email,
-        displayName: userCreateInput.displayName
+        display_name: userCreateInput.display_name
       });
       item = await this.usersRepository.save(userItem);
     } catch (err) {
@@ -63,7 +63,7 @@ export class UsersService {
             iss: "from server",
             _id: userItem._id,
             username: userItem.username,
-            displayName: userItem.displayName,
+            display_name: userItem.display_name,
             email: userItem.email
           };
           let token = this.jwt.sign(payload, {
@@ -79,7 +79,7 @@ export class UsersService {
             _id: userItem._id,
             username: userItem.username,
             email: userItem.email,
-            displayName: userItem.displayName,
+            display_name: userItem.display_name,
             token
           };
         }

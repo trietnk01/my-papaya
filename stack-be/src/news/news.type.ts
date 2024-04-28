@@ -7,22 +7,22 @@ class INews {
   _id: string;
 
   @Field((type) => String, { nullable: true })
-  newsTitle: string;
+  news_title: string;
 
   @Field((type) => String, { nullable: true })
-  newsIntro: string;
+  news_intro: string;
 
   @Field((type) => String, { nullable: true })
-  newsContent: string;
+  news_content: string;
 
   @Field((type) => String, { nullable: true })
-  newsImg: string;
+  news_img: string;
 
   @Field((type) => String, { nullable: true })
-  categoryNewsId: string;
+  category_news_id: string;
 
   @Field((type) => String, { nullable: true })
-  publisherId: string;
+  publisher_id: string;
 
   @Field((type) => ICategoryNews, { nullable: true })
   categoryNews: ICategoryNews;

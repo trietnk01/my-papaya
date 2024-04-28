@@ -4,22 +4,15 @@ import { lazy } from "react";
 
 import Loadable from "@/components/Loadable";
 import GuestGuard from "@/guards/GuestGuard";
-import LoginLayout from "@/layout/LoginLayout";
-const AuthLogin = Loadable(lazy(() => import("@/pages/admin/Login")));
+const AuthLogin = Loadable(lazy(() => import("@/pages/admin/LoginFrm")));
 // ==============================|| AUTH ROUTING ||============================== //
 
 const LoginRoutes = {
-  path: "/",
+  path: "admin/login",
   element: (
     <GuestGuard>
-      <LoginLayout />
+      <AuthLogin />
     </GuestGuard>
-  ),
-  children: [
-    {
-      path: "/admin/login",
-      element: <AuthLogin />
-    }
-  ]
+  )
 };
 export default LoginRoutes;

@@ -5,7 +5,15 @@ import dotenv from "dotenv";
 dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        parserOpts: {
+          plugins: ["decorators-legacy"]
+        }
+      }
+    })
+  ],
   define: { "process.env.VITE_BACKEND_URI": JSON.stringify(process.env.VITE_BACKEND_URI) },
   server: {
     port: parseInt(process.env.VITE_PORT ? process.env.VITE_PORT : "3001")

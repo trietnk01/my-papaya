@@ -14,10 +14,10 @@ import styles from "scss/admin-layout.module.scss";
 import Swal from "sweetalert2";
 import IMediaSource from "types/media-source";
 type FieldType = {
-  newsTitle?: string;
-  newsIntro?: string;
-  newsContent?: string;
-  categoryNewsId?: string;
+  news_title?: string;
+  news_intro?: string;
+  news_content?: string;
+  category_news_id?: string;
 };
 interface ICategoryNews {
   value: string;
@@ -50,18 +50,17 @@ const NewsFormPage = () => {
   const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
   const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    const { newsTitle, categoryNewsId, newsContent, newsIntro } = values;
+    const { news_title, category_news_id, news_content, news_intro } = values;
     if (searchParams.get("action")) {
       switch (searchParams.get("action")) {
         case "add":
           addNews({
             variables: {
-              newsTitle: newsTitle ? newsTitle.toString().trim() : "",
-              newsIntro: newsIntro ? newsIntro.toString().trim() : "",
-              newsContent: newsContent ? newsContent.toString().trim() : "",
-              newsImg: featuredImg,
-              categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
-              publisherId: user && user._id ? user._id : ""
+              news_title: news_title ? news_title.toString().trim() : "",
+              news_intro: news_intro ? news_intro.toString().trim() : "",
+              news_content: news_content ? news_content.toString().trim() : "",
+              category_news_id: category_news_id ? category_news_id.toString().trim() : "",
+              publisher_id: user && user._id ? user._id : ""
             }
           }).then((res) => {
             if (res && res.data && res.data.createNews) {
@@ -84,12 +83,10 @@ const NewsFormPage = () => {
             updateNews({
               variables: {
                 id,
-                newsTitle: newsTitle ? newsTitle.toString().trim() : "",
-                newsIntro: newsIntro ? newsIntro.toString().trim() : "",
-                newsContent: newsContent ? newsContent.toString().trim() : "",
-                newsImg: featuredImg,
-                categoryNewsId: categoryNewsId ? categoryNewsId.toString().trim() : "",
-                removedNewsImg: removedFeaturedImg
+                news_title: news_title ? news_title.toString().trim() : "",
+                news_intro: news_intro ? news_intro.toString().trim() : "",
+                news_content: news_content ? news_content.toString().trim() : "",
+                category_news_id: category_news_id ? category_news_id.toString().trim() : ""
               }
             }).then((res) => {
               if (res && res.data && res.data.updateNews) {
@@ -117,7 +114,7 @@ const NewsFormPage = () => {
           const { status, list } = res.data.findAllCategoryNewsUnauthenticated;
           if (status) {
             let categoryNewsList: ICategoryNews[] = list.map((item: any) => {
-              return { value: item._id, label: item.categoryName };
+              return { value: item._id, label: item.category_name };
             });
             categoryNewsList.unshift({
               value: "",
@@ -136,12 +133,12 @@ const NewsFormPage = () => {
         if (res && res.data && res.data.findNewsDetailAuthenticated) {
           const { status, item } = res.data.findNewsDetailAuthenticated;
           if (status) {
-            const { newsTitle, newsIntro, newsContent, newsImg, categoryNewsId } = item;
-            frmNews.setFieldValue("newsTitle", newsTitle ? newsTitle : "");
-            frmNews.setFieldValue("newsIntro", newsIntro ? newsIntro : "");
-            frmNews.setFieldValue("newsContent", newsContent ? newsContent : "");
-            frmNews.setFieldValue("categoryNewsId", categoryNewsId ? categoryNewsId : "");
-            setBase64Url(newsImg ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${newsImg}` : "");
+            const { news_title, news_intro, news_content, news_img, category_news_id } = item;
+            frmNews.setFieldValue("news_title", news_title ? news_title : "");
+            frmNews.setFieldValue("news_intro", news_intro ? news_intro : "");
+            frmNews.setFieldValue("news_content", news_content ? news_content : "");
+            frmNews.setFieldValue("category_news_id", category_news_id ? category_news_id : "");
+            setBase64Url(news_img ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${news_img}` : "");
           }
         }
       });
@@ -185,7 +182,7 @@ const NewsFormPage = () => {
       <div>
         <Form.Item<FieldType>
           label="Title"
-          name="newsTitle"
+          name="news_title"
           rules={[{ required: true, message: "Please input your username!" }]}
         >
           <Input />
@@ -231,17 +228,21 @@ const NewsFormPage = () => {
         </div>
         <Form.Item<FieldType>
           label="Intro"
-          name="newsIntro"
+          name="news_intro"
           rules={[{ required: true, message: "Please input news intro!" }]}
           className={styles.categoryNewsBox}
         >
           <Input.TextArea rows={4} />
         </Form.Item>
-        <Form.Item<FieldType> label="Content" name="newsContent" className={styles.categoryNewsBox}>
+        <Form.Item<FieldType>
+          label="Content"
+          name="news_content"
+          className={styles.categoryNewsBox}
+        >
           <ReactQuill />
         </Form.Item>
         <Form.Item<FieldType>
-          name="categoryNewsId"
+          name="category_news_id"
           label="Category"
           rules={[{ required: true, message: "Please select category!" }]}
           initialValue=""

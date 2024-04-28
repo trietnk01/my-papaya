@@ -17,5 +17,5 @@ export class CreateUserInput {
 
   @MinLength(1)
   @Field((type) => String)
-  displayName: string;
+  display_name: string;
 }

@@ -20,9 +20,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "baseUrl": "src",
-    "ignoreBuildErrors": true
+    "baseUrl": "src"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "ignoreBuildErrors": true
 }

@@ -7,7 +7,7 @@ const LOGIN = gql`
       item {
         _id
         username
-        displayName
+        display_name
         email
         token
       }
@@ -31,7 +31,7 @@ const CHECK_VALID_TOKEN = gql`
         _id
         username
         email
-        displayName
+        display_name
         token
       }
     }

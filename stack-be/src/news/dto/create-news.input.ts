@@ -12,23 +12,23 @@ interface FileUpload {
 export class CreateNewsInput {
   @MinLength(1)
   @Field((type) => String)
-  newsTitle: string;
+  news_title: string;
 
   @MinLength(1)
   @Field((type) => String)
-  newsIntro: string;
+  news_intro: string;
 
   @Field((type) => String)
-  newsContent: string;
+  news_content: string;
 
   @Field((type) => GraphQLUpload)
-  newsImg: Promise<FileUpload>;
+  news_img: Promise<FileUpload>;
 
   @MinLength(1)
   @Field((type) => String)
-  categoryNewsId: string;
+  category_news_id: string;
 
   @MinLength(1)
   @Field((type) => String)
-  publisherId: string;
+  publisher_id: string;
 }

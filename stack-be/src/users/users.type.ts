@@ -12,7 +12,7 @@ export class IUser {
   email: string;
 
   @Field((type) => String, { nullable: true })
-  displayName: string;
+  display_name: string;
 
   @Field((type) => String, { nullable: true })
   token: string;

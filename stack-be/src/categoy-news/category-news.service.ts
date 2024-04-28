@@ -25,7 +25,7 @@ export class CategoryNewsService {
       } else {
         const categoryNewsItem = this.categoryNewsRepository.create({
           _id: uuid(),
-          categoryName: createCategoyNewInput.categoryName
+          category_name: createCategoyNewInput.category_name
         });
         item = await this.categoryNewsRepository.save(categoryNewsItem);
       }

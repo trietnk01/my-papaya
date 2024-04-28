@@ -13,7 +13,7 @@ const snackbar = createSlice({
   name: "snackbar",
   initialState,
   reducers: {
-    openSnackbar(state, action) {
+    openSnackbar(state) {
       state.open = true;
     },
 

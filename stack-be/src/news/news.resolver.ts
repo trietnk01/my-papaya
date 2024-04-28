@@ -32,34 +32,31 @@ export class NewsResolver {
   @Query(() => NewsType)
   findNewsUnauthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
-    @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
+    @Args("category_news_id", { type: () => String }) category_news_id: string,
     @Args("page", { type: () => String }) page: string
   ) {
-    return this.newsService.findNewsUnauthenticated(keyword, categoryNewsId, page);
+    return this.newsService.findNewsUnauthenticated(keyword, category_news_id, page);
   }
 
   @Query(() => NewsType)
   findNewsAuthenticated(
     @Args("keyword", { type: () => String }) keyword: string,
-    @Args("categoryNewsId", { type: () => String }) categoryNewsId: string,
+    @Args("category_news_id", { type: () => String }) category_news_id: string,
     @Args("current", { type: () => String }) current: string,
-    @Args("pageSize", { type: () => String }) pageSize: string,
+    @Args("page_size", { type: () => String }) page_size: string,
     @Context("req") req: Request
   ) {
     return this.newsService.findNewsAuthenticated(
       keyword,
-      categoryNewsId,
+      category_news_id,
       current,
-      pageSize,
+      page_size,
       req
     );
   }
 
   @Mutation(() => NewsType)
-  deleteNews(
-    @Args("id", { type: () => String }) id: string,
-    @Context("req") req: Request
-  ) {
+  deleteNews(@Args("id", { type: () => String }) id: string, @Context("req") req: Request) {
     return this.newsService.remove(id, req);
   }
 

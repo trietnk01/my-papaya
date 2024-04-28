@@ -10,7 +10,7 @@ import AuthGuard from "@/guards/AuthGuard";
 // ==============================|| AUTH ROUTING ||============================== //
 
 const AdminRoutes = {
-  path: "/",
+  path: "admin",
   element: (
     <AuthGuard>
       <AdminLayout />
@@ -18,7 +18,7 @@ const AdminRoutes = {
   ),
   children: [
     {
-      path: "/news",
+      path: "news",
       children: [
         {
           path: "list",

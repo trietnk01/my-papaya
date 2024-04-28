@@ -6,7 +6,7 @@ const FIND_ALL_CATEGORY_NEWS_AUTHENTICATED = gql`
       message
       list {
         _id
-        categoryName
+        category_name
       }
     }
   }

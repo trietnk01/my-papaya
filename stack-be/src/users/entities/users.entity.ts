@@ -16,7 +16,7 @@ export class Users {
   email: string;
 
   @Column()
-  displayName: string;
+  display_name: string;
 
   @Column()
   token: string;
@@ -25,6 +25,6 @@ export class Users {
     cascade: true,
     eager: true
   })
-  @JoinColumn({ name: "_id", referencedColumnName: "publisherId" })
+  @JoinColumn({ name: "_id", referencedColumnName: "publisher_id" })
   userItems: News[];
 }

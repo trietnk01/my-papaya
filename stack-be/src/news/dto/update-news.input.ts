@@ -7,5 +7,5 @@ export class UpdateNewsInput extends PartialType(CreateNewsInput) {
   _id: string;
 
   @Field(() => Boolean)
-  removedNewsImg: boolean;
+  removednews_img: boolean;
 }

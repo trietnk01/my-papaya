@@ -5,5 +5,5 @@ import { MinLength } from "class-validator";
 export class CreateCategoryNewsInput {
   @MinLength(1)
   @Field((type) => String)
-  categoryName: string;
+  category_name: string;
 }

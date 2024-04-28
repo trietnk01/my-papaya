@@ -26,18 +26,18 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const { newsImg } = createNewsInput;
-        const { createReadStream, filename } = await newsImg;
+        const { news_img } = createNewsInput;
+        const { createReadStream, filename } = await news_img;
         const pathName = join(process.cwd(), `./public/${filename}`);
         await createReadStream().pipe(fs.createWriteStream(pathName));
         const newsItem = this.newsRepository.create({
           _id: uuid(),
-          newsTitle: createNewsInput.newsTitle,
-          newsIntro: createNewsInput.newsIntro,
-          newsContent: createNewsInput.newsContent,
-          newsImg: filename,
-          categoryNewsId: createNewsInput.categoryNewsId,
-          publisherId: createNewsInput.publisherId
+          news_title: createNewsInput.news_title,
+          news_intro: createNewsInput.news_intro,
+          news_content: createNewsInput.news_content,
+          news_img: filename,
+          category_news_id: createNewsInput.category_news_id,
+          publisher_id: createNewsInput.publisher_id
         });
         item = await this.newsRepository.save(newsItem);
       }
@@ -61,18 +61,18 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const { newsImg } = updateNewsInput;
-        const { createReadStream, filename } = await newsImg;
+        const { news_img } = updateNewsInput;
+        const { createReadStream, filename } = await news_img;
         const pathName = join(process.cwd(), `./public/${filename}`);
         await createReadStream().pipe(fs.createWriteStream(pathName));
         await this.newsRepository.update(
           { _id: updateNewsInput._id },
           {
-            newsTitle: updateNewsInput.newsTitle,
-            newsIntro: updateNewsInput.newsIntro,
-            newsContent: updateNewsInput.newsContent,
-            newsImg: filename,
-            categoryNewsId: updateNewsInput.categoryNewsId
+            news_title: updateNewsInput.news_title,
+            news_intro: updateNewsInput.news_intro,
+            news_content: updateNewsInput.news_content,
+            news_img: filename,
+            category_news_id: updateNewsInput.category_news_id
           }
         );
         item = this.newsRepository.findOneBy({ _id: updateNewsInput._id });
@@ -87,11 +87,7 @@ export class NewsService {
       item
     };
   };
-  findNewsUnauthenticated = async (
-    keyword: string,
-    categoryNewsId: string,
-    page: string
-  ) => {
+  findNewsUnauthenticated = async (keyword: string, category_news_id: string, page: string) => {
     let status: boolean = true;
     let message: string = "";
     let list = null;
@@ -100,10 +96,10 @@ export class NewsService {
       let position: number = (parseInt(page) - 1) * totalItemPerpage;
       let where = {};
       if (keyword) {
-        where["newsTitle"] = new RegExp(keyword, "i");
+        where["news_title"] = new RegExp(keyword, "i");
       }
-      if (categoryNewsId) {
-        where["categoryNewsId"] = categoryNewsId;
+      if (category_news_id) {
+        where["category_news_id"] = category_news_id;
       }
       list = await this.newsRepository.find({
         relations: { categoryNews: true, publisher: true },
@@ -124,9 +120,9 @@ export class NewsService {
 
   findNewsAuthenticated = async (
     keyword: string,
-    categoryNewsId: string,
+    category_news_id: string,
     current: string,
-    pageSize: string,
+    page_size: string,
     req: Request
   ) => {
     let status: boolean = true;
@@ -140,23 +136,23 @@ export class NewsService {
         message = "NOT_AUTHENTICATED";
       } else {
         const userItem = await this.usersService.findUserByToken(req);
-        let position: number = (parseInt(current) - 1) * parseInt(pageSize);
+        let position: number = (parseInt(current) - 1) * parseInt(page_size);
         let where = {};
         if (keyword) {
-          where["newsTitle"] = new RegExp(keyword, "i");
+          where["news_title"] = new RegExp(keyword, "i");
         }
-        if (categoryNewsId) {
-          where["categoryNewsId"] = categoryNewsId;
+        if (category_news_id) {
+          where["category_news_id"] = category_news_id;
         }
         if (userItem && userItem._id) {
-          where["publisherId"] = userItem._id;
+          where["publisher_id"] = userItem._id;
         }
         total = await this.newsRepository.count(where);
         list = await this.newsRepository.find({
           relations: { categoryNews: true, publisher: true },
           where,
           skip: position,
-          take: parseInt(pageSize)
+          take: parseInt(page_size)
         });
       }
     } catch (err) {

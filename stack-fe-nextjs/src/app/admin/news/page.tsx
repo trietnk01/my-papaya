@@ -3,11 +3,7 @@ import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons"
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "graphql-client/gql-category-news";
-import {
-  DELETE_NEWS,
-  FIND_NEWS_AUTHENTICATED,
-  DELETE_NEWS_MULTI
-} from "graphql-client/gql-news";
+import { DELETE_NEWS, FIND_NEWS_AUTHENTICATED, DELETE_NEWS_MULTI } from "graphql-client/gql-news";
 import { produce } from "immer";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -17,7 +13,7 @@ type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>
 interface INews {
   key: React.Key;
   _id: string;
-  newsTitle: string;
+  news_title: string;
 }
 interface ICategoryNews {
   value: string;
@@ -66,8 +62,8 @@ const NewsPage = () => {
   const columns: TableProps<INews>["columns"] = [
     {
       title: "Title",
-      dataIndex: "newsTitle",
-      key: "newsTitle",
+      dataIndex: "news_title",
+      key: "news_title",
       render: (text) => text
     },
     {
@@ -101,12 +97,7 @@ const NewsPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteNews({ variables: { id } }).then(() => {
-          loadNewsTable(
-            keyword,
-            categoryNewsId,
-            "1",
-            tableParams.pagination?.pageSize?.toString()
-          );
+          loadNewsTable(keyword, categoryNewsId, "1", tableParams.pagination?.pageSize?.toString());
           Toast.fire({
             icon: "success",
             title: "Delete successfully"
@@ -127,9 +118,9 @@ const NewsPage = () => {
     getNews({
       variables: {
         keyword,
-        categoryNewsId,
+        category_news_id: categoryNewsId,
         current: current ? current.toString() : "",
-        pageSize: pageSize ? pageSize.toString() : ""
+        page_size: pageSize ? pageSize.toString() : ""
       }
     }).then((res) => {
       if (res && res.data && res.data.findNewsAuthenticated) {
@@ -170,7 +161,7 @@ const NewsPage = () => {
         const { status, list } = res.data.findAllCategoryNewsUnauthenticated;
         if (status) {
           let categoryNewsList: ICategoryNews[] = list.map((item: any) => {
-            return { value: item._id, label: item.categoryName };
+            return { value: item._id, label: item.category_name };
           });
           categoryNewsList.unshift({
             value: "",
@@ -275,20 +266,10 @@ const NewsPage = () => {
             options={categoryNewsData}
             onChange={handleCategoryNewsChange}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            size="large"
-            onClick={handleSearch}
-          />
+          <Button type="primary" icon={<SearchOutlined />} size="large" onClick={handleSearch} />
         </div>
         <div className={styles.actionBox}>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            size="large"
-            onClick={handleAddItem}
-          />
+          <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleAddItem} />
           <Button
             type="primary"
             icon={<DeleteOutlined />}

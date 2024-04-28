@@ -1,17 +1,11 @@
-import { useMutation } from "@apollo/client";
 import React from "react";
 import { CHECK_VALID_TOKEN, LOGIN, LOGOUT } from "@/graphql-client/gql-user";
 import { dispatch, useSelector } from "@/store";
 import { loginAction, logoutAction } from "@/store/slices/accountSlice";
 import IUser from "@/types/user-profile";
-import auth_service from "@/utils/authService";
-interface JWTContextType {
-  isLoggedIn: boolean;
-  user: IUser | null;
-  login: (username: string, password: string) => void;
-  logout: (id: string) => void;
-}
-const JWTContext = React.createContext<JWTContextType | null>(null);
+import { useMutation } from "@apollo/client";
+import JWTContext from "@/contexts/jwt-context";
+
 interface JWTProviderProps {}
 const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ children }) => {
   const { isLoggedIn, user } = useSelector((state) => state.account);
@@ -20,26 +14,32 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ chil
   const [checkValidTokenUser] = useMutation(CHECK_VALID_TOKEN);
   React.useEffect(() => {
     const init = async () => {
-      let isValid: boolean = true;
-      const token: string = auth_service.getAccessToken();
-      if (!token) {
-        isValid = false;
-      } else {
-        const res: any = await checkValidTokenUser({ variables: { token } });
-        if (res && res.data && res.data.checkValidToken) {
-          const { status, item } = res.data.checkValidToken;
-          if (!status) {
-            isValid = false;
-          } else {
-            const user: IUser = item;
-            auth_service.setAccessToken(token);
-            dispatch(loginAction(user));
+      try {
+        let isValid: boolean = true;
+        const token: string = window.localStorage.getItem("accessToken")
+          ? (window.localStorage.getItem("accessToken") as string)
+          : "";
+        if (!token) {
+          isValid = false;
+        } else {
+          const res = await checkValidTokenUser({ variables: { token } });
+          if (res && res.data && res.data.checkValidToken) {
+            const { status, item } = res.data.checkValidToken;
+            if (!status) {
+              isValid = false;
+            } else {
+              const user: IUser = item;
+              window.localStorage.setItem("accessToken", token);
+              dispatch(loginAction(user));
+            }
           }
         }
-      }
-      if (!isValid) {
-        auth_service.clearAccessToken();
-        dispatch(logoutAction());
+        if (!isValid) {
+          window.localStorage.removeItem("accessToken");
+          dispatch(logoutAction());
+        }
+      } catch (err: any) {
+        console.log("err = ", err.message);
       }
     };
     init();
@@ -59,12 +59,12 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ chil
       } else {
         const { _id, email, displayName, token } = item;
         const user: IUser = { _id, username, email, displayName };
-        auth_service.setAccessToken(token);
+        window.localStorage.setItem("accessToken", token);
         dispatch(loginAction(user));
       }
     }
     if (!isValid) {
-      auth_service.clearAccessToken();
+      window.localStorage.removeItem("accessToken");
       dispatch(logoutAction());
     }
   };
@@ -73,7 +73,7 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ chil
     if (res && res.data && res.data.logout) {
       const { status } = res.data.logout;
       if (status) {
-        auth_service.clearAccessToken();
+        window.localStorage.removeItem("accessToken");
         dispatch(logoutAction());
       }
     }
@@ -84,5 +84,4 @@ const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ chil
     </JWTContext.Provider>
   );
 };
-export { JWTProvider };
-export default JWTContext;
+export default JWTProvider;

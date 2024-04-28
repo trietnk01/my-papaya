@@ -6,7 +6,7 @@ export class ICategoryNews {
   _id: string;
 
   @Field((type) => String, { nullable: true })
-  categoryName: string;
+  category_name: string;
 }
 @ObjectType()
 export class CategoryNewsType {

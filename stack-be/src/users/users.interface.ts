@@ -5,6 +5,6 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
-  displayName: string;
+  display_name: string;
   refreshToken: string;
 }

@@ -1,11 +1,10 @@
-import { useContext } from "react";
-
-import JWTContext from "@/contexts/JWTContext";
+import React from "react";
+import JWTContext from "@/contexts/jwt-context";
 
 // ==============================|| AUTH HOOKS ||============================== //
 
 const useAuth = () => {
-  const context = useContext(JWTContext);
+  const context = React.useContext(JWTContext);
   if (!context) throw new Error("context must be use inside provider");
   return context;
 };

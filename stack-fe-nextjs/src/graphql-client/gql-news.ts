@@ -2,30 +2,31 @@ import { gql } from "@apollo/client";
 const FIND_NEWS_AUTHENTICATED = gql`
   query FindNewsAuthenticated(
     $keyword: String!
-    $categoryNewsId: String!
+    $category_news_id: String!
     $current: String!
-    $pageSize: String!
+    $page_size: String!
   ) {
     findNewsAuthenticated(
       keyword: $keyword
-      categoryNewsId: $categoryNewsId
+      category_news_id: $category_news_id
       current: $current
-      pageSize: $pageSize
+      page_size: $page_size
     ) {
       status
       message
       list {
         _id
-        newsTitle
+        news_title
+        news_img
         categoryNews {
           _id
-          categoryName
+          category_name
         }
         publisher {
           _id
           username
           email
-          displayName
+          display_name
         }
       }
       total
@@ -39,21 +40,21 @@ const GET_NEWS_DETAIL = gql`
       message
       item {
         _id
-        newsTitle
-        newsIntro
-        newsContent
-        newsImg
-        categoryNewsId
-        publisherId
+        news_title
+        news_intro
+        news_content
+        news_img
+        category_news_id
+        publisher_id
         categoryNews {
           _id
-          categoryName
+          category_name
         }
         publisher {
           _id
           username
           email
-          displayName
+          display_name
         }
       }
     }
@@ -61,40 +62,37 @@ const GET_NEWS_DETAIL = gql`
 `;
 const ADD_NEWS = gql`
   mutation CreateNews(
-    $newsTitle: String!
-    $newsIntro: String!
-    $newsContent: String!
-    $newsImg: Upload!
-    $categoryNewsId: String!
-    $publisherId: String!
+    $news_title: String!
+    $news_intro: String!
+    $news_content: String!
+    $category_news_id: String!
+    $publisher_id: String!
   ) {
     createNews(
       createNewsInput: {
-        newsTitle: $newsTitle
-        newsIntro: $newsIntro
-        newsContent: $newsContent
-        newsImg: $newsImg
-        categoryNewsId: $categoryNewsId
-        publisherId: $publisherId
+        news_title: $news_title
+        news_intro: $news_intro
+        news_content: $news_content
+        category_news_id: $category_news_id
+        publisher_id: $publisher_id
       }
     ) {
       status
       message
       item {
         _id
-        newsTitle
-        newsIntro
-        newsContent
-        newsImg
+        news_title
+        news_intro
+        news_content
         categoryNews {
           _id
-          categoryName
+          category_name
         }
         publisher {
           _id
           username
           email
-          displayName
+          display_name
         }
       }
     }
@@ -103,41 +101,36 @@ const ADD_NEWS = gql`
 const UPDATE_NEWS = gql`
   mutation UpdateNews(
     $id: String!
-    $newsTitle: String!
-    $newsIntro: String!
-    $newsContent: String!
-    $newsImg: Upload
-    $categoryNewsId: String!
-    $removedNewsImg: Boolean!
+    $news_title: String!
+    $news_intro: String!
+    $news_content: String!
+    $category_news_id: String!
   ) {
     updateNews(
       updateNewsInput: {
         _id: $id
-        newsTitle: $newsTitle
-        newsIntro: $newsIntro
-        newsContent: $newsContent
-        newsImg: $newsImg
-        categoryNewsId: $categoryNewsId
-        removedNewsImg: $removedNewsImg
+        news_title: $news_title
+        news_intro: $news_intro
+        news_content: $news_content
+        category_news_id: $category_news_id
       }
     ) {
       status
       message
       item {
         _id
-        newsTitle
-        newsIntro
-        newsContent
-        newsImg
+        news_title
+        news_intro
+        news_content
         categoryNews {
           _id
-          categoryName
+          category_name
         }
         publisher {
           _id
           username
           email
-          displayName
+          display_name
         }
       }
     }
@@ -158,16 +151,16 @@ const DELETE_NEWS = gql`
       message
       item {
         _id
-        newsTitle
+        news_title
         categoryNews {
           _id
-          categoryName
+          category_name
         }
         publisher {
           _id
           username
           email
-          displayName
+          display_name
         }
       }
     }

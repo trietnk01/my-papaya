@@ -7,12 +7,12 @@ export class CategoryNews {
   _id: string;
 
   @Column()
-  categoryName: string;
+  category_name: string;
 
   @OneToMany(() => News, (news) => news.categoryNews, {
     cascade: true,
     eager: true
   })
-  @JoinColumn({ name: "_id", referencedColumnName: "categoryNewsId" })
+  @JoinColumn({ name: "_id", referencedColumnName: "category_news_id" })
   newsItems: News[];
 }

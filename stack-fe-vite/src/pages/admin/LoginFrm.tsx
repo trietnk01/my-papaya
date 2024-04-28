@@ -1,33 +1,19 @@
-"use client";
+import useAuth from "@/hooks/useAuth";
+import styles from "@/assets/scss/login.module.scss";
 import { KeyOutlined, UserOutlined } from "@ant-design/icons";
-import useAuth from "hooks/useAuth";
-import Link from "next/link";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import styles from "scss/login.module.scss";
-import * as yup from "yup";
+import { Link } from "react-router-dom";
 interface IFormInput {
   username: string;
   password: string;
   remember_me: boolean;
 }
-const LoginPage = () => {
+const Login = () => {
   const { login } = useAuth();
-  const schema = yup
-    .object({
-      username: yup.string().required("Username required".toString()),
-      password: yup.string().required("Password required".toString())
-    })
-    .required();
   const {
-    register,
     handleSubmit,
     control,
-    getValues,
-    watch,
-    setValue,
-    setError,
-    clearErrors,
     formState: { errors }
   } = useForm<IFormInput>({
     defaultValues: {
@@ -50,7 +36,12 @@ const LoginPage = () => {
             render={({ field }) => {
               return (
                 <React.Fragment>
-                  <input {...field} type="text" placeholder="Email" className={styles.inputTxt} />
+                  <input
+                    {...field}
+                    type="text"
+                    placeholder="Username"
+                    className={styles.inputTxt}
+                  />
                   {errors.username && (
                     <div className={styles.inputError}>{errors.username.message}</div>
                   )}
@@ -92,7 +83,7 @@ const LoginPage = () => {
             <input type="checkbox" name="remember_me" />
             <span className={styles.rememberTxt}>Remember me</span>
           </div>
-          <Link href="/login" className={styles.forgotPasswordLink}>
+          <Link to="/login" className={styles.forgotPasswordLink}>
             Forgot password?
           </Link>
         </div>
@@ -101,7 +92,7 @@ const LoginPage = () => {
         </button>
         <div className={styles.donHaveAccountRegisterLink}>
           <span className={styles.dontHaveAccount}>Don't have account?</span>&nbsp;
-          <Link href="/login" className={styles.registerLink}>
+          <Link to="/login" className={styles.registerLink}>
             Register
           </Link>
         </div>
@@ -110,4 +101,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
