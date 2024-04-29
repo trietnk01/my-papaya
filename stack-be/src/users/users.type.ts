@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { ObjectId } from "typeorm";
 
 @ObjectType()
 export class IUser {

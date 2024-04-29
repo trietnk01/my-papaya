@@ -85,7 +85,7 @@ const NewsList = () => {
     }
   ];
   const handleNewsEdit = (id: string) => () => {
-    navigate(`/admin/news/actfrm?action=edit&id=${id}`);
+    navigate(`/admin/news/form?action=edit&id=${id}`);
   };
   const handleNewsDelete = (id: string) => () => {
     Swal.fire({
@@ -106,7 +106,7 @@ const NewsList = () => {
     });
   };
   const handleAddItem = () => {
-    navigate("/admin/news/actfrm?action=add");
+    navigate("/admin/news/form?action=add");
   };
   const loadNewsTable = (
     keyword: string,

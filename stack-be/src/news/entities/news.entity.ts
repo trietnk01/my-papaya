@@ -26,10 +26,9 @@ export class News {
   publisher_id: string;
 
   @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
-  @JoinColumn({ name: "category_news_id" })
+  @JoinColumn({ name: "_id" })
   categoryNews: CategoryNews;
 
   @ManyToOne(() => Users, (users) => users.userItems)
-  @JoinColumn({ name: "publisher_id" })
   publisher: Users;
 }

@@ -1,14 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import * as fs from "fs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
-import { In, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { UsersService } from "users/users.service";
 import { v4 as uuid } from "uuid";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { News } from "./entities/news.entity";
-import { join } from "path";
 
 @Injectable()
 export class NewsService {
@@ -26,16 +24,11 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const { news_img } = createNewsInput;
-        const { createReadStream, filename } = await news_img;
-        const pathName = join(process.cwd(), `./public/${filename}`);
-        await createReadStream().pipe(fs.createWriteStream(pathName));
         const newsItem = this.newsRepository.create({
           _id: uuid(),
           news_title: createNewsInput.news_title,
           news_intro: createNewsInput.news_intro,
           news_content: createNewsInput.news_content,
-          news_img: filename,
           category_news_id: createNewsInput.category_news_id,
           publisher_id: createNewsInput.publisher_id
         });
@@ -61,17 +54,12 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const { news_img } = updateNewsInput;
-        const { createReadStream, filename } = await news_img;
-        const pathName = join(process.cwd(), `./public/${filename}`);
-        await createReadStream().pipe(fs.createWriteStream(pathName));
         await this.newsRepository.update(
           { _id: updateNewsInput._id },
           {
             news_title: updateNewsInput.news_title,
             news_intro: updateNewsInput.news_intro,
             news_content: updateNewsInput.news_content,
-            news_img: filename,
             category_news_id: updateNewsInput.category_news_id
           }
         );
@@ -149,7 +137,7 @@ export class NewsService {
         }
         total = await this.newsRepository.count(where);
         list = await this.newsRepository.find({
-          relations: { categoryNews: true, publisher: true },
+          relations: { categoryNews: true },
           where,
           skip: position,
           take: parseInt(page_size)

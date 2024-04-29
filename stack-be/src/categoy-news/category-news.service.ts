@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
+import mongoose from "mongoose";
+import { v4 as uuid } from "uuid";
 import { Repository } from "typeorm";
 import { UsersService } from "users/users.service";
-import { v4 as uuid } from "uuid";
 import { CreateCategoryNewsInput } from "./dto/create-category-news.input";
 import { CategoryNews } from "./entities/category-news.entity";
 @Injectable()
@@ -65,7 +66,9 @@ export class CategoryNewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.categoryNewsRepository.findOneBy({ _id: id });
+        item = await this.categoryNewsRepository.findOneBy({
+          _id: id
+        });
       }
     } catch (err) {
       status = false;

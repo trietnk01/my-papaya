@@ -5,7 +5,4 @@ import { CreateNewsInput } from "./create-news.input";
 export class UpdateNewsInput extends PartialType(CreateNewsInput) {
   @Field(() => String)
   _id: string;
-
-  @Field(() => Boolean)
-  removednews_img: boolean;
 }

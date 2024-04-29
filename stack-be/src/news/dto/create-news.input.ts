@@ -2,6 +2,8 @@ import { Stream } from "stream";
 import { Field, InputType } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
 import { GraphQLUpload } from "graphql-upload-ts";
+import { ObjectId } from "typeorm";
+
 interface FileUpload {
   filename: string;
   mimetype: string;
@@ -20,9 +22,6 @@ export class CreateNewsInput {
 
   @Field((type) => String)
   news_content: string;
-
-  @Field((type) => GraphQLUpload)
-  news_img: Promise<FileUpload>;
 
   @MinLength(1)
   @Field((type) => String)

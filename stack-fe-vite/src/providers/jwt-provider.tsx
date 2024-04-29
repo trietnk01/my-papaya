@@ -1,13 +1,11 @@
 import React from "react";
+import { useMutation } from "@apollo/client";
 import { CHECK_VALID_TOKEN, LOGIN, LOGOUT } from "@/graphql-client/gql-user";
 import { dispatch, useSelector } from "@/store";
 import { loginAction, logoutAction } from "@/store/slices/accountSlice";
 import IUser from "@/types/user-profile";
-import { useMutation } from "@apollo/client";
 import JWTContext from "@/contexts/jwt-context";
-
-interface JWTProviderProps {}
-const JWTProvider: React.FC<React.PropsWithChildren<JWTProviderProps>> = ({ children }) => {
+const JWTProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const { isLoggedIn, user } = useSelector((state) => state.account);
   const [loginUser] = useMutation(LOGIN);
   const [logoutUser] = useMutation(LOGOUT);

@@ -10,6 +10,7 @@ import { v4 as uuid } from "uuid";
 import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { Users } from "./entities/users.entity";
+import mongoose from "mongoose";
 
 @Injectable()
 export class UsersService {
@@ -161,7 +162,7 @@ export class UsersService {
     }
     return isValid;
   };
-  getAccount = async (_id: string, req: Request) => {
+  getAccount = async (id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
@@ -171,7 +172,7 @@ export class UsersService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.usersRepository.findOneBy({ _id });
+        item = await this.usersRepository.findOneBy({ _id: id });
       }
     } catch (err) {
       status = false;

@@ -3,6 +3,6 @@ import { CreateCategoryNewsInput } from "./create-category-news.input";
 
 @InputType()
 export class UpdateCategoyNewInput extends PartialType(CreateCategoryNewsInput) {
-  @Field(() => Int)
-  id: number;
+  @Field(() => String)
+  _id: String;
 }

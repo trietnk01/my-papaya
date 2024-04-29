@@ -1,5 +1,5 @@
 import { News } from "news/entities/news.entity";
-import { Column, Entity, JoinColumn, ObjectIdColumn, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ObjectId, ObjectIdColumn, OneToMany } from "typeorm";
 
 @Entity({ name: "users" })
 export class Users {
