@@ -1,6 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { ICategoryNews } from "categoy-news/category-news.type";
-import { ObjectId } from "typeorm";
 import { IUser } from "users/users.type";
 @ObjectType()
 class INews {
