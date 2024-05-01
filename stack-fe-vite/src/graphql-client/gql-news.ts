@@ -136,6 +136,14 @@ const UPDATE_NEWS = gql`
     }
   }
 `;
+const UPLOAD_news_img = gql`
+  mutation UploadNewsImage($news_img: Upload!) {
+    uploadNewsImage(news_img: $news_img) {
+      status
+      message
+    }
+  }
+`;
 const DELETE_NEWS_MULTI = gql`
   mutation DeleteNewsMulti($selectedIds: String!) {
     deleteNewsMulti(selectedIds: $selectedIds) {
@@ -172,5 +180,6 @@ export {
   FIND_NEWS_AUTHENTICATED,
   GET_NEWS_DETAIL,
   UPDATE_NEWS,
-  DELETE_NEWS_MULTI
+  DELETE_NEWS_MULTI,
+  UPLOAD_news_img
 };

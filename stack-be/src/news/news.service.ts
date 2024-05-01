@@ -7,6 +7,7 @@ import { v4 as uuid } from "uuid";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { News } from "./entities/news.entity";
+import { FileUpload } from "graphql-upload-ts";
 
 @Injectable()
 export class NewsService {
@@ -38,6 +39,19 @@ export class NewsService {
       status = false;
       message = err.message;
     }
+    return {
+      status,
+      message,
+      item
+    };
+  };
+  uploadNewsImage = async (news_img: FileUpload) => {
+    let status: boolean = true;
+    let message: string = "";
+    let item = null;
+    const { createReadStream, filename } = await news_img;
+    console.log("createReadStream = ", createReadStream);
+    console.log("filename = ", filename);
     return {
       status,
       message,
@@ -137,7 +151,7 @@ export class NewsService {
         }
         total = await this.newsRepository.count(where);
         list = await this.newsRepository.find({
-          relations: { categoryNews: true },
+          relations: ["category_news"],
           where,
           skip: position,
           take: parseInt(page_size)

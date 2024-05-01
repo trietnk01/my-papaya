@@ -6,6 +6,7 @@ import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { NewsService } from "./news.service";
 import { NewsType } from "./news.type";
+import { FileUpload, GraphQLUpload } from "graphql-upload-ts";
 
 @Resolver(() => NewsType)
 export class NewsResolver {
@@ -53,6 +54,11 @@ export class NewsResolver {
       page_size,
       req
     );
+  }
+
+  @Mutation(() => NewsType)
+  uploadNewsImage(@Args("news_img", { type: () => GraphQLUpload }) news_img: FileUpload) {
+    return this.newsService.uploadNewsImage(news_img);
   }
 
   @Mutation(() => NewsType)

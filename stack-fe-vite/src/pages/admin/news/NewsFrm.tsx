@@ -1,6 +1,6 @@
 import styles from "@/assets/scss/admin-layout.module.scss";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "@/graphql-client/gql-category-news";
-import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "@/graphql-client/gql-news";
+import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS, UPLOAD_news_img } from "@/graphql-client/gql-news";
 import useAuth from "@/hooks/useAuth";
 import IMediaSource from "@/types/media-source";
 import { BackwardFilled, DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
@@ -40,6 +40,7 @@ const NewsFrm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [addNews] = useMutation(ADD_NEWS);
   const [updateNews] = useMutation(UPDATE_NEWS);
+  const [uploadNewsImage] = useMutation(UPLOAD_news_img);
   const [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED, {
     fetchPolicy: "network-only"
   });
@@ -65,6 +66,9 @@ const NewsFrm = () => {
             if (res && res.data && res.data.createNews) {
               const { status, item } = res.data.createNews;
               if (status) {
+                if (featuredImg) {
+                  uploadNewsImage({ variables: { news_img: featuredImg } });
+                }
                 const { _id } = item;
                 Toast.fire({
                   icon: "success",

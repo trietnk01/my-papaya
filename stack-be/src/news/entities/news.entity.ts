@@ -28,8 +28,7 @@ export class News {
   @ManyToOne(() => CategoryNews, (categoryNews) => categoryNews.newsItems)
   @JoinColumn({
     name: "category_news_id",
-    referencedColumnName: "_id",
-    foreignKeyConstraintName: "fk_category_news_id"
+    referencedColumnName: "_id"
   })
   categoryNews: CategoryNews;
 
