@@ -7,4 +7,4 @@ COPY . .
 RUN npm run build 
 # Stage 2
 FROM nginx:1.23.3
-COPY --from=build-stage /usr/frontend/.next /usr/share/nginx/html
+COPY --from=build-stage /usr/frontend/dist /usr/share/nginx/html
