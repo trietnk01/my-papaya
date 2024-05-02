@@ -12,6 +12,8 @@ import { Users } from "users/entities/users.entity";
 import { CategoryNewsModule } from "./categoy-news/category-news.module";
 import { NewsModule } from "./news/news.module";
 import { UsersModule } from "./users/users.module";
+
+import { MediaUploadModule } from "./media-upload/media-upload.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,7 +41,8 @@ import { UsersModule } from "./users/users.module";
     }),
     UsersModule,
     CategoryNewsModule,
-    NewsModule
+    NewsModule,
+    MediaUploadModule
   ],
   providers: [AppService]
 })

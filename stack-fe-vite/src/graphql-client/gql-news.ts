@@ -65,6 +65,7 @@ const ADD_NEWS = gql`
     $news_title: String!
     $news_intro: String!
     $news_content: String!
+    $news_img: String!
     $category_news_id: String!
     $publisher_id: String!
   ) {
@@ -73,6 +74,7 @@ const ADD_NEWS = gql`
         news_title: $news_title
         news_intro: $news_intro
         news_content: $news_content
+        news_img: $news_img
         category_news_id: $category_news_id
         publisher_id: $publisher_id
       }
@@ -104,6 +106,9 @@ const UPDATE_NEWS = gql`
     $news_title: String!
     $news_intro: String!
     $news_content: String!
+    $news_img: String!
+    $news_hidden_img: String!
+    $removed_img: Boolean!
     $category_news_id: String!
   ) {
     updateNews(
@@ -112,6 +117,9 @@ const UPDATE_NEWS = gql`
         news_title: $news_title
         news_intro: $news_intro
         news_content: $news_content
+        news_img: $news_img
+        news_hidden_img: $news_hidden_img
+        removed_img: $removed_img
         category_news_id: $category_news_id
       }
     ) {
@@ -136,14 +144,7 @@ const UPDATE_NEWS = gql`
     }
   }
 `;
-const UPLOAD_news_img = gql`
-  mutation UploadNewsImage($news_img: Upload!) {
-    uploadNewsImage(news_img: $news_img) {
-      status
-      message
-    }
-  }
-`;
+
 const DELETE_NEWS_MULTI = gql`
   mutation DeleteNewsMulti($selectedIds: String!) {
     deleteNewsMulti(selectedIds: $selectedIds) {
@@ -180,6 +181,5 @@ export {
   FIND_NEWS_AUTHENTICATED,
   GET_NEWS_DETAIL,
   UPDATE_NEWS,
-  DELETE_NEWS_MULTI,
-  UPLOAD_news_img
+  DELETE_NEWS_MULTI
 };

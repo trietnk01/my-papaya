@@ -1,4 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { join } from "path";
+import * as fs from "fs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
 import { Repository } from "typeorm";
@@ -30,6 +32,7 @@ export class NewsService {
           news_title: createNewsInput.news_title,
           news_intro: createNewsInput.news_intro,
           news_content: createNewsInput.news_content,
+          news_img: createNewsInput.news_img,
           category_news_id: createNewsInput.category_news_id,
           publisher_id: createNewsInput.publisher_id
         });
@@ -50,8 +53,8 @@ export class NewsService {
     let message: string = "";
     let item = null;
     const { createReadStream, filename } = await news_img;
-    console.log("createReadStream = ", createReadStream);
-    console.log("filename = ", filename);
+    const pathName = join(process.cwd(), `./public/${filename}`);
+    await createReadStream().pipe(fs.createWriteStream(pathName));
     return {
       status,
       message,
@@ -62,6 +65,16 @@ export class NewsService {
     let status: boolean = true;
     let message: string = "";
     let item = null;
+    let newsImg: string = "";
+    if (updateNewsInput.news_img) {
+      newsImg = updateNewsInput.news_img;
+    } else {
+      if (updateNewsInput.removed_img === false) {
+        if (updateNewsInput.news_hidden_img) {
+          newsImg = updateNewsInput.news_hidden_img;
+        }
+      }
+    }
     try {
       const isValid: boolean = await this.usersService.checkAuthorized(req);
       if (!isValid) {
@@ -74,6 +87,7 @@ export class NewsService {
             news_title: updateNewsInput.news_title,
             news_intro: updateNewsInput.news_intro,
             news_content: updateNewsInput.news_content,
+            news_img: newsImg,
             category_news_id: updateNewsInput.category_news_id
           }
         );

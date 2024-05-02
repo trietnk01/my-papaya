@@ -1,6 +1,7 @@
 import styles from "@/assets/scss/admin-layout.module.scss";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "@/graphql-client/gql-category-news";
-import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS, UPLOAD_news_img } from "@/graphql-client/gql-news";
+import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "@/graphql-client/gql-news";
+import { UPLOAD_IMAGE } from "@/graphql-client/gql-media";
 import useAuth from "@/hooks/useAuth";
 import IMediaSource from "@/types/media-source";
 import { BackwardFilled, DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
@@ -40,7 +41,7 @@ const NewsFrm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [addNews] = useMutation(ADD_NEWS);
   const [updateNews] = useMutation(UPDATE_NEWS);
-  const [uploadNewsImage] = useMutation(UPLOAD_news_img);
+  const [uploadImage] = useMutation(UPLOAD_IMAGE);
   const [getCategoryNews] = useLazyQuery(FIND_ALL_CATEGORY_NEWS_AUTHENTICATED, {
     fetchPolicy: "network-only"
   });
@@ -49,8 +50,17 @@ const NewsFrm = () => {
   const [base64Url, setBase64Url] = React.useState<string>("");
   const [featuredImg, setFeaturedImg] = React.useState<IMediaSource | null>(null);
   const [removedFeaturedImg, setRemovedFeaturedImg] = React.useState<boolean>(false);
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+  const [newsHiddenImg, setNewsHiddenImg] = React.useState<string>("");
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { news_title, category_news_id, news_content, news_intro } = values;
+    let newsImg: string = "";
+    if (featuredImg) {
+      const resUploadImg = await uploadImage({ variables: { image_file: featuredImg } });
+      const { status, media_file_name } = resUploadImg.data.uploadImage;
+      if (status) {
+        newsImg = media_file_name;
+      }
+    }
     if (searchParams.get("action")) {
       switch (searchParams.get("action")) {
         case "add":
@@ -59,6 +69,7 @@ const NewsFrm = () => {
               news_title: news_title ? news_title.toString().trim() : "",
               news_intro: news_intro ? news_intro.toString().trim() : "",
               news_content: news_content ? news_content.toString().trim() : "",
+              news_img: newsImg,
               category_news_id: category_news_id ? category_news_id.toString().trim() : "",
               publisher_id: user && user._id ? user._id : ""
             }
@@ -66,9 +77,6 @@ const NewsFrm = () => {
             if (res && res.data && res.data.createNews) {
               const { status, item } = res.data.createNews;
               if (status) {
-                if (featuredImg) {
-                  uploadNewsImage({ variables: { news_img: featuredImg } });
-                }
                 const { _id } = item;
                 Toast.fire({
                   icon: "success",
@@ -78,7 +86,6 @@ const NewsFrm = () => {
               }
             }
           });
-
           break;
         case "edit":
           const id = searchParams.get("id");
@@ -89,6 +96,9 @@ const NewsFrm = () => {
                 news_title: news_title ? news_title.toString().trim() : "",
                 news_intro: news_intro ? news_intro.toString().trim() : "",
                 news_content: news_content ? news_content.toString().trim() : "",
+                news_img: newsImg,
+                news_hidden_img: newsHiddenImg,
+                removed_img: removedFeaturedImg,
                 category_news_id: category_news_id ? category_news_id.toString().trim() : ""
               }
             }).then((res) => {
@@ -138,26 +148,36 @@ const NewsFrm = () => {
       frmNews.setFieldValue("category_news_id", "");
     };
     const loadNewsDetail = () => {
-      getNewsDetail({ variables: { id: searchParams.get("id")?.toString() } }).then((res) => {
-        if (res && res.data && res.data.findNewsDetailAuthenticated) {
-          const { status, item } = res.data.findNewsDetailAuthenticated;
-          if (status) {
-            const { news_title, news_intro, news_content, news_img, category_news_id } = item;
-            frmNews.setFieldValue("news_title", news_title ? news_title : "");
-            frmNews.setFieldValue("news_intro", news_intro ? news_intro : "");
-            frmNews.setFieldValue("news_content", news_content ? news_content : "");
-            frmNews.setFieldValue("category_news_id", category_news_id ? category_news_id : "");
-            setBase64Url(news_img ? `${process.env.NEXT_PUBLIC_BACKEND_URI}/${news_img}` : "");
+      if (
+        searchParams.get("action") &&
+        searchParams.get("id") &&
+        searchParams.get("action") === "edit"
+      ) {
+        getNewsDetail({ variables: { id: searchParams.get("id")?.toString() } }).then((res) => {
+          if (res && res.data && res.data.findNewsDetailAuthenticated) {
+            const { status, item } = res.data.findNewsDetailAuthenticated;
+            if (status) {
+              const { news_title, news_intro, news_content, news_img, category_news_id } = item;
+              frmNews.setFieldValue("news_title", news_title ? news_title : "");
+              frmNews.setFieldValue("news_intro", news_intro ? news_intro : "");
+              frmNews.setFieldValue("news_content", news_content ? news_content : "");
+              frmNews.setFieldValue("category_news_id", category_news_id ? category_news_id : "");
+              setNewsHiddenImg(news_img ? news_img : "");
+              setBase64Url(
+                news_img ? `${import.meta.env.VITE_BACKEND_URI}/images/${news_img}` : ""
+              );
+            }
           }
-        }
-      });
+        });
+      }
     };
     onReset();
     loadNewsDetail();
-  }, [searchParams.get("id")]);
+  }, [searchParams.get("id"), searchParams.get("action")]);
   const handleUpload = (imageFile: any) => {
     setBase64Url(URL.createObjectURL(imageFile));
     setFeaturedImg(imageFile);
+    setRemovedFeaturedImg(false);
   };
   const handleRemovedFeaturedImg = () => {
     setBase64Url("");
@@ -232,7 +252,7 @@ const NewsFrm = () => {
                 maxSize={0.5}
               >
                 <div className={styles.boxDragDropFile}>
-                  <Image src="/sprite.png" alt="spriteMultipleUpload" width={300} height={200} />
+                  <img src="/sprite.png" alt="spriteMultipleUpload" width={300} height={200} />
                   <div>Upload image right here</div>
                   <div>Maxium 5MB</div>
                 </div>

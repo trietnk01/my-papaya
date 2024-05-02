@@ -24,7 +24,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "allowJs": true
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 10
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

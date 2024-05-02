@@ -1,12 +1,11 @@
-import createUploadLink from "@/apollo-upload-client/createUploadLink.d.mts";
 import JWTProvider from "@/providers/jwt-provider";
 import Routes from "@/routes";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 function App() {
-  const backendUri = `${import.meta.env.VITE_BACKEND_URI}/graphql`;
-  const httpLink = createUploadLink({ uri: backendUri ? backendUri.toString().trim() : "" });
+  const httpLink = createUploadLink({ uri: `${import.meta.env.VITE_BACKEND_URI}/graphql` });
   const authLink = setContext((_, { headers }) => {
     const token: string = window.localStorage.getItem("accessToken")
       ? (window.localStorage.getItem("accessToken") as string)
@@ -14,7 +13,8 @@ function App() {
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : ""
+        authorization: token ? `Bearer ${token}` : "",
+        "Apollo-Require-Preflight": "true"
       }
     };
   });
