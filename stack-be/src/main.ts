@@ -14,12 +14,13 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, "..", "views"));
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  app.enableCors({
+  /* app.enableCors({
     origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
     optionsSuccessStatus: 204
-  });
+  }); */
+  app.enableCors();
   const port: string = confService.get<string>("PORT");
   await app.listen(port);
 }
