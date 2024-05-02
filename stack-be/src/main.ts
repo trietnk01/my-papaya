@@ -16,7 +16,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: true,
-    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    methods: ["GET", "OPTIONS", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true
   });
   const port: string = confService.get<string>("PORT");
