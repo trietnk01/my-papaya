@@ -63,7 +63,7 @@ const Login = () => {
                 <React.Fragment>
                   <input
                     {...field}
-                    type="text"
+                    type="password"
                     placeholder="Password"
                     className={styles.inputTxt}
                   />
