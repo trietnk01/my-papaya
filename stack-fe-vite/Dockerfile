@@ -5,5 +5,5 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build 
-COPY /usr/frontend/dist /usr/share/nginx/html
+COPY --from=build-stage /usr/frontend/dist /usr/share/nginx/html
 
