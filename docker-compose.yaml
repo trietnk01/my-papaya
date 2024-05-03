@@ -3,6 +3,17 @@ networks:
   papaya-net:
     driver: bridge
 services:
+  nginx:
+    container_name: nginx_papaya
+    restart: always
+    build:
+      context: ./stack-fe-vite
+    ports:
+      - 80:80
+    networks:
+      - papaya-net
+    volumes:
+      - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
   mongo:
     container_name: mongo_papaya
     image: mongo:6.0
