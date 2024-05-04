@@ -14,7 +14,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, "..", "views"));
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  app.enableCors({ origin: ["http://14.225.218.38:8000", "http://localhost:3001"] });
+  app.enableCors({ origin: ["https://api.dien.name.vn", "http://localhost:3001"] });
   const port: string = confService.get<string>("PORT");
   await app.listen(port);
 }
