@@ -200,13 +200,7 @@ const NewsFrm = () => {
     navigate("/admin/news/form?action=add");
   };
   return (
-    <Form
-      form={frmNews}
-      layout="vertical"
-      wrapperCol={{ span: 8 }}
-      onFinish={onFinish}
-      name="newsFrm"
-    >
+    <Form form={frmNews} layout="vertical" onFinish={onFinish} name="newsFrm">
       <h2 className={styles.titleHeading}>Create news</h2>
       <Flex justify="flex-end" gap={10}>
         <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleAddNew} />
@@ -217,7 +211,7 @@ const NewsFrm = () => {
         <Form.Item<FieldType>
           label="Title"
           name="news_title"
-          rules={[{ required: true, message: "Please input your username!" }]}
+          rules={[{ required: true, message: "Please input your title!" }]}
         >
           <Input />
         </Form.Item>

@@ -47,7 +47,7 @@ const AdminLayout = () => {
     <Flex justify="flex-start" align="flex-start" gap={20}>
       <Menu
         onClick={onClick}
-        style={{ width: 260 }}
+        className={styles.colMenu}
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
         mode="inline"
