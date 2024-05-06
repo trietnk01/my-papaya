@@ -42,6 +42,16 @@ export class NewsResolver {
     );
   }
 
+  @Query(() => NewsType)
+  findNewsUnAuthenticated(
+    @Args("keyword", { type: () => String }) keyword: string,
+    @Args("category_news_id", { type: () => String }) category_news_id: string,
+    @Args("current", { type: () => String }) current: string,
+    @Args("page_size", { type: () => String }) page_size: string
+  ) {
+    return this.newsService.findNewsUnAuthenticated(keyword, category_news_id, current, page_size);
+  }
+
   @Mutation(() => NewsType)
   uploadNewsImage(@Args("news_img", { type: () => GraphQLUpload }) news_img: FileUpload) {
     return this.newsService.uploadNewsImage(news_img);

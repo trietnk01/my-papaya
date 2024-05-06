@@ -6,12 +6,19 @@
   justify-content: center;
   .container {
     width: 1150px;
+    padding-bottom: 40px;
+    @media (max-width: 992px) {
+      width: 100%;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
     .heading {
       text-align: center;
       font-family: $f_KontrapunktMiki_Bold;
       color: #0098d1;
       font-size: 50px;
-      padding: 40px 0px 40px 0px;
+      padding-top: 40px;
+      padding-bottom: 40px;
     }
     .searchArea {
       display: flex;
@@ -21,8 +28,13 @@
       .searchBox {
         position: relative;
         border: 1px solid rgba(5, 5, 5, 0.08);
-        padding: 0px 0px 0px 30px;
+        padding-left: 30px;
+        padding-right: 30px;
         width: 300px;
+        height: 40px;
+        @media (max-width: 992px) {
+          width: 40%;
+        }
         .seachIcon {
           position: absolute;
           top: 50%;
@@ -32,16 +44,18 @@
         }
         .searchInput {
           border: 0;
-          height: 35px;
+          height: 100%;
           outline: 0;
           width: 100%;
         }
       }
       .categoryNewsId {
         width: 350px;
+        @media (max-width: 992px) {
+          width: 60%;
+        }
       }
     }
-
     .newsBox {
       margin-top: 40px;
       border-right: 1px solid rgba(5, 5, 5, 0.08);
@@ -51,7 +65,17 @@
         column-gap: 20px;
         border-top: 1px solid rgba(5, 5, 5, 0.08);
         padding: 30px 0px;
-        .itemImg {
+        @media (max-width: 576px) {
+          display: block;
+        }
+        .newsImg {
+          @media (max-width: 992px) {
+            width: 300px;
+          }
+          @media (max-width: 576px) {
+            width: 100%;
+            margin-bottom: 20px;
+          }
         }
         .itemInfo {
           .titleCategory {
@@ -94,8 +118,12 @@
       display: flex;
       column-gap: 10px;
       justify-content: flex-end;
+      margin-top: 40px;
       .page {
-        border: 0;
+        border: 1px solid rgba(#000000, 0.07);
+        outline: 0;
+        padding: 10px 15px;
+        background-color: #fff;
       }
     }
   }

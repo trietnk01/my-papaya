@@ -1,60 +1,44 @@
 import React from "react";
 import styles from "@/assets/scss/public-layout.module.scss";
+import { Link } from "react-router-dom";
+import PublicContext from "@/contexts/public-context";
+import { useLazyQuery } from "@apollo/client";
+import { FIND_NEWS_UNAUTHENTICATED } from "@/graphql-client/gql-news";
+import { produce } from "immer";
+import INews from "@/types/i-news";
+
 const HomePage = () => {
+  const context = React.useContext(PublicContext);
+  const newsList: INews[] = context ? context.newsData : [];
   return (
     <React.Fragment>
       <div className={styles.newsBox}>
-        <div className={styles.itemNews}>
-          <a href="javascript:void(0);">
-            <img src="/kinh-te-1.jpg" className={styles.itemImg} width={350} />
-          </a>
-          <div className={styles.itemInfo}>
-            <h3 className={styles.titleCategory}>Pháp luật</h3>
-            <h2 className={styles.titleNews}>
-              <a href="javascript:void(0);">
-                Tài xế xe đầu kéo vi phạm nồng độ cồn, đâm vào nhà dân
-              </a>
-            </h2>
-            <div className={styles.introNews}>
-              Lái xe đầu kéo có nồng độ cồn 0,5 mg/lít khí thở, đâm vào nhà dân bên đường khiến một
-              người chết, một người nguy kịch, 5 người bị thương.
-            </div>
-          </div>
-        </div>
-        <div className={styles.itemNews}>
-          <a href="javascript:void(0);">
-            <img src="/kinh-te-2.jpg" className={styles.itemImg} width={350} />
-          </a>
-          <div className={styles.itemInfo}>
-            <h3 className={styles.titleCategory}>Pháp luật</h3>
-            <h2 className={styles.titleNews}>
-              <a href="javascript:void(0);">
-                Tài xế xe đầu kéo vi phạm nồng độ cồn, đâm vào nhà dân
-              </a>
-            </h2>
-            <div className={styles.introNews}>
-              Lái xe đầu kéo có nồng độ cồn 0,5 mg/lít khí thở, đâm vào nhà dân bên đường khiến một
-              người chết, một người nguy kịch, 5 người bị thương.
-            </div>
-          </div>
-        </div>
-        <div className={styles.itemNews}>
-          <a href="javascript:void(0);">
-            <img src="/kinh-te-3.jpg" className={styles.itemImg} width={350} />
-          </a>
-          <div className={styles.itemInfo}>
-            <h3 className={styles.titleCategory}>Pháp luật</h3>
-            <h2 className={styles.titleNews}>
-              <a href="javascript:void(0);">
-                Tài xế xe đầu kéo vi phạm nồng độ cồn, đâm vào nhà dân
-              </a>
-            </h2>
-            <div className={styles.introNews}>
-              Lái xe đầu kéo có nồng độ cồn 0,5 mg/lít khí thở, đâm vào nhà dân bên đường khiến một
-              người chết, một người nguy kịch, 5 người bị thương.
-            </div>
-          </div>
-        </div>
+        {newsList && newsList.length > 0 ? (
+          <React.Fragment>
+            {newsList.map((val, idx) => {
+              return (
+                <div className={styles.itemNews} key={`news-item-${idx}`}>
+                  <Link to="/">
+                    <img
+                      src={`${import.meta.env.VITE_BACKEND_URI}/images/${val.news_img}`}
+                      width={350}
+                      className={styles.newsImg}
+                    />
+                  </Link>
+                  <div className={styles.itemInfo}>
+                    <h3 className={styles.titleCategory}>{val.category_news_name}</h3>
+                    <h2 className={styles.titleNews}>
+                      <Link to="/">{val.news_title}</Link>
+                    </h2>
+                    <div className={styles.introNews}>{val.news_intro}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </React.Fragment>
+        ) : (
+          <React.Fragment></React.Fragment>
+        )}
       </div>
       <div className={styles.pagination}>
         <button className={styles.page}>1</button>

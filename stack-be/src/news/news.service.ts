@@ -194,6 +194,89 @@ export class NewsService {
     };
   };
 
+  findNewsUnAuthenticated = async (
+    keyword: string,
+    category_news_id: string,
+    current: string,
+    page_size: string
+  ) => {
+    let status: boolean = true;
+    let message: string = "";
+    let list = null;
+    let total: number = 0;
+    try {
+      let position: number = (parseInt(current) - 1) * parseInt(page_size);
+      let where = {};
+      if (keyword) {
+        where["news_title"] = new RegExp(keyword, "i");
+      }
+      if (category_news_id) {
+        where["category_news_id"] = category_news_id;
+      }
+      total = await this.newsModel.countDocuments(where);
+      list = await this.newsModel.aggregate([
+        {
+          $lookup: {
+            from: "category_news",
+            localField: "category_news_id",
+            foreignField: "_id",
+            as: "category_news_detail"
+          }
+        },
+        {
+          $unwind: "$category_news_detail"
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "publisher_id",
+            foreignField: "_id",
+            as: "publisher_detail"
+          }
+        },
+        {
+          $unwind: "$publisher_detail"
+        },
+        {
+          $project: {
+            _id: 1,
+            news_title: 1,
+            news_intro: 1,
+            news_content: 1,
+            news_img: 1,
+            publisher_id: 1,
+            category_news_id: 1,
+            category_news_name: "$category_news_detail.category_name",
+            publisher_name: "$publisher_detail.display_name"
+          }
+        },
+        {
+          $sort: {
+            news_title: 1
+          }
+        },
+        {
+          $match: where
+        },
+        {
+          $skip: position
+        },
+        {
+          $limit: parseInt(page_size)
+        }
+      ]);
+    } catch (err) {
+      status = false;
+      message = err.message;
+    }
+    return {
+      status,
+      message,
+      list,
+      total
+    };
+  };
+
   remove = async (id: string, req: Request) => {
     let status: boolean = true;
     let message: string = "";

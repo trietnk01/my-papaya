@@ -25,6 +25,33 @@ const FIND_NEWS_AUTHENTICATED = gql`
     }
   }
 `;
+const FIND_NEWS_UNAUTHENTICATED = gql`
+  query FindNewsUnAuthenticated(
+    $keyword: String!
+    $category_news_id: String!
+    $current: String!
+    $page_size: String!
+  ) {
+    findNewsUnAuthenticated(
+      keyword: $keyword
+      category_news_id: $category_news_id
+      current: $current
+      page_size: $page_size
+    ) {
+      status
+      message
+      list {
+        _id
+        news_title
+        news_img
+        news_intro
+        category_news_name
+        publisher_name
+      }
+      total
+    }
+  }
+`;
 const GET_NEWS_DETAIL = gql`
   query FindNewsDetailAuthenticated($id: String!) {
     findNewsDetailAuthenticated(id: $id) {
@@ -173,5 +200,6 @@ export {
   FIND_NEWS_AUTHENTICATED,
   GET_NEWS_DETAIL,
   UPDATE_NEWS,
-  DELETE_NEWS_MULTI
+  DELETE_NEWS_MULTI,
+  FIND_NEWS_UNAUTHENTICATED
 };
