@@ -13,6 +13,8 @@ interface INews {
   key: React.Key;
   _id: string;
   news_title: string;
+  category_news_name: string;
+  publisher_name: string;
 }
 interface ICategoryNews {
   value: string;
@@ -63,6 +65,18 @@ const NewsList = () => {
       title: "Title",
       dataIndex: "news_title",
       key: "news_title",
+      render: (text) => text
+    },
+    {
+      title: "Category",
+      dataIndex: "category_news_name",
+      key: "category_news_name",
+      render: (text) => text
+    },
+    {
+      title: "Publisher",
+      dataIndex: "publisher_name",
+      key: "publisher_name",
       render: (text) => text
     },
     {

@@ -29,6 +29,12 @@ class INews {
 
   @Field((type) => IUser, { nullable: true })
   publisher: IUser;
+
+  @Field((type) => String, { nullable: true })
+  category_news_name: string;
+
+  @Field((type) => String, { nullable: true })
+  publisher_name: string;
 }
 @ObjectType()
 export class NewsType {

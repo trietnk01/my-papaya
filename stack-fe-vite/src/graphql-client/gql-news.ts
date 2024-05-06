@@ -18,16 +18,8 @@ const FIND_NEWS_AUTHENTICATED = gql`
         _id
         news_title
         news_img
-        categoryNews {
-          _id
-          category_name
-        }
-        publisher {
-          _id
-          username
-          email
-          display_name
-        }
+        category_news_name
+        publisher_name
       }
       total
     }

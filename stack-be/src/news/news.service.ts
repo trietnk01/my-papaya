@@ -36,8 +36,7 @@ export class NewsService {
           category_news_id: createNewsInput.category_news_id,
           publisher_id: createNewsInput.publisher_id
         });
-        item = await this.newsModel.findOne({ _id: newsItem.insertedId });
-        console.log("item = ", item);
+        item = await this.newsModel.findById(newsItem.insertedId);
       }
     } catch (err) {
       status = false;
@@ -82,18 +81,13 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        console.log("updateNewsInput = ", updateNewsInput);
-        await this.newsModel.updateOne(
-          { _id: updateNewsInput._id },
-          {
-            news_title: updateNewsInput.news_title,
-            news_intro: updateNewsInput.news_intro,
-            news_content: updateNewsInput.news_content,
-            news_img: newsImg,
-            category_news_id: updateNewsInput.category_news_id
-          }
-        );
-        item = await this.newsModel.findOne({ _id: updateNewsInput._id });
+        item = await this.newsModel.findByIdAndUpdate(updateNewsInput._id, {
+          news_title: updateNewsInput.news_title,
+          news_intro: updateNewsInput.news_intro,
+          news_content: updateNewsInput.news_content,
+          news_img: newsImg,
+          category_news_id: updateNewsInput.category_news_id
+        });
       }
     } catch (err) {
       status = false;
@@ -149,6 +143,35 @@ export class NewsService {
             $unwind: "$category_news_detail"
           },
           {
+            $lookup: {
+              from: "users",
+              localField: "publisher_id",
+              foreignField: "_id",
+              as: "publisher_detail"
+            }
+          },
+          {
+            $unwind: "$publisher_detail"
+          },
+          {
+            $project: {
+              _id: 1,
+              news_title: 1,
+              news_intro: 1,
+              news_content: 1,
+              news_img: 1,
+              publisher_id: 1,
+              category_news_id: 1,
+              category_news_name: "$category_news_detail.category_name",
+              publisher_name: "$publisher_detail.display_name"
+            }
+          },
+          {
+            $sort: {
+              news_title: 1
+            }
+          },
+          {
             $match: where
           },
           {
@@ -181,7 +204,7 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.newsModel.findOne({ _id: id });
+        item = await this.newsModel.findById({ _id: id });
         await this.newsModel.deleteOne({ _id: id });
       }
     } catch (err) {
@@ -209,9 +232,7 @@ export class NewsService {
           message = "Please choose at least one id to delete";
         } else {
           const ids: string[] = JSON.parse(selectedIds);
-          for (let i = 0; i < ids.length; i++) {
-            await this.newsModel.deleteOne({ _id: ids[i].toString() });
-          }
+          await this.newsModel.deleteMany({ _id: { $in: ids } });
           message = "Delete news successfully";
         }
       }
@@ -235,9 +256,7 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.newsModel.findOne({
-          _id: id
-        });
+        item = await this.newsModel.findById(id);
       }
     } catch (err) {
       status = false;
