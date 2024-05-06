@@ -27,7 +27,7 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = this.newsModel.create({
+        let newsItem = await this.newsModel.collection.insertOne({
           _id: uuid(),
           news_title: createNewsInput.news_title,
           news_intro: createNewsInput.news_intro,
@@ -36,6 +36,8 @@ export class NewsService {
           category_news_id: createNewsInput.category_news_id,
           publisher_id: createNewsInput.publisher_id
         });
+        item = await this.newsModel.findOne({ _id: newsItem.insertedId });
+        console.log("item = ", item);
       }
     } catch (err) {
       status = false;
@@ -80,7 +82,8 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        await this.newsRepository.update(
+        console.log("updateNewsInput = ", updateNewsInput);
+        await this.newsModel.updateOne(
           { _id: updateNewsInput._id },
           {
             news_title: updateNewsInput.news_title,
@@ -90,7 +93,7 @@ export class NewsService {
             category_news_id: updateNewsInput.category_news_id
           }
         );
-        item = this.newsRepository.findOneBy({ _id: updateNewsInput._id });
+        item = await this.newsModel.findOne({ _id: updateNewsInput._id });
       }
     } catch (err) {
       status = false;
@@ -100,36 +103,6 @@ export class NewsService {
       status,
       message,
       item
-    };
-  };
-  findNewsUnauthenticated = async (keyword: string, category_news_id: string, page: string) => {
-    let status: boolean = true;
-    let message: string = "";
-    let list = null;
-    try {
-      let totalItemPerpage: number = 5;
-      let position: number = (parseInt(page) - 1) * totalItemPerpage;
-      let where = {};
-      if (keyword) {
-        where["news_title"] = new RegExp(keyword, "i");
-      }
-      if (category_news_id) {
-        where["category_news_id"] = category_news_id;
-      }
-      list = await this.newsRepository.find({
-        relations: { categoryNews: true, publisher: true },
-        where,
-        skip: position,
-        take: totalItemPerpage
-      });
-    } catch (err) {
-      status = false;
-      message = err.message;
-    }
-    return {
-      status,
-      message,
-      list
     };
   };
 
@@ -162,13 +135,29 @@ export class NewsService {
         if (userItem && userItem._id) {
           where["publisher_id"] = userItem._id;
         }
-        total = await this.newsRepository.count(where);
-        list = await this.newsRepository.find({
-          relations: ["category_news"],
-          where,
-          skip: position,
-          take: parseInt(page_size)
-        });
+        total = await this.newsModel.countDocuments(where);
+        list = await this.newsModel.aggregate([
+          {
+            $lookup: {
+              from: "category_news",
+              localField: "category_news_id",
+              foreignField: "_id",
+              as: "category_news_detail"
+            }
+          },
+          {
+            $unwind: "$category_news_detail"
+          },
+          {
+            $match: where
+          },
+          {
+            $skip: position
+          },
+          {
+            $limit: parseInt(page_size)
+          }
+        ]);
       }
     } catch (err) {
       status = false;
@@ -192,8 +181,8 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.newsRepository.findOneBy({ _id: id });
-        await this.newsRepository.delete({ _id: id });
+        item = await this.newsModel.findOne({ _id: id });
+        await this.newsModel.deleteOne({ _id: id });
       }
     } catch (err) {
       status = false;
@@ -221,30 +210,11 @@ export class NewsService {
         } else {
           const ids: string[] = JSON.parse(selectedIds);
           for (let i = 0; i < ids.length; i++) {
-            await this.newsRepository.delete({ _id: ids[i].toString() });
+            await this.newsModel.deleteOne({ _id: ids[i].toString() });
           }
           message = "Delete news successfully";
         }
       }
-    } catch (err) {
-      status = false;
-      message = err.message;
-    }
-    return {
-      status,
-      message,
-      item
-    };
-  };
-  findNewsDetailUnauthenticated = async (id: string) => {
-    let status: boolean = true;
-    let message: string = "";
-    let item = null;
-    try {
-      item = await this.newsRepository.findOne({
-        relations: { categoryNews: true, publisher: true },
-        where: { _id: id }
-      });
     } catch (err) {
       status = false;
       message = err.message;
@@ -265,9 +235,8 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        item = await this.newsRepository.findOne({
-          relations: { categoryNews: true, publisher: true },
-          where: { _id: id }
+        item = await this.newsModel.findOne({
+          _id: id
         });
       }
     } catch (err) {

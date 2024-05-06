@@ -24,14 +24,6 @@ export class NewsResolver {
   ) {
     return this.newsService.update(updateNewsInput, req);
   }
-  @Query(() => NewsType)
-  findNewsUnauthenticated(
-    @Args("keyword", { type: () => String }) keyword: string,
-    @Args("category_news_id", { type: () => String }) category_news_id: string,
-    @Args("page", { type: () => String }) page: string
-  ) {
-    return this.newsService.findNewsUnauthenticated(keyword, category_news_id, page);
-  }
 
   @Query(() => NewsType)
   findNewsAuthenticated(
@@ -66,11 +58,6 @@ export class NewsResolver {
     @Context("req") req: Request
   ) {
     return this.newsService.removeMulti(selectedIs, req);
-  }
-
-  @Query(() => NewsType)
-  findNewsDetailUnauthenticated(@Args("id", { type: () => String }) id: string) {
-    return this.newsService.findNewsDetailUnauthenticated(id);
   }
 
   @Query(() => NewsType)
