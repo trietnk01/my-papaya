@@ -1,13 +1,14 @@
-import { produce } from "immer";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import styles from "@/assets/scss/admin-layout.module.scss";
+import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "@/graphql-client/gql-category-news";
+import { DELETE_NEWS, DELETE_NEWS_MULTI, FIND_NEWS_AUTHENTICATED } from "@/graphql-client/gql-news";
 import { DeleteOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, GetProp, Input, Select, Space, Table, TableProps } from "antd";
-import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "@/graphql-client/gql-category-news";
-import { DELETE_NEWS, DELETE_NEWS_MULTI, FIND_NEWS_AUTHENTICATED } from "@/graphql-client/gql-news";
-import styles from "@/assets/scss/admin-layout.module.scss";
+import { produce } from "immer";
+import React from "react";
+import ldash from "lodash";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 type TablePaginationConfig = Exclude<GetProp<TableProps, "pagination">, boolean>;
 interface INews {
   key: React.Key;
@@ -110,7 +111,12 @@ const NewsList = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteNews({ variables: { id } }).then(() => {
-          loadNewsTable(keyword, categoryNewsId, "1", tableParams.pagination?.pageSize?.toString());
+          loadNewsTable(keyword, categoryNewsId, "1");
+          let nextState = ldash.cloneDeep(tableParams);
+          if (nextState.pagination && nextState.pagination.current) {
+            nextState.pagination.current = 1;
+            setTableParams(nextState);
+          }
           Toast.fire({
             icon: "success",
             title: "Delete successfully"
@@ -122,18 +128,13 @@ const NewsList = () => {
   const handleAddItem = () => {
     navigate("/admin/news/form?action=add");
   };
-  const loadNewsTable = (
-    keyword: string,
-    categoryNewsId: string,
-    current: string | undefined,
-    pageSize: string | undefined
-  ) => {
+  const loadNewsTable = (keyword: string, categoryNewsId: string, current: string | undefined) => {
     getNews({
       variables: {
         keyword,
         category_news_id: categoryNewsId,
         current: current ? current.toString() : "",
-        page_size: pageSize ? pageSize.toString() : ""
+        page_size: tableParams.pagination?.pageSize?.toString()
       }
     }).then((res) => {
       if (res && res.data && res.data.findNewsAuthenticated) {
@@ -160,13 +161,8 @@ const NewsList = () => {
   };
   React.useEffect(() => {
     setLoading(true);
-    loadNewsTable(
-      "",
-      "",
-      tableParams.pagination?.current?.toString(),
-      tableParams.pagination?.pageSize?.toString()
-    );
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    loadNewsTable("", "", tableParams.pagination?.current?.toString());
+  }, [tableParams.pagination?.current]);
   React.useEffect(() => {
     const loadSelectedCategoryNews = async () => {
       const res = await getCategoryNews();
@@ -188,12 +184,12 @@ const NewsList = () => {
   }, []);
   const handleSearch = () => {
     setLoading(true);
-    loadNewsTable(
-      keyword,
-      categoryNewsId,
-      tableParams.pagination?.current?.toString(),
-      tableParams.pagination?.pageSize?.toString()
-    );
+    loadNewsTable(keyword, categoryNewsId, "1");
+    let nextState = ldash.cloneDeep(tableParams);
+    if (nextState.pagination && nextState.pagination.current) {
+      nextState.pagination.current = 1;
+      setTableParams(nextState);
+    }
   };
   const handleTableChange: TableProps["onChange"] = (pagination, filters, sorter) => {
     setTableParams({
@@ -233,12 +229,12 @@ const NewsList = () => {
             if (res && res.data && res.data.deleteNewsMulti) {
               const { status, message } = res.data.deleteNewsMulti;
               if (status) {
-                loadNewsTable(
-                  keyword,
-                  categoryNewsId,
-                  "1",
-                  tableParams.pagination?.pageSize?.toString()
-                );
+                loadNewsTable(keyword, categoryNewsId, "1");
+                let nextState = ldash.cloneDeep(tableParams);
+                if (nextState.pagination && nextState.pagination.current) {
+                  nextState.pagination.current = 1;
+                  setTableParams(nextState);
+                }
                 Toast.fire({
                   icon: "success",
                   title: message
