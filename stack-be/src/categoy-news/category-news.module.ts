@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersModule } from "users/users.module";
+import { UsersModule } from "@/users/users.module";
 import { CategoryNewsResolver } from "./category-news.resolver";
 import { CategoryNewsService } from "./category-news.service";
 import { CategoryNews } from "./entities/category-news.entity";

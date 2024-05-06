@@ -1,20 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { join } from "path";
-import * as fs from "fs";
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectModel } from "@nestjs/mongoose";
 import { Request } from "express";
-import { Repository } from "typeorm";
-import { UsersService } from "users/users.service";
+import * as fs from "fs";
+import { FileUpload } from "graphql-upload-ts";
+import { Model } from "mongoose";
+import { join } from "path";
 import { v4 as uuid } from "uuid";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
-import { News } from "./entities/news.entity";
-import { FileUpload } from "graphql-upload-ts";
+import { NewsMongoose } from "./schemas/news-mongoose.schema";
+import { UsersService } from "@/users/users.service";
 
 @Injectable()
 export class NewsService {
   constructor(
-    @InjectRepository(News) private newsRepository: Repository<News>,
+    @InjectModel(NewsMongoose.name) private newsModel: Model<NewsMongoose>,
     private usersService: UsersService
   ) {}
   create = async (createNewsInput: CreateNewsInput, req: Request) => {
@@ -27,7 +27,7 @@ export class NewsService {
         status = false;
         message = "NOT_AUTHENTICATED";
       } else {
-        const newsItem = this.newsRepository.create({
+        item = this.newsModel.create({
           _id: uuid(),
           news_title: createNewsInput.news_title,
           news_intro: createNewsInput.news_intro,
@@ -36,7 +36,6 @@ export class NewsService {
           category_news_id: createNewsInput.category_news_id,
           publisher_id: createNewsInput.publisher_id
         });
-        item = await this.newsRepository.save(newsItem);
       }
     } catch (err) {
       status = false;

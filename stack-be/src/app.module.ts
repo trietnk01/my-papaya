@@ -4,11 +4,12 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { MongooseModule } from "@nestjs/mongoose";
 import { join } from "path";
-import { AppService } from "app.service";
-import { CategoryNews } from "categoy-news/entities/category-news.entity";
-import { News } from "news/entities/news.entity";
-import { Users } from "users/entities/users.entity";
+import { AppService } from "@/app.service";
+import { CategoryNews } from "@/categoy-news/entities/category-news.entity";
+import { News } from "@/news/entities/news.entity";
+import { Users } from "@/users/entities/users.entity";
 import { CategoryNewsModule } from "./categoy-news/category-news.module";
 import { NewsModule } from "./news/news.module";
 import { UsersModule } from "./users/users.module";
@@ -28,6 +29,13 @@ import { MediaUploadModule } from "./media-upload/media-upload.module";
         synchronize: true,
         useUnifiedTopology: true,
         entities: [Users, CategoryNews, News]
+      }),
+      inject: [ConfigService]
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (confService: ConfigService) => ({
+        uri: confService.get<string>("MONGODB_URI")
       }),
       inject: [ConfigService]
     }),

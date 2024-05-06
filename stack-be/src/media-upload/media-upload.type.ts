@@ -1,6 +1,4 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { ICategoryNews } from "categoy-news/category-news.type";
-import { IUser } from "users/users.type";
 
 @ObjectType()
 export class MediaUploadType {

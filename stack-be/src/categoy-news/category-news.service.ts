@@ -4,7 +4,7 @@ import { Request } from "express";
 import mongoose from "mongoose";
 import { v4 as uuid } from "uuid";
 import { Repository } from "typeorm";
-import { UsersService } from "users/users.service";
+import { UsersService } from "@/users/users.service";
 import { CreateCategoryNewsInput } from "./dto/create-category-news.input";
 import { CategoryNews } from "./entities/category-news.entity";
 @Injectable()

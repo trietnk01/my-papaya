@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersModule } from "users/users.module";
-import { News } from "./entities/news.entity";
+import { MongooseModule } from "@nestjs/mongoose";
 import { NewsResolver } from "./news.resolver";
 import { NewsService } from "./news.service";
-import { CategoryNewsModule } from "categoy-news/category-news.module";
+import { NewsMongoose, NewsSchema } from "./schemas/news-mongoose.schema";
+import { UsersModule } from "@/users/users.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([News]), UsersModule, CategoryNewsModule],
+  imports: [
+    MongooseModule.forFeature([{ name: NewsMongoose.name, schema: NewsSchema }]),
+    UsersModule
+  ],
   providers: [NewsResolver, NewsService]
 })
 export class NewsModule {}

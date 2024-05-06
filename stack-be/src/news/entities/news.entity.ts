@@ -1,6 +1,6 @@
-import { CategoryNews } from "categoy-news/entities/category-news.entity";
+import { CategoryNews } from "@/categoy-news/entities/category-news.entity";
 import { Column, Entity, JoinColumn, ManyToOne, ObjectIdColumn } from "typeorm";
-import { Users } from "users/entities/users.entity";
+import { Users } from "@/users/entities/users.entity";
 
 @Entity({ name: "news" })
 export class News {

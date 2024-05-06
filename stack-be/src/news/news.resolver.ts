@@ -1,20 +1,14 @@
 import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { CategoryNewsService } from "categoy-news/category-news.service";
 import { Request } from "express";
-import { UsersService } from "users/users.service";
+import { FileUpload, GraphQLUpload } from "graphql-upload-ts";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
 import { NewsService } from "./news.service";
 import { NewsType } from "./news.type";
-import { FileUpload, GraphQLUpload } from "graphql-upload-ts";
 
 @Resolver(() => NewsType)
 export class NewsResolver {
-  constructor(
-    private readonly newsService: NewsService,
-    private readonly categoryNewsService: CategoryNewsService,
-    private readonly usersService: UsersService
-  ) {}
+  constructor(private readonly newsService: NewsService) {}
 
   @Mutation(() => NewsType)
   createNews(

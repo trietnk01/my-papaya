@@ -1,4 +1,4 @@
-import { News } from "news/entities/news.entity";
+import { News } from "@/news/entities/news.entity";
 import { Column, Entity, JoinColumn, ObjectId, ObjectIdColumn, OneToMany } from "typeorm";
 
 @Entity({ name: "users" })
