@@ -15,6 +15,7 @@ interface ICategoryNews {
 }
 
 const PublicLayout = () => {
+  const context = React.useContext(PublicContext);
   const [categoryNewsData, setCategoryNewsData] = React.useState<ICategoryNews[]>([]);
   const [newsData, setNewsData] = React.useState<INews[]>([]);
   const [keyword, setKeyword] = React.useState<string>("");
@@ -59,7 +60,9 @@ const PublicLayout = () => {
       if (res && res.data && res.data.findNewsUnAuthenticated) {
         const { status, list, total } = res.data.findNewsUnAuthenticated;
         if (status) {
-          setNewsData(list);
+          if (context) {
+            context.onSetNewsData(list);
+          }
         }
       }
     });
@@ -84,34 +87,32 @@ const PublicLayout = () => {
     debouncedSearch(e ? e.target.value.toString() : "");
   };
   return (
-    <PublicContext.Provider value={{ keyword, categoryNewsId, newsData }}>
-      <div className={styles.main}>
-        <div className={styles.container}>
-          <h1 className={styles.heading}>Papaya News</h1>
-          <div className={styles.searchArea}>
-            <div className={styles.searchBox}>
-              <SearchOutlined className={styles.seachIcon} />
-              <input
-                type="text"
-                name="keyword"
-                placeholder="Search..."
-                value={keyword}
-                className={styles.searchInput}
-                onChange={handleKeywordChange}
-              />
-            </div>
-            <Select
-              size="large"
-              defaultValue=""
-              className={styles.categoryNewsId}
-              options={categoryNewsData}
-              onChange={handleCategoryNewsChange}
+    <div className={styles.main}>
+      <div className={styles.container}>
+        <h1 className={styles.heading}>Papaya News</h1>
+        <div className={styles.searchArea}>
+          <div className={styles.searchBox}>
+            <SearchOutlined className={styles.seachIcon} />
+            <input
+              type="text"
+              name="keyword"
+              placeholder="Search..."
+              value={keyword}
+              className={styles.searchInput}
+              onChange={handleKeywordChange}
             />
           </div>
-          <Outlet />
+          <Select
+            size="large"
+            defaultValue=""
+            className={styles.categoryNewsId}
+            options={categoryNewsData}
+            onChange={handleCategoryNewsChange}
+          />
         </div>
+        <Outlet />
       </div>
-    </PublicContext.Provider>
+    </div>
   );
 };
 

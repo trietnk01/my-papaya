@@ -1,15 +1,13 @@
-import React from "react";
 import styles from "@/assets/scss/public-layout.module.scss";
-import { Link } from "react-router-dom";
 import PublicContext from "@/contexts/public-context";
-import { useLazyQuery } from "@apollo/client";
-import { FIND_NEWS_UNAUTHENTICATED } from "@/graphql-client/gql-news";
-import { produce } from "immer";
 import INews from "@/types/i-news";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const context = React.useContext(PublicContext);
-  const newsList: INews[] = context ? context.newsData : [];
+  const newsList: INews[] =
+    context && context.newsData && context.newsData.length > 0 ? context.newsData : [];
   return (
     <React.Fragment>
       <div className={styles.newsBox}>

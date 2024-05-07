@@ -3,6 +3,7 @@ import Routes from "@/routes";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import PublicProvider from "@/providers/public-provider";
 
 function App() {
   const httpLink = createUploadLink({ uri: `${import.meta.env.VITE_BACKEND_URI}/graphql` });
@@ -25,7 +26,9 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <JWTProvider>
-        <Routes />
+        <PublicProvider>
+          <Routes />
+        </PublicProvider>
       </JWTProvider>
     </ApolloProvider>
   );
