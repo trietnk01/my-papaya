@@ -11,7 +11,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=Godofwar246357
     ports:
-      - 4200:27017
+      - 4201:27017
     networks:
       - papaya-net
     volumes:
