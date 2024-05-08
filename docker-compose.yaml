@@ -23,7 +23,7 @@ services:
     build:
       context: ./stack-be
     ports:
-      - 8000:8000
+      - 7001:8000
     networks:
       - papaya-net
 volumes:
