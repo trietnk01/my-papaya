@@ -27,7 +27,6 @@ services:
       - papaya-net
     volumes:
       - mongo_papaya_volume:/data/db
-    restart: unless-stopped
   backend:
     restart: unless-stopped
     container_name: backend_papaya
