@@ -16,6 +16,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors();
   const port: string = confService.get<string>("PORT");
+  console.log("port = ", port);
   await app.listen(port);
 }
 bootstrap();

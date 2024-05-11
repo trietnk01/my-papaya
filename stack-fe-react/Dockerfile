@@ -4,6 +4,7 @@ WORKDIR /usr/frontend
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN rm -rf build
 RUN npm run build 
 FROM nginx:1.23.3
 COPY --from=build-stage /usr/frontend /usr/share/nginx/html
