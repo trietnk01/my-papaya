@@ -37,11 +37,11 @@
     "sweetalert2": "^11.10.8",
     "yup": "0.32.11",
     "sass": "^1.72.0",
-    "@dotenvx/dotenvx": "^0.35.1"
+    "env-cmd": "10.1.0"
   },
   "scripts": {
-    "build:test": "dotenvx run --env-file=.env.test --  react-scripts build",
-    "build:production": "dotenvx run --env-file=.env.production -- react-scripts build",
+    "build:test": "env-cmd -f .env.test --  react-scripts build",
+    "build:production": "env-cmd -f .env.production -- react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
