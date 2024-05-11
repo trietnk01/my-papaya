@@ -5,15 +5,15 @@ networks:
 services:
   nginx:
     container_name: nginx_papaya
-    restart: always
     build:
       context: ./stack-fe-vite
     ports:
-      - 80:80
+      - 9001:80
     networks:
       - papaya-net
     volumes:
       - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
   mongo:
     container_name: mongo_papaya
     image: mongo:6.0
@@ -27,8 +27,8 @@ services:
       - papaya-net
     volumes:
       - mongo_papaya_volume:/data/db
+    restart: always
   backend:
-    restart: unless-stopped
     container_name: backend_papaya
     build:
       context: ./stack-be
@@ -36,6 +36,7 @@ services:
       - 7001:8000
     networks:
       - papaya-net
+    restart: always
 volumes:
   mongo_papaya_volume:
 # docker compose -p my-papaya up -d
