@@ -1,33 +1,33 @@
 version: "3.9"
 networks:
-  papaya-net:
+  net_dev_papaya:
     driver: bridge
 services:
-  mongo_test_papaya:
-    container_name: mongo_papaya
+  mongo_dev_papaya:
+    container_name: mongo_dev_papaya
     image: mongo:6.0
     environment:
       - MONGO_INITDB_DATABASE=papaya
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=Godofwar246357
     ports:
-      - 4201:27017
+      - 4001:27017
     networks:
-      - papaya-net
+      - net_dev_papaya
     volumes:
-      - mongo_papaya_volume:/data/db
+      - mongo_volume_dev_papaya:/data/db
     restart: always
-  backend:
-    container_name: backend_papaya
+  backend_dev_papaya:
+    container_name: backend_dev_papaya
     build:
-      context: ./stack-be
+      context: ./stack-be/DockerfileTest
     ports:
-      - 7001:8000
+      - 8001:8000
     networks:
-      - papaya-net
+      - net_dev_papaya
     restart: always
 volumes:
-  mongo_papaya_volume:
+  mongo_volume_dev_papaya:
 # docker compose -p my-papaya up -d
 # docker volume ls
 # docker volume rm my-papaya_rediscache_volume
