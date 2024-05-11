@@ -40,10 +40,7 @@
     "@dotenvx/dotenvx": "^0.35.1"
   },
   "scripts": {
-    "dev": "dotenvx run --env-file=.env.development --  react-scripts start",
-    "build:dev": "dotenvx run --env-file=.env.development --  react-scripts build",
     "build:test": "dotenvx run --env-file=.env.test --  react-scripts build",
-    "build:preview": "dotenvx run --env-file=.env.preview -- react-scripts build",
     "build:production": "dotenvx run --env-file=.env.production -- react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

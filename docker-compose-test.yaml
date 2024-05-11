@@ -1,16 +1,17 @@
 version: "3.9"
 networks:
-  net_papaya:
+  bridge_network:
     driver: bridge
 services:
   nginx:
     container_name: nginx_test_papaya
     build:
-      context: ./stack-fe-react/TestDockerfile/Dockerfile
+      context: ./stack-fe-react
+      dockerfile: env-test.Dockerfile
     ports:
       - 3002:80
     networks:
-      - net_papaya
+      - bridge_network
     volumes:
       - ./nginx/config/default-test.conf:/etc/nginx/conf.d/default.conf
     restart: always
@@ -24,18 +25,19 @@ services:
     ports:
       - 4002:27017
     networks:
-      - net_papaya
+      - bridge_network
     volumes:
       - mongo_volume:/data/db
     restart: always
   backend:
     container_name: backend_test_papaya
     build:
-      context: ./stack-be/DockerfileTest
+      context: ./stack-be
+      dockerfile: env-test.Dockerfile
     ports:
       - 8002:8000
     networks:
-      - net_papaya
+      - bridge_network
     restart: always
 volumes:
   mongo_volume:
