@@ -6,7 +6,7 @@ services:
   nginx:
     container_name: nginx_papaya
     build:
-      context: ./stack-fe-vite
+      context: ./stack-fe-react
     ports:
       - 9001:80
     networks:
