@@ -1,0 +1,68 @@
+{
+  "name": "stack-fe-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.97",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "@ant-design/icons": "^5.3.6",
+    "@apollo/client": "^3.9.11",
+    "@hookform/resolvers": "^2.8.8",
+    "@reduxjs/toolkit": "^1.8.1",
+    "antd": "^5.16.2",
+    "apollo-server-express": "^3.12.0",
+    "apollo-upload-client": "^18.0.1",
+    "clsx": "^2.1.0",
+    "graphql": "^16.8.1",
+    "immer": "^10.0.4",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "react-drag-drop-files": "^2.3.10",
+    "react-hook-form": "^7.31.1",
+    "react-quill": "^2.0.0",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.2.1",
+    "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
+    "sweetalert2": "^11.10.8",
+    "yup": "0.32.11",
+    "sass": "^1.72.0",
+    "@dotenvx/dotenvx": "^0.35.1"
+  },
+  "scripts": {
+    "dev": "dotenvx run --env-file=.env.development --  react-scripts start",
+    "build:test": "dotenvx run --env-file=.env.test --  react-scripts build",
+    "build:preview": "dotenvx run --env-file=.env.preview -- react-scripts build",
+    "build:production": "dotenvx run --env-file=.env.production -- react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
