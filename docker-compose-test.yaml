@@ -1,20 +1,20 @@
 version: "3.9"
 networks:
-  net_test_papaya:
+  net_papaya:
     driver: bridge
 services:
-  nginx_test_papaya:
+  nginx:
     container_name: nginx_test_papaya
     build:
-      context: ./stack-fe-react/DockerfileTest
+      context: ./stack-fe-react/TestDockerfile/Dockerfile
     ports:
       - 3002:80
     networks:
-      - net_test_papaya
+      - net_papaya
     volumes:
-      - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/config/default-test.conf:/etc/nginx/conf.d/default.conf
     restart: always
-  mongo_test_papaya:
+  mongo:
     container_name: mongo_test_papaya
     image: mongo:6.0
     environment:
@@ -24,22 +24,22 @@ services:
     ports:
       - 4002:27017
     networks:
-      - net_test_papaya
+      - net_papaya
     volumes:
-      - mongo_volume_test_papaya:/data/db
+      - mongo_volume:/data/db
     restart: always
-  backend_test_papaya:
+  backend:
     container_name: backend_test_papaya
     build:
       context: ./stack-be/DockerfileTest
     ports:
       - 8002:8000
     networks:
-      - net_test_papaya
+      - net_papaya
     restart: always
 volumes:
-  mongo_volume_test_papaya:
-# docker compose -p my-papaya up -d
+  mongo_volume:
+# docker compose -p my_test_papaya -f docker-compose-test.yaml up -d
 # docker volume ls
 # docker volume rm my-papaya_rediscache_volume
 # jenkins username : root - password : Jenkins@246357 - https://872d-1-53-19-150.ngrok-free.app
