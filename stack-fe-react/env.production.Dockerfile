@@ -7,5 +7,5 @@ COPY . .
 RUN rm -rf build
 RUN npm run build:production 
 FROM nginx:1.23.3
-COPY --from=build-stage /usr/frontend /usr/share/nginx/html
+COPY --from=build-stage /usr/frontend/build /usr/share/nginx/html
 
