@@ -1,0 +1,48 @@
+version: "3.9"
+networks:
+  net_preview_papaya:
+    driver: bridge
+services:
+  nginx_preview_papaya:
+    container_name: nginx_preview_papaya
+    build:
+      context: ./stack-fe-react/DockerfilePreview
+    ports:
+      - 3003:80
+    networks:
+      - net_preview_papaya
+    volumes:
+      - ./nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+  mongo_preview_papaya:
+    container_name: mongo_preview_papaya
+    image: mongo:6.0
+    environment:
+      - MONGO_INITDB_DATABASE=papaya
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=Godofwar246357
+    ports:
+      - 4003:27017
+    networks:
+      - net_preview_papaya
+    volumes:
+      - mongo_volume_preview_papaya:/data/db
+    restart: always
+  backend_preview_papaya:
+    container_name: backend_preview_papaya
+    build:
+      context: ./stack-be/DockerfilePreview
+    ports:
+      - 8003:8000
+    networks:
+      - net_preview_papaya
+    restart: always
+volumes:
+  mongo_volume_preview_papaya:
+# docker compose -p my-papaya up -d
+# docker volume ls
+# docker volume rm my-papaya_rediscache_volume
+# jenkins username : root - password : Jenkins@246357 - https://872d-1-53-19-150.ngrok-free.app
+# redis password : Redis@246357
+# docker run -u 0 -d --name my-jenkins -p 8080:8080 -p 50000:50000 -v /home/diennk/my-jenkins:/var/jenkins_home jenkins/jenkins:lts
+# docker run -d --restart=always -p 127.0.0.1:2376:2375 --network jenkins -v /var/run/docker.sock:/var/run/docker.sock alpine/socat tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
