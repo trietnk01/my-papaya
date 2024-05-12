@@ -18,7 +18,7 @@ const HomePage = () => {
                 <div className={styles.itemNews} key={`news-item-${idx}`}>
                   <Link to="/">
                     <img
-                      src={`${import.meta.env.VITE_BACKEND_URI}/images/${val.news_img}`}
+                      src={`${process.env.REACT_APP_BACKEND_URI}/images/${val.news_img}`}
                       width={350}
                       className={styles.newsImg}
                     />

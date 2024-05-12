@@ -164,7 +164,7 @@ const NewsFrm = () => {
               frmNews.setFieldValue("category_news_id", category_news_id ? category_news_id : "");
               setNewsHiddenImg(news_img ? news_img : "");
               setBase64Url(
-                news_img ? `${import.meta.env.VITE_BACKEND_URI}/images/${news_img}` : ""
+                news_img ? `${process.env.REACT_APP_BACKEND_URI}/images/${news_img}` : ""
               );
             }
           }
