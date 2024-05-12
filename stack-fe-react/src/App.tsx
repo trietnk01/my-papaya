@@ -1,25 +1,36 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import JWTProvider from "@/providers/jwt-provider";
+import Routes from "@/routes";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import PublicProvider from "@/providers/public-provider";
 
 function App() {
+  const httpLink = createUploadLink({ uri: `${import.meta.env.VITE_BACKEND_URI}/graphql` });
+  const authLink = setContext((_, { headers }) => {
+    const token: string = window.localStorage.getItem("accessToken")
+      ? (window.localStorage.getItem("accessToken") as string)
+      : "";
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+        "Apollo-Require-Preflight": "true"
+      }
+    };
+  });
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload. ENV.TEST
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <JWTProvider>
+        <PublicProvider>
+          <Routes />
+        </PublicProvider>
+      </JWTProvider>
+    </ApolloProvider>
   );
 }
 
