@@ -89,7 +89,7 @@ const PublicLayout = () => {
   return (
     <div className={styles.main}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>Papaya News v2</h1>
+        <h1 className={styles.heading}>Papaya News</h1>
         <div className={styles.searchArea}>
           <div className={styles.searchBox}>
             <SearchOutlined className={styles.seachIcon} />
