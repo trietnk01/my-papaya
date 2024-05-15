@@ -9,8 +9,8 @@ import { graphqlUploadExpress } from "graphql-upload-ts";
 import { AppModule } from "./app.module";
 async function bootstrap() {
   const httpsOptions = {
-    cert: fs.readFileSync(join(process.cwd() + "/src/secrets/certificate.crt")),
-    key: fs.readFileSync(join(process.cwd() + "/src/secrets/private.key"))
+    cert: fs.readFileSync(join(process.cwd() + "/src/secrets/certificate.pem")),
+    key: fs.readFileSync(join(process.cwd() + "/src/secrets/private.pem"))
   };
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     httpsOptions
