@@ -15,7 +15,8 @@ function App() {
       headers: {
         ...headers,
         authorization: token ? `Bearer ${token}` : "",
-        "Apollo-Require-Preflight": "true"
+        "Apollo-Require-Preflight": "true",
+        credentials: "same-origin"
       }
     };
   });
