@@ -8,7 +8,7 @@ import PublicProvider from "@/providers/public-provider";
 function App() {
   const httpLink = createUploadLink({
     uri: `${import.meta.env.VITE_BACKEND_URI}/graphql`,
-    credentials: "include"
+    credentials: "same-origin"
   });
   const authLink = setContext((_, { headers }) => {
     const token: string = window.localStorage.getItem("accessToken")
