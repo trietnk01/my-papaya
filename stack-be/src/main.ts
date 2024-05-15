@@ -8,7 +8,11 @@ import cookieParser from "cookie-parser";
 import { graphqlUploadExpress } from "graphql-upload-ts";
 import { AppModule } from "./app.module";
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const httpsOptions = {
+    cert: fs.readFileSync(join(process.cwd() + "/src/secrets/certificate.pem")),
+    key: fs.readFileSync(join(process.cwd() + "/src/secrets/private.pem"))
+  };
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { httpsOptions });
   app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
   const confService = app.get(ConfigService);
   app.useStaticAssets(join(__dirname, "..", "public"));
