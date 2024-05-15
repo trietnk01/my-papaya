@@ -14,7 +14,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, "..", "views"));
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  app.enableCors({ origin: "*" });
+  app.enableCors({ origin: "*", credentials: true });
   const port: string = confService.get<string>("PORT");
   await app.listen(port);
 }
