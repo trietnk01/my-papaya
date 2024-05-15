@@ -6,7 +6,10 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import PublicProvider from "@/providers/public-provider";
 
 function App() {
-  const httpLink = createUploadLink({ uri: `${import.meta.env.VITE_BACKEND_URI}/graphql` });
+  const httpLink = createUploadLink({
+    uri: `${import.meta.env.VITE_BACKEND_URI}/graphql`,
+    credentials: "include"
+  });
   const authLink = setContext((_, { headers }) => {
     const token: string = window.localStorage.getItem("accessToken")
       ? (window.localStorage.getItem("accessToken") as string)
