@@ -1,12 +1,11 @@
+import { AppModule } from "@/app.module";
 import { ValidationPipe } from "@nestjs/common";
-import { join } from "path";
-import * as fs from "fs";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import cookieParser from "cookie-parser";
 import { graphqlUploadExpress } from "graphql-upload-ts";
-import { AppModule } from "@/app.module";
+import { join } from "path";
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
