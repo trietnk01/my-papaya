@@ -1,12 +1,12 @@
 import styles from "@/assets/scss/admin-layout.module.scss";
 import { FIND_ALL_CATEGORY_NEWS_AUTHENTICATED } from "@/graphql-client/gql-category-news";
-import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "@/graphql-client/gql-news";
 import { UPLOAD_IMAGE } from "@/graphql-client/gql-media";
+import { ADD_NEWS, GET_NEWS_DETAIL, UPDATE_NEWS } from "@/graphql-client/gql-news";
 import useAuth from "@/hooks/useAuth";
 import IMediaSource from "@/types/media-source";
 import { BackwardFilled, DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Button, Flex, Form, FormProps, Image, Input, Select } from "antd";
+import { Button, Flex, Form, FormProps, Input, Select } from "antd";
 import React from "react";
 import { FileUploader } from "react-drag-drop-files";
 import ReactQuill from "react-quill";

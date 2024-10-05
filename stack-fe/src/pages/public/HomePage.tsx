@@ -8,6 +8,9 @@ const HomePage = () => {
   const context = React.useContext(PublicContext);
   const newsList: INews[] =
     context && context.newsData && context.newsData.length > 0 ? context.newsData : [];
+  React.useEffect(() => {
+    console.log("abc");
+  }, []);
   return (
     <React.Fragment>
       <div className={styles.newsBox}>

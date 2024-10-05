@@ -194,6 +194,33 @@ const DELETE_NEWS = gql`
     }
   }
 `;
+const GET_VIDEOS = gql`
+  query GetVideos($video_name: String!) {
+    findVideos(video_name: $video_name) {
+      status
+      message
+      item {
+        _id
+        news_title
+        news_intro
+        news_content
+        news_img
+        category_news_id
+        publisher_id
+        categoryNews {
+          _id
+          category_name
+        }
+        publisher {
+          _id
+          username
+          email
+          display_name
+        }
+      }
+    }
+  }
+`;
 export {
   ADD_NEWS,
   DELETE_NEWS,
@@ -201,5 +228,6 @@ export {
   GET_NEWS_DETAIL,
   UPDATE_NEWS,
   DELETE_NEWS_MULTI,
-  FIND_NEWS_UNAUTHENTICATED
+  FIND_NEWS_UNAUTHENTICATED,
+  GET_VIDEOS
 };

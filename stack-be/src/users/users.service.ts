@@ -1,50 +1,34 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectModel } from "@nestjs/mongoose";
 import { compareSync, genSaltSync, hashSync } from "bcryptjs";
-import { Request, Response } from "express";
-import ms from "ms";
-import { Repository } from "typeorm";
-import { v4 as uuid } from "uuid";
+import { Model } from "mongoose";
 import { CreateUserInput } from "./dto/create-user.input";
-import { UpdateUserInput } from "./dto/update-user.input";
-import { Users } from "./entities/users.entity";
-import mongoose from "mongoose";
+import { Users } from "./users.schema";
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
-    private jwt: JwtService,
-    private confService: ConfigService
-  ) {}
-  create = async (userCreateInput: CreateUserInput) => {
-    let status: boolean = true;
-    let message: string = "";
-    let item = null;
-    try {
-      const salt = genSaltSync(10);
-      const hashPassword = hashSync(userCreateInput.password, salt);
-      const userItem = this.usersRepository.create({
-        _id: uuid(),
-        username: userCreateInput.username,
-        password: hashPassword,
-        email: userCreateInput.email,
-        display_name: userCreateInput.display_name
-      });
-      item = await this.usersRepository.save(userItem);
-    } catch (err) {
-      status = false;
-      message = err.message;
-    }
-    return {
-      status,
-      message,
-      item
-    };
+  constructor(@InjectModel(Users.name) private usersModel: Model<Users>) {}
+  create = (userCreateInput: CreateUserInput) => {
+    const salt = genSaltSync(10);
+    const hashPassword = hashSync(userCreateInput.password, salt);
+    userCreateInput.password = hashPassword;
+    const item = new this.usersModel(userCreateInput);
+    item.save();
+    return item;
   };
-  login = async (username: string, password: string, res: Response) => {
+  findByUsername = (username: string) => {
+    return this.usersModel.findOne({ username });
+  };
+  isValidPassword = (password: string, hash: string) => {
+    return compareSync(password, hash);
+  };
+  updateUserToken = (id: string, token: string) => {
+    return this.usersModel.updateOne({ _id: id }, { token });
+  };
+  findUserByToken = (token: string) => {
+    return this.usersModel.findOne({ token });
+  };
+  /* login = async (username: string, password: string, res: Response) => {
     let status: boolean = true;
     let message: string = "";
     let item = null;
@@ -72,10 +56,6 @@ export class UsersService {
             expiresIn: this.confService.get<string>("JWT_ACCESS_EXPIRE").toString()
           });
           await this.usersRepository.update({ _id: userItem._id }, { token });
-          /*           res.cookie("refreshToken", token, {
-            httpOnly: false,
-            maxAge: ms(this.confService.get<string>("JWT_ACCESS_EXPIRE").toString())
-          }); */
           item = {
             _id: userItem._id,
             username: userItem.username,
@@ -85,15 +65,10 @@ export class UsersService {
           };
         }
       }
+      return item;
     } catch (err) {
-      status = false;
-      message = err.message;
+      throw new BadRequestException(err.message);
     }
-    return {
-      status,
-      message,
-      item
-    };
   };
   checkValidToken = async (token: string) => {
     let status: boolean = true;
@@ -188,16 +163,6 @@ export class UsersService {
     const data = await this.usersRepository.findOneBy({ username });
     return data;
   };
-  findUserByToken = async (req: Request) => {
-    const bearerHeader = req.headers["authorization"];
-    const bearerData = bearerHeader.split(" ");
-    let token = bearerData[1];
-    const userItem = await this.usersRepository.findOneBy({ token });
-    return userItem;
-  };
-  isValidPassword = async (password: string, hash: string) => {
-    return compareSync(password, hash);
-  };
   findAllUsersUnauthenticated = async () => {
     let status: boolean = true;
     let message: string = "";
@@ -213,5 +178,5 @@ export class UsersService {
       message,
       list
     };
-  };
+  }; */
 }

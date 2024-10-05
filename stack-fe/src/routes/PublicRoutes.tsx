@@ -5,6 +5,7 @@ import { lazy } from "react";
 import Loadable from "@/components/Loadable";
 import PublicLayout from "@/layout/PublicLayout";
 const HomePage = Loadable(lazy(() => import("@/pages/public/HomePage")));
+const VideoPage = Loadable(lazy(() => import("@/pages/public/VideoPage")));
 // ==============================|| AUTH ROUTING ||============================== //
 
 const PublicRoutes = {
@@ -14,6 +15,10 @@ const PublicRoutes = {
     {
       path: "/",
       element: <HomePage />
+    },
+    {
+      path: "/video",
+      element: <VideoPage />
     }
   ]
 };

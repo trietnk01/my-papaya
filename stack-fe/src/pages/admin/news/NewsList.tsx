@@ -128,6 +128,7 @@ const NewsList = () => {
   const handleAddItem = () => {
     navigate("/admin/news/form?action=add");
   };
+  const handleImport = () => {};
   const loadNewsTable = (keyword: string, categoryNewsId: string, current: string | undefined) => {
     getNews({
       variables: {
@@ -278,6 +279,7 @@ const NewsList = () => {
           <Button type="primary" icon={<SearchOutlined />} size="large" onClick={handleSearch} />
         </div>
         <div className={styles.actionBox}>
+          <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleImport} />
           <Button type="primary" icon={<PlusOutlined />} size="large" onClick={handleAddItem} />
           <Button
             type="primary"
@@ -294,7 +296,6 @@ const NewsList = () => {
         dataSource={newsData}
         pagination={tableParams.pagination}
         loading={loading}
-        onChange={handleTableChange}
       />
     </React.Fragment>
   );
