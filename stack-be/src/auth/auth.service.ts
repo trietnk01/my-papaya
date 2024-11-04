@@ -1,4 +1,4 @@
-import { IUser } from "@/types/user";
+import { IUser } from "@/types/users";
 import { UsersService } from "@/users/users.service";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -35,26 +35,24 @@ export class AuthService {
     return { accessToken, refreshToken };
   };
   login = async (user: IUser) => {
-    const { _id, username, email, fullname } = user;
-    const payload: any = {
-      sub: "token login",
-      iss: "from server",
-      _id,
-      username,
-      email,
-      fullname
-    };
-    const token: string = await this.jwt.signAsync(payload, {
-      secret: this.confService.get<string>("JWT_ACCESS_TOKEN_SECRET")
-    });
-    await this.usersService.updateUserToken(_id, token);
-    return {
-      _id,
-      username,
-      email,
-      fullname,
-      token
-    };
+    try {
+      const { _id, username, email, fullname } = user;
+      const payload: any = {
+        sub: "token login",
+        iss: "from server",
+        _id,
+        username,
+        email,
+        fullname
+      };
+      const token: string = await this.jwt.sign(payload, {
+        secret: this.confService.get<string>("JWT_ACCESS_TOKEN_SECRET")
+      });
+      await this.usersService.updateUserToken(_id, token);
+      return { _id, username, email, fullname, token };
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   };
   logout = async (user: IUser) => {
     try {

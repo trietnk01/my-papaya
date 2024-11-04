@@ -1,29 +1,28 @@
-import { Args, Context, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Response, Request } from "express";
-import { UsersService } from "@/users/users.service";
-import { AuthType } from "./object-type/auth.type";
+import { CurrentUser, Public } from "@/decorator/customize";
+import { IUser } from "@/types/users";
+import { UseGuards } from "@nestjs/common";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { AuthService } from "./auth.service";
-import { Req, UseGuards } from "@nestjs/common";
-import { CurrentUser, Public } from "@/decorator/public.decorator";
-import { LoginType } from "./object-type/login.type";
+import { AuthType } from "./auth.type";
 import { LocalAuthGuard } from "./local-auth.guard";
-import { LoginInput } from "./input-type/login-input.type";
-import { IUser } from "@/types/user";
 
+@Resolver(() => AuthType)
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private auth: AuthService) {}
 
   @Public()
-  @Mutation(() => LoginType)
   @UseGuards(LocalAuthGuard)
-  signIn(@Args("logIn") logIn: LoginInput, @CurrentUser() user: IUser) {
-    console.log("user = ", user);
-    return { username: "diennk", email: "nguyenkimdien02@gmail.com", fullname: "Nguyen Kim Dien" };
+  @Mutation(() => AuthType)
+  async login(
+    @Args("username", { type: () => String }) username: string,
+    @Args("password", { type: () => String }) password: string,
+    @CurrentUser() user: IUser
+  ) {
+    return this.auth.login(user);
   }
 
-  @Public()
-  @Query(() => String)
-  hello() {
-    return "Hello world";
+  @Query(() => AuthType)
+  getHello(@CurrentUser() user) {
+    return user;
   }
 }

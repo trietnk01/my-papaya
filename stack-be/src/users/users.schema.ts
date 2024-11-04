@@ -9,13 +9,13 @@ export class Users {
   username: string;
 
   @Prop()
-  password: string;
+  fullname: string;
 
   @Prop()
   email: string;
 
   @Prop()
-  fullname: string;
+  password: string;
 
   @Prop()
   token: string;
