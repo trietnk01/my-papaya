@@ -33,7 +33,7 @@ export class UsersService {
     return compareSync(password, hash);
   };
   updateUserToken = (id: string, token: string) => {
-    return this.usersModel.updateOne({ _id: id }, { token });
+    return this.usersModel.findByIdAndUpdate(id, { token });
   };
   findUserByToken = async (token: string) => {
     return this.usersModel.findOne({ token });
