@@ -25,4 +25,9 @@ export class AuthResolver {
   getHello(@CurrentUser() user) {
     return user;
   }
+
+  @Mutation(() => AuthType)
+  logout(@CurrentUser() user) {
+    return this.auth.logout(user);
+  }
 }
