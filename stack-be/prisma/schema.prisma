@@ -1,0 +1,72 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  username String  @unique
+  password String @db.String
+  email    String  @unique
+  fullname String 
+  token    String @db.String
+
+  @@map("users")
+}
+
+model CategoryProduct {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  category_name String    @unique
+  slug          String    @unique  
+
+  @@map("category_product")
+}
+
+model Product {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  sku                 String
+  category_product_id String @db.ObjectId
+  price               Float
+  stock               Int
+  image               String?         @db.String
+  thumbnail           String?         @db.String
+  title               String
+  
+  @@map("product")
+}
+
+model PaymentMethod {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  title  String   @unique  
+
+  @@map("payment_method")
+}
+
+model Orders {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  orders_sku        String
+  orders_name       String
+  orders_mobile     String
+  orders_date       DateTime
+  orders_address    String         @default("")
+  payment_method_id String @db.ObjectId
+  
+  @@map("orders")
+}
+
+model OrdersDetail {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  orders_id            String @db.ObjectId
+  product_id           String @db.ObjectId
+  orders_product_sku   String
+  orders_product_name  String
+  orders_product_image String?
+  orders_price         Float
+  orders_quantity      Int
+  
+  @@map("orders_detail")
+}

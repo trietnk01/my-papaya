@@ -3,6 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { RESPONSE_MESSAGE } from "@/decorator/customize";
+import { GqlExecutionContext } from "@nestjs/graphql";
 
 export interface Response<T> {
   statusCode: number;
