@@ -1,6 +1,5 @@
 import { AppModule } from "@/app.module";
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
-import { TransformInterceptor } from "@/core/transform.interceptor";
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
