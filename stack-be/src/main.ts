@@ -1,6 +1,5 @@
 import { AppModule } from "@/app.module";
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
-import { TransformInterceptor } from "@/core/transform.interceptor";
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
@@ -22,6 +21,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors();
   const port: string = confService.get<string>("PORT");
+  console.log("port = ",port);
   await app.listen(port);
 }
 bootstrap();
